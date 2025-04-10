@@ -15,6 +15,7 @@ const navbar_items = computed(() => [
     { text: t('s_drawer.expense'), href: "/expense", icon: "mdi-cash-minus" },
     { text: t('s_drawer.category'), href: "/category", icon: "mdi-folder" },
     { text: t('s_drawer.platform'), href: "/platform", icon: "mdi-desktop-classic" },
+    { text: t('s_drawer.user'), href: "/user", icon: "mdi-account" },
 ]);
 
 const fullText = "GGAS Stock ";  

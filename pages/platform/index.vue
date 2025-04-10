@@ -4,8 +4,7 @@ import { onMounted, ref, computed } from 'vue';
 import { formatDate } from '@/utils/date-func';
 import type { Platform } from "@/misc/type";
 import { useI18n } from 'vue-i18n';
-import AddPlatform from '@/components/Platform/Add.vue';
-import EditPlatform from '@/components/Platform/Edit.vue';
+import { PlatformAdd, PlatformEdit } from '#components';
 
 const { getPlatformBy, deletePlatformBy } = usePlatform();
 const { t } = useI18n();
@@ -123,7 +122,7 @@ const editPlatform = (platform_id: string) => {
             <v-btn @click="addPlatform" color="primary">{{ t('platform.add_btn') }}</v-btn>
         </div>
 
-        <v-text-field v-model="searchQuery" label="Search" clearable prepend-inner-icon="mdi-magnify"
+        <v-text-field v-model="searchQuery" max-width="40%" label="Search" clearable prepend-inner-icon="mdi-magnify"
             class="mb-4 w-4/16" />
 
         <template v-if="loading" class="d-flex justify-center align-center">
@@ -168,11 +167,11 @@ const editPlatform = (platform_id: string) => {
         </v-data-table>
 
         <v-dialog v-model="add_paltform_dialog" max-width="600px">
-            <AddPlatform @addDone="Done" />
+            <PlatformAdd @addDone="Done" />
         </v-dialog>
 
         <v-dialog v-model="edit_paltform_dialog" max-width="600px">
-            <EditPlatform :platform_id="platform_id_current" @addDone="Done" />
+            <PlatformEdit :platform_id="platform_id_current" @addDone="Done" />
         </v-dialog>
 
     </v-container>

@@ -4,8 +4,7 @@ import { onMounted, ref, computed } from 'vue';
 import { formatDate } from '@/utils/date-func';
 import type { Category } from "@/misc/type";
 import { useI18n } from 'vue-i18n';
-import AddCategory from '@/components/Category/Add.vue';
-import EditCategory from '@/components/Category/Edit.vue';
+import { CategoryAdd, CategoryEdit } from '#components';
 
 const { getCategoryBy, deleteCategoryBy } = useCategory();
 const { t } = useI18n();
@@ -123,7 +122,7 @@ const editCategory = (category_id: string) => {
             <v-btn @click="addCategory" color="primary">{{ t('category.add_btn') }}</v-btn>
         </div>
 
-        <v-text-field v-model="searchQuery" label="Search" clearable prepend-inner-icon="mdi-magnify"
+        <v-text-field v-model="searchQuery" max-width="40%" label="Search" clearable prepend-inner-icon="mdi-magnify"
             class="mb-4 w-4/16" />
 
         <template v-if="loading" class="d-flex justify-center align-center">
@@ -168,11 +167,11 @@ const editCategory = (category_id: string) => {
         </v-data-table>
 
         <v-dialog v-model="add_paltform_dialog" max-width="600px">
-            <AddCategory @addDone="Done" />
+            <CategoryAdd @addDone="Done" />
         </v-dialog>
 
         <v-dialog v-model="edit_paltform_dialog" max-width="600px">
-            <EditCategory :category_id="category_id_current" @addDone="Done" />
+            <CategoryEdit :category_id="category_id_current" @addDone="Done" />
         </v-dialog>
 
     </v-container>

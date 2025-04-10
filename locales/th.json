@@ -7,9 +7,11 @@
         "confirm": "ใช่",
         "cancel": "ยกเลิก",
         "login": "เข้าสู่ระบบ",
+        "detail": "รายละเอียด",
         "edit": "แก้ไข",
         "delete": "ลบ",
-        "submit": "ยืนยัน"
+        "submit": "ยืนยัน",
+        "back": "กลับ"
     },
     "message": {
         "logout_success_title": "ออกจากระบบสำเร็จ",
@@ -31,7 +33,8 @@
         "income": "รายได้",
         "expense": "ค่าใช้จ่าย",
         "category": "หมวดหมู่",
-        "platform": "แพลตฟอร์ม"
+        "platform": "แพลตฟอร์ม",
+        "user": "ผู้ใช้"
     },
     "platform": {
         "title": "การจัดการแพลตฟอร์ม",
@@ -48,5 +51,15 @@
         "category_id": "รหัสหมวดหมู่",
         "category_name": "ชื่อหมวดหมู่",
         "actions": "การจัดการ"
+    },
+    "user": {
+        "title": "จัดการผู้ใช้",
+        "description": "จัดการผู้ใช้ของคุณที่นี่",
+        "add_btn": "เพิ่มผู้ใช้",
+        "user_id": "รหัสผู้ใช้",
+        "username": "ชื่อผู้ใช้",
+        "email": "อีเมล",
+        "password": "รหัสผ่าน",
+        "actions": "การกระทำ"
     }
 }

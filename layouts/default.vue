@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Main from '~/layout/full/Main.vue';
 const title = ref("GGas Stock Management System");
+import { Breadcrumb } from '#components';
 
 useHead({
   meta: [{ content: title }],
@@ -16,6 +17,7 @@ useHead({
       <Main />
       <v-main>
         <v-container fluid class="pa-0">
+          <Breadcrumb />
           <NuxtPage />
         </v-container>
       </v-main>

@@ -7,9 +7,11 @@
         "confirm": "Yes",
         "cancel": "Cancel",
         "login": "Login",
+        "detail": "Detail",
         "edit": "Edit",
         "delete": "Delete",
-        "submit": "Submit"
+        "submit": "Submit",
+        "back": "Back"
     },
     "message": {
         "logout_success_title": "Logout Successful",
@@ -31,7 +33,8 @@
         "income": "Income",
         "expense": "Expense",
         "category": "Category",
-        "platform": "Platform"
+        "platform": "Platform",
+        "user": "User"
     },
     "platform": {
         "title": "Platform Management",
@@ -47,6 +50,16 @@
         "add_btn": "Add Category",
         "category_id": "Category ID",
         "category_name": "Category Name",
+        "actions": "Action"
+    },
+    "user": {
+        "title": "User Management",
+        "description": "Manage your Users here.",
+        "add_btn": "Add User",
+        "user_id": "User ID",
+        "username": "User Name",
+        "email": "Email",
+        "password": "Password",
         "actions": "Action"
     }
 }
