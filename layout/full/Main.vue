@@ -3,6 +3,7 @@ import { useI18n } from "vue-i18n";
 import { ref, computed } from "vue";
 import LanguageSwitcher from "./vertical-header/LanguageSwitcher.vue";
 import ThemeSwitcher from "./vertical-header/ThemeSwitcher.vue";
+import ProfileDD from "./vertical-header/ProfileDD.vue";
 
 const { t } = useI18n();
 const drawer = ref(false);
@@ -27,6 +28,7 @@ const fullText = "GGAS Stock Management System";
             <div class="d-flex align-center">
                 <LanguageSwitcher />
                 <ThemeSwitcher />
+                <ProfileDD />
             </div>
         </v-row>
     </v-app-bar>

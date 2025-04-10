@@ -7,7 +7,7 @@ useHead({
   titleTemplate: () => {
     return "GGas Stock Management System";
   },
-});
+}); 
 </script>
 
 <template>
