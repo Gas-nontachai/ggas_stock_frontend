@@ -6,7 +6,10 @@
     "button": {
         "confirm": "Yes",
         "cancel": "Cancel",
-        "login": "Login"
+        "login": "Login",
+        "edit": "Edit",
+        "delete": "Delete",
+        "submit": "Submit"
     },
     "message": {
         "logout_success_title": "Logout Successful",
@@ -23,6 +26,23 @@
         "remember_me": "remember me"
     },
     "s_drawer": {
-        "home": "Home"
+        "home": "Home",
+        "item": "Item",
+        "income": "Income",
+        "expense": "Expense",
+        "category": "Category",
+        "platform": "Platform"
+    },
+    "platform": {
+        "title": "Platform Management",
+        "description": "Manage your platforms here.",
+        "add_btn": "Add Platform",
+        "platform_id": "Platform ID",
+        "platform_name": "Platform Name",
+        "created_by": "Created By",
+        "updated_by": "Updated By",
+        "created_at": "Created At",
+        "updated_at": "Updated At",
+        "actions": "Add Platform" 
     }
 }

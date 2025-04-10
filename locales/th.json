@@ -6,7 +6,10 @@
     "button": {
         "confirm": "ใช่",
         "cancel": "ยกเลิก",
-        "login": "เข้าสู่ระบบ"
+        "login": "เข้าสู่ระบบ",
+        "edit": "แก้ไข",
+        "delete": "ลบ",
+        "submit": "ยืนยัน"
     },
     "message": {
         "logout_success_title": "ออกจากระบบสำเร็จ",
@@ -23,6 +26,23 @@
         "remember_me": "จำฉันไว้"
     },
     "s_drawer": {
-        "home": "หน้าแรก"
+        "home": "หน้าแรก",
+        "item": "สินค้า",
+        "income": "รายได้",
+        "expense": "ค่าใช้จ่าย",
+        "category": "หมวดหมู่",
+        "platform": "แพลตฟอร์ม"
+    },
+    "platform": {
+        "title": "การจัดการแพลตฟอร์ม",
+        "description": "จัดการแพลตฟอร์มของคุณที่นี่",
+        "add_btn": "เพิ่มแพลตฟอร์ม",
+        "platform_id": "รหัสแพลตฟอร์ม",
+        "platform_name": "ชื่อแพลตฟอร์ม",
+        "created_by": "สร้างโดย",
+        "updated_by": "อัพเดทโดย",
+        "created_at": "วันที่สร้าง",
+        "updated_at": "วันที่อัพเดท",
+        "actions": "การดำเนินการ"
     }
 }

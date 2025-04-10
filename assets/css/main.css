@@ -3,3 +3,19 @@
 body {
     font-family: "Kanit", sans-serif;
 }
+
+.swal2-confirm-white {
+    color: white !important;
+}
+
+.swal2-cancel-white {
+    color: white !important;
+}
+
+.swal2-container {
+    z-index: 9999 !important;
+}
+
+.swal2-popup {
+    z-index: 10000 !important;
+}

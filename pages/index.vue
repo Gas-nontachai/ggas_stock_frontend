@@ -2,8 +2,7 @@
 import { onMounted } from 'vue';
 
 onMounted(() => {
-    if (!localStorage.getItem("token")) {
-        console.log("Token not found, redirecting to login page.");
+    if (!useCookie('Authorization').value) {
         window.location.href = "/auth/login";
     }
 }); 

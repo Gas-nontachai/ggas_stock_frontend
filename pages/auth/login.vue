@@ -26,9 +26,7 @@ const login = async () => {
       username: username.value,
       password: password.value,
     })
-
-    localStorage.setItem('token', response.token)
-    localStorage.setItem('user', JSON.stringify(response.user))
+    useCookie('Authorization').value = response.token
 
     router.push('/')
   } catch (err: any) {
@@ -36,7 +34,7 @@ const login = async () => {
   } finally {
     loading.value = false
   }
-}
+} 
 </script>
 
 <template>

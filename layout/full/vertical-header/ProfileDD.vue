@@ -16,6 +16,10 @@ const logout = async () => {
     showCancelButton: true,
     confirmButtonText: t('button.confirm'),
     cancelButtonText: t('button.cancel'),
+    customClass: {
+      confirmButton: 'swal2-confirm-white',
+      cancelButton: 'swal2-cancel-white',
+    },
   });
 
   if (result.isConfirmed) {

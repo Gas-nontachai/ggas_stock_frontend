@@ -19,8 +19,12 @@ export const secureFetch = async (url: string, options: FetchOptions): Promise<a
 
 function useAuthorizationHeader(): any {
   const token = useCookie('Authorization')
-  return {
-    Authorization: `Bearer ${token.value}`,
+  if (token.value) {
+    return {
+      Authorization: `Bearer ${token.value}`,
+    }
+  } else {
+    return {}
   }
 }
 

@@ -9,10 +9,15 @@ const { t } = useI18n();
 const drawer = ref(false);
 
 const navbar_items = computed(() => [
-    { text: t('s_drawer.home'), href: "home", icon: "mdi-home" },
+    { text: t('s_drawer.home'), href: "/", icon: "mdi-home" },
+    { text: t('s_drawer.item'), href: "/item", icon: "mdi-gamepad-variant" },
+    { text: t('s_drawer.income'), href: "/income", icon: "mdi-cash" },
+    { text: t('s_drawer.expense'), href: "/expense", icon: "mdi-cash-minus" },
+    { text: t('s_drawer.category'), href: "/category", icon: "mdi-folder" },
+    { text: t('s_drawer.platform'), href: "/platform", icon: "mdi-desktop-classic" },
 ]);
 
-const fullText = "GGAS Stock Management System";  
+const fullText = "GGAS Stock ";  
 </script>
 
 <template>
@@ -20,9 +25,9 @@ const fullText = "GGAS Stock Management System";
         <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
         <v-row align="center" style="width: 100%;" justify="space-between" class="px-8">
             <v-responsive class="d-flex align-center">
-                <strong class="text kanit-medium text-h6 text-md-body-1 text-lg-h6 ">
+                <span class="text-center text-h6 font-weight-bold">
                     {{ fullText }}
-                </strong>
+                </span>
             </v-responsive>
             <div class="d-flex align-center">
                 <LanguageSwitcher />
