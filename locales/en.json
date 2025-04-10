@@ -1,6 +1,28 @@
 {
+    "alert": {
+        "logout": "You have been logged out successfully.",
+        "confirm_logout": "Are you sure you want to log out?"
+    },
+    "button": {
+        "confirm": "Yes",
+        "cancel": "Cancel",
+        "login": "Login"
+    },
+    "message": {
+        "logout_success_title": "Logout Successful",
+        "logout_success_text": "You have successfully logged out of the system."
+    },
     "profile_dropdown": {
-        "title": "Profile", 
+        "title": "Profile",
         "logout": "Logout"
+    },
+    "login": {
+        "title": "Login",
+        "username": "Username",
+        "password": "Password",
+        "remember_me": "remember me"
+    },
+    "s_drawer": {
+        "home": "Home"
     }
 }

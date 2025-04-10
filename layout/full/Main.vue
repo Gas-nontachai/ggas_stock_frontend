@@ -9,14 +9,13 @@ const { t } = useI18n();
 const drawer = ref(false);
 
 const navbar_items = computed(() => [
-    { text: t('home.text'), href: "home", icon: "mdi-home" },
+    { text: t('s_drawer.home'), href: "home", icon: "mdi-home" },
 ]);
 
 const fullText = "GGAS Stock Management System";  
 </script>
 
 <template>
-    <!-- App Bar (Fixed Navbar) -->
     <v-app-bar app fixed elevation="4" density="comfortable" class="custom-app-bar">
         <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
         <v-row align="center" style="width: 100%;" justify="space-between" class="px-8">

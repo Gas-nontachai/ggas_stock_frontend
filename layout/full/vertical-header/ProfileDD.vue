@@ -10,12 +10,12 @@ const { authLogout } = useAuth();
 
 const logout = async () => {
   const result = await Swal.fire({
-    title: t('logout.confirmTitle'),
-    text: t('logout.confirmText'),
+    title: t('alert.logout'),
+    text: t('alert.confirm_logout'),
     icon: 'warning',
     showCancelButton: true,
-    confirmButtonText: t('logout.confirmButton'),
-    cancelButtonText: t('logout.cancelButton'),
+    confirmButtonText: t('button.confirm'),
+    cancelButtonText: t('button.cancel'),
   });
 
   if (result.isConfirmed) {

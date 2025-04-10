@@ -10,7 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@mdi/font": "^7.4.47",
+    "@mdi/font": "^7.4.47", 
     "axios": "^1.8.4",
     "nuxt": "^3.16.1",
     "sweetalert2": "^11.17.2",

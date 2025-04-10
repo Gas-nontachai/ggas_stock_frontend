@@ -1,6 +1,28 @@
 {
+    "alert": {
+        "logout": "คุณออกจากระบบเรียบร้อยแล้ว",
+        "confirm_logout": "คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?"
+    },
+    "button": {
+        "confirm": "ใช่",
+        "cancel": "ยกเลิก",
+        "login": "เข้าสู่ระบบ"
+    },
+    "message": {
+        "logout_success_title": "ออกจากระบบสำเร็จ",
+        "logout_success_text": "คุณได้ออกจากระบบเรียบร้อยแล้ว"
+    },
     "profile_dropdown": {
         "title": "โปรไฟล์",
         "logout": "ออกจากระบบ"
+    },
+    "login": {
+        "title": "เข้าสู่ระบบ",
+        "username": "ชื่อผู้ใช้",
+        "password": "รหัสผ่าน",
+        "remember_me": "จำฉันไว้"
+    },
+    "s_drawer": {
+        "home": "หน้าแรก"
     }
 }
