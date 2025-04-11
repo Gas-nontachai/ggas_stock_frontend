@@ -210,39 +210,67 @@ const done = async () => {
                                         </template>
                                     </v-img>
 
-                                    <v-card-title class="text-truncate">{{ item.item_name }}</v-card-title>
+                                    <div class="d-flex flex-column justify-center align-start px-2">
+                                        <v-card-title class="text-truncate">{{ item.item_name }}</v-card-title>
+                                        <v-chip variant="tonal" color="warning" class="px-2">
+                                            {{ item.item_category_id || "category" }}
+                                        </v-chip>
+                                    </div>
 
                                     <v-card-text>
-                                        <div class="d-flex align-center mb-2">
-                                            <v-icon icon="mdi-currency-thb" class="mr-1" color="success" />
-                                            <span class="text-subtitle-1 font-weight-bold">
-                                                {{ decimalFix(item.item_buy_price) }}
-                                            </span>
-                                        </div>
+                                        <div class="d-flex align-end justify-space-between">
+                                            <div>
+                                                <div class="d-flex align-center mb-2">
+                                                    <v-icon icon="mdi-currency-thb" class="mr-1" color="success" />
+                                                    <span
+                                                        class="text-subtitle-1 font-weight-bold text-decoration-line-through">
+                                                        {{ decimalFix(item.item_buy_price) }}
+                                                    </span>
+                                                </div>
 
-                                        <div v-if="item.note" class="text-body-2 text-truncate mb-2">
-                                            {{ item.note }}
-                                        </div>
+                                                <div v-if="item.note" class="text-body-2 text-truncate mb-2">
+                                                    {{ item.note }}
+                                                </div>
 
-                                        <div class="d-flex align-center text-caption text-grey">
-                                            <v-icon icon="mdi-clock-outline" size="small" class="mr-1" />
-                                            {{ formatDate(item.createdAt) }}
+                                                <div class="d-flex align-center text-caption text-grey">
+                                                    <v-icon icon="mdi-clock-outline" size="small" class="mr-1" />
+                                                    {{ formatDate(item.createdAt) }}
+                                                </div>
+                                            </div>
+                                            <v-menu bottom right>
+                                                <template v-slot:activator="{ props }">
+                                                    <v-btn icon variant="text" size="small" v-bind="props">
+                                                        <v-chip color="primary">
+                                                            <v-icon>mdi-dots-vertical</v-icon>
+                                                        </v-chip>
+                                                    </v-btn>
+                                                </template>
+                                                <v-list>
+                                                    <v-list-item @click="viewItemDetails(item)">
+                                                        <div class="d-flex">
+                                                            <v-icon left>mdi-eye</v-icon>
+                                                            <v-list-item-title>{{ t('button.edit')
+                                                                }}</v-list-item-title>
+                                                        </div>
+                                                    </v-list-item>
+                                                    <v-list-item @click="editItem(item)">
+                                                        <div class="d-flex">
+                                                            <v-icon>mdi-pencil</v-icon>
+                                                            <v-list-item-title>{{ t('button.edit')
+                                                                }}</v-list-item-title>
+                                                        </div>
+                                                    </v-list-item>
+                                                    <v-list-item @click="deleteItem(item.item_id)">
+                                                        <div class="d-flex">
+                                                            <v-icon>mdi-delete</v-icon>
+                                                            <v-list-item-title>{{ t('button.delete')
+                                                                }}</v-list-item-title>
+                                                        </div>
+                                                    </v-list-item>
+                                                </v-list>
+                                            </v-menu>
                                         </div>
                                     </v-card-text>
-
-                                    <v-card-actions>
-                                        <v-btn variant="text" color="primary" @click="viewItemDetails(item)">
-                                            <v-icon left>mdi-eye</v-icon>
-                                            {{ t('View') }}
-                                        </v-btn>
-                                        <v-spacer />
-                                        <v-btn icon variant="text" color="info" @click="editItem(item)">
-                                            <v-icon>mdi-pencil</v-icon>
-                                        </v-btn>
-                                        <v-btn icon variant="text" color="error" @click="deleteItem(item.item_id)">
-                                            <v-icon>mdi-delete</v-icon>
-                                        </v-btn>
-                                    </v-card-actions>
                                 </v-card>
                             </v-col>
                         </v-row>
@@ -271,42 +299,69 @@ const done = async () => {
                                     </div>
 
                                     <div class="opacity-70">
-                                        <v-card-title class="text-truncate text-decoration-line-through">
-                                            {{ item.item_name }}
-                                        </v-card-title>
+                                        <div class="d-flex flex-column justify-center align-start px-2">
+                                            <v-card-title class="text-truncate text-decoration-line-through">{{
+                                                item.item_name
+                                                }}</v-card-title>
+                                            <v-chip variant="tonal" color="warning" class="px-2 ">
+                                                {{ item.item_category_id || "category" }}
+                                            </v-chip>
+                                        </div>
 
                                         <v-card-text>
-                                            <div class="d-flex align-center mb-2">
-                                                <v-icon icon="mdi-currency-thb" class="mr-1" color="success" />
-                                                <span
-                                                    class="text-subtitle-1 font-weight-bold text-decoration-line-through">
-                                                    {{ decimalFix(item.item_buy_price) }}
-                                                </span>
-                                            </div>
+                                            <div class="d-flex align-end justify-space-between">
+                                                <div>
+                                                    <div class="d-flex align-center mb-2">
+                                                        <v-icon icon="mdi-currency-thb" class="mr-1" color="success" />
+                                                        <span
+                                                            class="text-subtitle-1 font-weight-bold text-decoration-line-through">
+                                                            {{ decimalFix(item.item_buy_price) }}
+                                                        </span>
+                                                    </div>
 
-                                            <div v-if="item.note" class="text-body-2 text-truncate mb-2">
-                                                {{ item.note }}
-                                            </div>
+                                                    <div v-if="item.note" class="text-body-2 text-truncate mb-2">
+                                                        {{ item.note }}
+                                                    </div>
 
-                                            <div class="d-flex align-center text-caption text-grey">
-                                                <v-icon icon="mdi-clock-outline" size="small" class="mr-1" />
-                                                {{ formatDate(item.createdAt) }}
+                                                    <div class="d-flex align-center text-caption text-grey">
+                                                        <v-icon icon="mdi-clock-outline" size="small" class="mr-1" />
+                                                        {{ formatDate(item.createdAt) }}
+                                                    </div>
+                                                </div>
+                                                <v-menu bottom right>
+                                                    <template v-slot:activator="{ props }">
+                                                        <v-btn icon variant="text" size="small" v-bind="props">
+                                                            <v-chip color="primary">
+                                                                <v-icon>mdi-dots-vertical</v-icon>
+                                                            </v-chip>
+                                                        </v-btn>
+                                                    </template>
+                                                    <v-list>
+                                                        <v-list-item @click="viewItemDetails(item)">
+                                                            <div class="d-flex">
+                                                                <v-icon left>mdi-eye</v-icon>
+                                                                <v-list-item-title>{{ t('button.edit')
+                                                                }}</v-list-item-title>
+                                                            </div>
+                                                        </v-list-item>
+                                                        <v-list-item @click="editItem(item)">
+                                                            <div class="d-flex">
+                                                                <v-icon>mdi-pencil</v-icon>
+                                                                <v-list-item-title>{{ t('button.edit')
+                                                                }}</v-list-item-title>
+                                                            </div>
+                                                        </v-list-item>
+                                                        <v-list-item @click="deleteItem(item.item_id)">
+                                                            <div class="d-flex">
+                                                                <v-icon>mdi-delete</v-icon>
+                                                                <v-list-item-title>{{ t('button.delete')
+                                                                }}</v-list-item-title>
+                                                            </div>
+                                                        </v-list-item>
+                                                    </v-list>
+                                                </v-menu>
                                             </div>
                                         </v-card-text>
-
-                                        <v-card-actions>
-                                            <v-btn variant="text" color="primary" @click="viewItemDetails(item)">
-                                                <v-icon left>mdi-eye</v-icon>
-                                                {{ t('View') }}
-                                            </v-btn>
-                                            <v-spacer />
-                                            <v-btn icon variant="text" color="info" @click="editItem(item)">
-                                                <v-icon>mdi-pencil</v-icon>
-                                            </v-btn>
-                                            <v-btn icon variant="text" color="error" @click="deleteItem(item.item_id)">
-                                                <v-icon>mdi-delete</v-icon>
-                                            </v-btn>
-                                        </v-card-actions>
                                     </div>
                                 </v-card>
                             </v-col>
