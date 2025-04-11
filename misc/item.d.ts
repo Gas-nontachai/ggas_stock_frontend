@@ -4,7 +4,7 @@ export type Item = {
   item_buy_price: number,
   note: string,
   item_image: string,
-  item_category_id: number,
+  item_category_id: string,
   item_status: number,
   addby?: string,
   updateby?: string,

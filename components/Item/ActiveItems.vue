@@ -1,0 +1,186 @@
+<script setup lang="ts">
+import Swal from 'sweetalert2';
+import type { Item, Category } from "@/misc/type";
+import { useRouter } from 'vue-router';
+import { formatDate } from '@/utils/date-func';
+import { decimalFix } from '@/utils/number-func';
+import { useI18n } from 'vue-i18n';
+
+const { deleteItemBy } = useItem();
+const router = useRouter();
+const { t } = useI18n();
+const props = defineProps({
+    items: {
+        type: Array as PropType<Item[]>,
+        required: true
+    },
+    categories: {
+        type: Array as PropType<Category[]>,
+        required: true
+    }
+    , status: {
+        type: Number,
+        required: true
+    }
+});
+const emit = defineEmits(['fetchData',]);
+
+const viewItemDetails = (item: Item) => {
+    router.push(`/items/${item.item_id}`);
+};
+
+const getCategoryName = (category_id: string) => {
+    const category = props.categories.find(cat => cat.category_id === category_id);
+    return category ? category.category_name : 'category';
+};
+
+const deleteItem = async (item_id: string) => {
+    const result = await Swal.fire({
+        title: t('Are you sure?'),
+        text: t("You won't be able to revert this!"),
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: t('Yes, delete it!'),
+        customClass: {
+            confirmButton: 'swal2-confirm-white',
+            cancelButton: 'swal2-cancel-white',
+        },
+    });
+
+    if (result.isConfirmed) {
+        try {
+            await deleteItemBy({ item_id });
+            await emit('fetchData', true)
+            await Swal.fire({
+                title: t('logout.successTitle'),
+                text: t('logout.successText'),
+                icon: 'success',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+            });
+        } catch (error) {
+            console.error('Error deleting item:', error);
+            await Swal.fire({
+                title: t('logout.successTitle'),
+                text: t('logout.successText'),
+                icon: 'error',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+            });
+        }
+    }
+};
+
+const editItem = (item: Item) => {
+    // item_id_current.value = item.item_id;
+    // edit_item_dialog.value = true;
+};
+</script>
+
+<template>
+    <v-card v-if="props.items.length === 0" class="text-center pa-6">
+        <v-icon icon="mdi-alert-circle-outline" size="large" class="mb-2" color="warning"></v-icon>
+        <p class="text-body-1 mb-4">{{ t('No items found') }}</p>
+        <v-btn color="primary" @click="() => emit('fetchData', true)">{{ t('Refresh') }}</v-btn>
+    </v-card>
+
+    <v-row v-else>
+        <v-col v-for="item in props.items" :key="item.item_id" cols="12" sm="6" md="4" lg="3">
+            <v-card class="h-100">
+                <div :class="{
+                    'opacity-50': props.status === 0
+                }">
+                    <v-img v-if="item.item_image" :src="item.item_image" :alt="item.item_name" height="200" cover
+                        class="bg-grey-lighten-2" />
+                    <v-img v-else src="/default-cart.png" height="200" cover class="bg-grey-lighten-2">
+                        <template v-slot:placeholder>
+                            <div class="d-flex align-center justify-center fill-height">
+                                <v-icon icon="mdi-image" size="large" color="grey-lighten-1" />
+                            </div>
+                        </template>
+                    </v-img>
+                </div>
+
+                <div :class="{
+                    'opacity-70': props.status === 0
+                }">
+                    <div class="d-flex flex-column justify-center align-start px-2">
+                        <v-card-title :class="{
+                            'text-truncate': true,
+                            'text-decoration-line-through': props.status === 0
+                        }">
+                            {{ item.item_name }}
+                        </v-card-title>
+                        <v-chip variant="tonal" color="warning" class="px-2">
+                            {{ getCategoryName(item.item_category_id) }}
+                        </v-chip>
+                    </div>
+
+                    <v-card-text>
+                        <div class="d-flex align-end justify-space-between">
+                            <div>
+                                <div class="d-flex align-center mb-2">
+                                    <v-icon icon="mdi-currency-thb" class="mr-1" color="success" />
+                                    <span :class="{
+                                        'text-subtitle-1': true,
+                                        'font-weight-bold': true,
+                                        'text-truncate': true,
+                                        'text-decoration-line-through': props.status === 0
+                                    }">
+                                        {{ decimalFix(item.item_buy_price) }}
+                                    </span>
+                                </div>
+
+                                <div v-if="item.note" class="text-body-2 text-truncate mb-2">
+                                    {{ item.note }}
+                                </div>
+
+                                <div class="d-flex align-center text-caption text-grey">
+                                    <v-icon icon="mdi-clock-outline" size="small" class="mr-1" />
+                                    {{ formatDate(item.createdAt) }}
+                                </div>
+                            </div>
+                            <v-menu bottom right>
+                                <template v-slot:activator="{ props }">
+                                    <v-btn icon variant="text" size="small" v-bind="props">
+                                        <v-chip color="primary">
+                                            <v-icon>mdi-dots-vertical</v-icon>
+                                        </v-chip>
+                                    </v-btn>
+                                </template>
+                                <v-list>
+                                    <v-list-item @click="viewItemDetails(item)">
+                                        <div class="d-flex">
+                                            <v-icon left>mdi-eye</v-icon>
+                                            <v-list-item-title>{{ t('button.edit')
+                                            }}</v-list-item-title>
+                                        </div>
+                                    </v-list-item>
+                                    <v-list-item @click="editItem(item)">
+                                        <div class="d-flex">
+                                            <v-icon>mdi-pencil</v-icon>
+                                            <v-list-item-title>{{ t('button.edit')
+                                            }}</v-list-item-title>
+                                        </div>
+                                    </v-list-item>
+                                    <v-list-item @click="deleteItem(item.item_id)">
+                                        <div class="d-flex">
+                                            <v-icon>mdi-delete</v-icon>
+                                            <v-list-item-title>
+                                                {{ t('button.delete') }}
+                                            </v-list-item-title>
+                                        </div>
+                                    </v-list-item>
+                                </v-list>
+                            </v-menu>
+                        </div>
+                    </v-card-text>
+                </div>
+            </v-card>
+        </v-col>
+    </v-row>
+</template>
