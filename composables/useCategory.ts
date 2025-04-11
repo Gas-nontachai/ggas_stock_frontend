@@ -2,9 +2,10 @@ import type { Category } from "@/misc/type";
 
 const prefix = 'category'
 
-const getCategoryBy = (): Promise<Category[]> => secureFetch(
+const getCategoryBy = (data?: any): Promise<Category[]> => secureFetch(
     `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/getCategoryBy`, {
     method: "POST",
+    body: data,
 })
 
 const getCategoryByID = (data: { category_id: string }): Promise<Category> => secureFetch(

@@ -3,8 +3,7 @@ import Swal from 'sweetalert2';
 import { onMounted, ref, computed } from 'vue';
 import { formatDate } from '@/utils/date-func';
 import type { Category } from "@/misc/type";
-import { useI18n } from 'vue-i18n';
-import { CategoryAdd, CategoryEdit } from '#components';
+import { useI18n } from 'vue-i18n'; 
 
 const { getCategoryBy, deleteCategoryBy } = useCategory();
 const { t } = useI18n();

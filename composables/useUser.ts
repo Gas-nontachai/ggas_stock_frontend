@@ -2,9 +2,10 @@ import type { User } from "@/misc/type";
 
 const prefix = 'user'
 
-const getUserBy = (): Promise<User[]> => secureFetch(
+const getUserBy = (data?: any): Promise<User[]> => secureFetch(
     `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/getUserBy`, {
     method: "POST",
+    body: data,
 })
 
 const getUserByID = (data: { user_id: string }): Promise<User> => secureFetch(

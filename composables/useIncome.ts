@@ -2,9 +2,10 @@ import type { Income } from "@/misc/type";
 
 const prefix = 'income'
 
-const getIncomeBy = (): Promise<Income[]> => secureFetch(
+const getIncomeBy = (data?: any): Promise<Income[]> => secureFetch(
     `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/getIncomeBy`, {
     method: "POST",
+    body: data,
 })
 
 const getIncomeByID = (data: { income_id: string }): Promise<Income> => secureFetch(

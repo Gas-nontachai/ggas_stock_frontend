@@ -37,14 +37,14 @@ const currentPage = computed(() => {
 
 <template>
     <v-breadcrumbs>
-        <v-breadcrumbs-item @click="goBack">
+        <v-breadcrumbs-item @click="goBack" v-if="currentPage !== t('s_drawer.home')">
             <v-chip color="blue" text-color="white" class="d-flex align-center" style="cursor: pointer;">
                 <v-icon left>mdi-arrow-bottom-left</v-icon>
                 <span>{{ t('button.back') }}</span>
             </v-chip>
         </v-breadcrumbs-item>
 
-        <template v-if="currentPage !== t('main')">
+        <template v-if="currentPage !== t('s_drawer.home')">
             <v-icon size="x-small">mdi-arrow-right</v-icon>
             <v-breadcrumbs-item disabled>
                 <v-chip color="dark" text-color="white" class="d-flex align-center">

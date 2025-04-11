@@ -4,8 +4,7 @@ import { onMounted, ref, computed } from 'vue';
 import { formatDate } from '@/utils/date-func';
 import type { User } from "@/misc/type";
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
-import { UserAdd, UserEdit } from '#components';
+import { useRouter } from 'vue-router'; 
 
 const { getUserBy, deleteUserBy } = useUser();
 const { t } = useI18n();

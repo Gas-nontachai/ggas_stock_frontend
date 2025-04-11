@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 import { ref, computed } from "vue";
+import { RouterLink, useRoute } from "vue-router";
 import LanguageSwitcher from "./vertical-header/LanguageSwitcher.vue";
 import ThemeSwitcher from "./vertical-header/ThemeSwitcher.vue";
 import ProfileDD from "./vertical-header/ProfileDD.vue";
 
 const { t } = useI18n();
 const drawer = ref(false);
+const route = useRoute();
 
 const navbar_items = computed(() => [
     { text: t('s_drawer.home'), href: "/", icon: "mdi-home" },
@@ -18,8 +20,11 @@ const navbar_items = computed(() => [
     { text: t('s_drawer.user'), href: "/user", icon: "mdi-account" },
 ]);
 
-const fullText = "GGAS Stock ";  
+const isActive = (href: string) => route.path === href;
+
+const fullText = "GGAS Stock ";
 </script>
+
 
 <template>
     <v-app-bar app fixed elevation="4" density="comfortable" class="custom-app-bar">
@@ -40,12 +45,15 @@ const fullText = "GGAS Stock ";
 
     <v-navigation-drawer v-model="drawer" app temporary>
         <v-list>
-            <v-list-item v-for="(item, index) in navbar_items" :key="index" :href="item.href">
-                <template v-slot:prepend>
-                    <v-icon>{{ item.icon }}</v-icon>
-                </template>
-                <v-list-item-title>{{ item.text }}</v-list-item-title>
-            </v-list-item>
+            <RouterLink v-for="(item, index) in navbar_items" :key="index" :to="item.href"
+                class="router-link text-decoration-none cursor-pointer">
+                <v-list-item :class="{ 'bg-blue-lighten-2 text-white': isActive(item.href) }" @click="drawer = false">
+                    <template #prepend>
+                        <v-icon class="text-black">{{ item.icon }}</v-icon>
+                    </template>
+                    <v-list-item-title class="text-black">{{ item.text }}</v-list-item-title>
+                </v-list-item>
+            </RouterLink>
         </v-list>
     </v-navigation-drawer>
 </template>

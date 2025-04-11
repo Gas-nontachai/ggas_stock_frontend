@@ -37,7 +37,7 @@ export const errorInterceptor = async (error: any, options: any): Promise<any> =
     const { status, statusText, _data } = error.response
 
     if (status === 401 && _data.message === 'Invalid token') {
-      useCookie('x-access-token').value = null
+      useCookie('Authorization').value = null
 
       await Swal.fire({
         title: 'หมดเวลาเข้าสู่ระบบ',

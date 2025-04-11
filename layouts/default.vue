@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import Main from '~/layout/full/Main.vue';
-const title = ref("GGas Stock Management System");
-import { Breadcrumb } from '#components';
+const title = ref("GGas Stock Management System"); 
 
 useHead({
   meta: [{ content: title }],

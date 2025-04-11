@@ -3,8 +3,7 @@ import Swal from 'sweetalert2';
 import { onMounted, ref, computed } from 'vue';
 import { formatDate } from '@/utils/date-func';
 import type { Platform } from "@/misc/type";
-import { useI18n } from 'vue-i18n';
-import { PlatformAdd, PlatformEdit } from '#components';
+import { useI18n } from 'vue-i18n'; 
 
 const { getPlatformBy, deletePlatformBy } = usePlatform();
 const { t } = useI18n();

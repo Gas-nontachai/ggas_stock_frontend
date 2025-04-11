@@ -2,9 +2,10 @@ import type { Platform } from "@/misc/type";
 
 const prefix = 'platform'
 
-const getPlatformBy = (): Promise<Platform[]> => secureFetch(
+const getPlatformBy = (data?: any): Promise<Platform[]> => secureFetch(
     `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/getPlatformBy`, {
     method: "POST",
+    body: data,
 })
 
 const getPlatformByID = (data: { platform_id: string }): Promise<Platform> => secureFetch(
