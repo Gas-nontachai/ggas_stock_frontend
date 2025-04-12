@@ -38,11 +38,11 @@ const getCategoryName = (category_id: string) => {
 
 const deleteItem = async (item_id: string) => {
     const result = await Swal.fire({
-        title: t('Are you sure?'),
-        text: t("You won't be able to revert this!"),
+        title: t('alert.confirm_delete'),
+        text: t("alert.text_delete"),
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: t('Yes, delete it!'),
+        confirmButtonText: t('button.confirm'),
         customClass: {
             confirmButton: 'swal2-confirm-white',
             cancelButton: 'swal2-cancel-white',
@@ -54,8 +54,8 @@ const deleteItem = async (item_id: string) => {
             await deleteItemBy({ item_id });
             await emit('fetchData', true)
             await Swal.fire({
-                title: t('logout.successTitle'),
-                text: t('logout.successText'),
+                title: t('message.delete_success_title'),
+                text: t('message.delete_success_text'),
                 icon: 'success',
                 toast: true,
                 position: 'top-end',
@@ -65,8 +65,8 @@ const deleteItem = async (item_id: string) => {
         } catch (error) {
             console.error('Error deleting item:', error);
             await Swal.fire({
-                title: t('logout.successTitle'),
-                text: t('logout.successText'),
+                title: t('message.delete_unsuccess_title'),
+                text: t('message.delete_unsuccess_text'),
                 icon: 'error',
                 toast: true,
                 position: 'top-end',

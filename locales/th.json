@@ -1,7 +1,17 @@
 {
     "alert": {
-        "logout": "คุณออกจากระบบเรียบร้อยแล้ว",
-        "confirm_logout": "คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?"
+        "logout": "คุณได้ออกจากระบบเรียบร้อยแล้ว",
+        "confirm_logout": "คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?",
+        "confirm_delete": "คุณแน่ใจหรือไม่?",
+        "text_delete": "คุณจะไม่สามารถย้อนกลับได้!"
+    },
+    "message": {
+        "logout_success_title": "ออกจากระบบสำเร็จ",
+        "logout_success_text": "คุณได้ออกจากระบบเรียบร้อยแล้ว",
+        "delete_success_title": "ลบสำเร็จ",
+        "delete_success_text": "รายการถูกลบเรียบร้อยแล้ว",
+        "delete_unsuccess_title": "ลบไม่สำเร็จ",
+        "delete_unsuccess_text": "ไม่สามารถลบรายการได้"
     },
     "button": {
         "confirm": "ใช่",
@@ -10,12 +20,15 @@
         "detail": "รายละเอียด",
         "edit": "แก้ไข",
         "delete": "ลบ",
-        "submit": "ยืนยัน",
-        "back": "กลับ"
+        "submit": "ส่ง",
+        "back": "ย้อนกลับ",
+        "filter": "ตัวกรอง",
+        "clear_filter": "ล้างตัวกรอง"
     },
-    "message": {
-        "logout_success_title": "ออกจากระบบสำเร็จ",
-        "logout_success_text": "คุณได้ออกจากระบบเรียบร้อยแล้ว"
+    "filter": {
+        "date": "เรียงตามวันที่",
+        "price": "เรียงตามราคา",
+        "name": "เรียงตามชื่อ"
     },
     "profile_dropdown": {
         "title": "โปรไฟล์",
@@ -25,13 +38,13 @@
         "title": "เข้าสู่ระบบ",
         "username": "ชื่อผู้ใช้",
         "password": "รหัสผ่าน",
-        "remember_me": "จำฉันไว้"
+        "remember_me": "จดจำฉัน"
     },
     "s_drawer": {
         "home": "หน้าแรก",
         "item": "สินค้า",
-        "income": "รายได้",
-        "expense": "ค่าใช้จ่าย",
+        "income": "รายรับ",
+        "expense": "รายจ่าย",
         "category": "หมวดหมู่",
         "platform": "แพลตฟอร์ม",
         "user": "ผู้ใช้"
@@ -42,24 +55,40 @@
         "add_btn": "เพิ่มแพลตฟอร์ม",
         "platform_id": "รหัสแพลตฟอร์ม",
         "platform_name": "ชื่อแพลตฟอร์ม",
-        "actions": "การดำเนินการ"
+        "actions": "การกระทำ"
     },
     "category": {
-        "title": "จัดการหมวดหมู่",
+        "title": "การจัดการหมวดหมู่",
         "description": "จัดการหมวดหมู่ของคุณที่นี่",
         "add_btn": "เพิ่มหมวดหมู่",
         "category_id": "รหัสหมวดหมู่",
         "category_name": "ชื่อหมวดหมู่",
-        "actions": "การจัดการ"
+        "actions": "การกระทำ"
     },
     "user": {
-        "title": "จัดการผู้ใช้",
+        "title": "การจัดการผู้ใช้",
         "description": "จัดการผู้ใช้ของคุณที่นี่",
-        "add_btn": "เพิ่มผู้ใช้",
+        "add_btn": "เพิ่มผู้ใช้ใหม่",
         "user_id": "รหัสผู้ใช้",
         "username": "ชื่อผู้ใช้",
         "email": "อีเมล",
         "password": "รหัสผ่าน",
         "actions": "การกระทำ"
+    },
+    "item": {
+        "title": "การจัดการสินค้า",
+        "add_title": "เพิ่มสินค้าใหม่",
+        "edit_title": "แก้ไขสินค้า",
+        "add_btn": "เพิ่มสินค้าใหม่",
+        "search": "ค้นหาสินค้า",
+        "active": "สินค้าที่ใช้งาน",
+        "inactive": "สินค้าที่ไม่ใช้งาน",
+        "item_id": "รหัสสินค้า",
+        "item_name": "ชื่อสินค้า",
+        "item_price": "ราคาสินค้า",
+        "item_note": "หมายเหตุสินค้า",
+        "item_category": "หมวดหมู่สินค้า",
+        "item_image": "รูปภาพสินค้า",
+        "item_image_delete": "กำลังลบรูปภาพสินค้า.."
     }
 }

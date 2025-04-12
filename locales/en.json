@@ -1,7 +1,17 @@
 {
     "alert": {
         "logout": "You have been logged out successfully.",
-        "confirm_logout": "Are you sure you want to log out?"
+        "confirm_logout": "Are you sure you want to log out?",
+        "confirm_delete": "Are you sure?",
+        "text_delete": "You won't be able to revert this!"
+    },
+    "message": {
+        "logout_success_title": "Logout Successful",
+        "logout_success_text": "You have successfully logged out of the system.",
+        "delete_success_title": "Delete Successful",
+        "delete_success_text": "The item has been deleted successfully.",
+        "delete_unsuccess_title": "Delete Unsuccessful",
+        "delete_unsuccess_text": "The item could not be deleted."
     },
     "button": {
         "confirm": "Yes",
@@ -11,11 +21,14 @@
         "edit": "Edit",
         "delete": "Delete",
         "submit": "Submit",
-        "back": "Back"
+        "back": "Back",
+        "filter": "Filters",
+        "clear_filter": "Clear Filters"
     },
-    "message": {
-        "logout_success_title": "Logout Successful",
-        "logout_success_text": "You have successfully logged out of the system."
+    "filter": {
+        "date": "Sort by Date",
+        "price": "Sort by Price",
+        "name": "Sort by Name"
     },
     "profile_dropdown": {
         "title": "Profile",
@@ -55,11 +68,27 @@
     "user": {
         "title": "User Management",
         "description": "Manage your Users here.",
-        "add_btn": "Add User",
+        "add_btn": "Add new User",
         "user_id": "User ID",
         "username": "User Name",
         "email": "Email",
         "password": "Password",
         "actions": "Action"
+    },
+    "item": {
+        "title": "Item Management",
+        "add_title": "Add New Item",
+        "edit_title": "Edit Item",
+        "add_btn": "Add new Item",
+        "search": "Search Items",
+        "active": "Active Item",
+        "inactive": "Inactive Item",
+        "item_id": "Item ID",
+        "item_name": "Item Name",
+        "item_price": "Item Price",
+        "item_note": "Item Note",
+        "item_category": "Item Category",
+        "item_image": "Item Image",
+        "item_image_delete": "Item Image Deleting.."
     }
 }

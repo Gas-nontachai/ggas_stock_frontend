@@ -96,39 +96,55 @@ function uploadFile(e: Event) {
 <template>
     <v-card>
         <v-card-title>
-            <span class="text-h5">{{ t('Add New Item') }}</span>
+            <v-row justify="space-between" align="center" class="py-2 px-1">
+                <v-col cols="auto">
+                    <div class="d-flex align-center">
+                        <v-icon color="primary" class="mr-3" size="large">
+                            mdi-cart-plus
+                        </v-icon>
+                        <span class="text-h5 font-weight-medium gradient-text">{{ t('item.add_title') }}</span>
+                    </div>
+                </v-col>
+                <v-col cols="auto">
+                    <v-btn icon variant="tonal" color="error" @click="emit('close', true)"
+                        class="rounded-circle elevation-1" size="small">
+                        <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                </v-col>
+            </v-row>
         </v-card-title>
         <v-card-text>
             <v-form>
                 <v-row>
                     <v-col cols="12">
-                        <v-text-field v-model="item.item_name" :label="t('Item Name')" variant="outlined"
+                        <v-text-field v-model="item.item_name" :label="t('item.item_name')" variant="outlined"
                             required></v-text-field>
                     </v-col>
                     <v-col cols="12" md="6">
-                        <v-text-field v-model="item.item_buy_price" :label="t('Price')" variant="outlined" type="number"
-                            required></v-text-field>
+                        <v-text-field v-model="item.item_buy_price" :label="t('item.item_price')" variant="outlined"
+                            type="number" required></v-text-field>
                     </v-col>
                     <v-col cols="12">
-                        <v-textarea v-model="item.note" :label="t('Note')" variant="outlined" rows="3"></v-textarea>
+                        <v-textarea v-model="item.note" :label="t('item.item_note')" variant="outlined"
+                            rows="3"></v-textarea>
                     </v-col>
 
                     <v-col cols="12" md="6">
                         <v-select v-model="item.item_category_id" :items="props.category_items" item-value="value"
-                            item-text="title" :label="t('Select Category')" variant="outlined" required />
+                            item-text="title" :label="t('item.item_category')" variant="outlined" required />
                     </v-col>
 
                     <v-col cols="12">
-                        <v-file-input accept="image/*" @change="uploadFile" :label="t('Item Image')" variant="outlined"
-                            multiple prepend-icon="mdi-camera" />
+                        <v-file-input accept="image/*" @change="uploadFile" :label="t('item.item_image')"
+                            variant="outlined" multiple prepend-icon="mdi-camera" />
                     </v-col>
                 </v-row>
             </v-form>
         </v-card-text>
         <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="error" variant="text" @click="emit('close', true);">{{ t('Cancel') }}</v-btn>
-            <v-btn color="primary" variant="elevated" @click="submitForm">{{ t('Save') }}</v-btn>
+            <v-btn color="error" variant="text" @click="emit('close', true);">{{ t('button.cancel') }}</v-btn>
+            <v-btn color="primary" variant="elevated" @click="submitForm">{{ t('button.submit') }}</v-btn>
         </v-card-actions>
     </v-card>
 </template>

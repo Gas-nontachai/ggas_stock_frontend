@@ -27,11 +27,12 @@ const sort = ref<{ name: string; order: "ASC" | "DESC" }>({
     order: "ASC",
 });
 
-const sort_options = [
-    { name: "createdAt", label: "จัดเรียงตามวันที่" },
-    { name: "item_buy_price", label: "จัดเรียงตามราคา" },
-    { name: "item_name", label: "จัดเรียงตามชื่อสินค้า" },
-];
+const sort_options = computed(() => [
+    { name: "createdAt", label: t('filter.date') },
+    { name: "item_buy_price", label: t('filter.price') },
+    { name: "item_name", label: t('filter.name') },
+]);
+
 
 const fetchData = async () => {
     loading.value = true;
@@ -121,16 +122,16 @@ const clearAllFilters = async () => {
     <v-container fluid max-width="95%">
         <v-card class="mb-6">
             <v-card-title class="d-flex align-center justify-space-between flex-wrap">
-                <div class="text-h5 font-weight-bold">{{ t('Item Management') }}</div>
+                <div class="text-h5 font-weight-bold">{{ t('item.title') }}</div>
                 <v-btn color="primary" prepend-icon="mdi-plus" @click="add_item_dialog = true">
-                    {{ t('Add New Item') }}
+                    {{ t('item.add_btn') }}
                 </v-btn>
             </v-card-title>
 
             <v-card-text>
                 <v-row class="align-center">
                     <v-col cols="12" md="5">
-                        <v-text-field v-model="search_query" :label="t('Search Items')" prepend-inner-icon="mdi-magnify"
+                        <v-text-field v-model="search_query" :label="t('item.search')" prepend-inner-icon="mdi-magnify"
                             clearable single-line hide-details density="compact" variant="outlined"
                             @click:prepend-inner="fetchData" @keyup.enter="fetchData" @click:clear="clearSearch"
                             class="rounded-lg"></v-text-field>
@@ -166,7 +167,7 @@ const clearAllFilters = async () => {
                                 <v-btn v-bind="props" :color="selected_category.length ? 'primary' : ''"
                                     variant="outlined" class="w-100 justify-start rounded-lg">
                                     <v-icon class="mr-2">mdi-filter</v-icon>
-                                    Filter
+                                    {{ t('button.filter') }}
                                     <v-badge v-if="selected_category.length" :content="selected_category.length"
                                         color="primary" inline class="ml-2"></v-badge>
                                 </v-btn>
@@ -194,7 +195,7 @@ const clearAllFilters = async () => {
                         <v-btn variant="tonal" color="error" class="w-100 rounded-lg" @click="clearAllFilters"
                             :disabled="!search_query && selected_category.length === 0">
                             <v-icon class="mr-2">mdi-filter-remove</v-icon>
-                            Clear Filters
+                            {{ t('button.clear_filter') }}
                         </v-btn>
                     </v-col>
                 </v-row>
@@ -205,8 +206,8 @@ const clearAllFilters = async () => {
         <v-row v-else>
             <v-col cols="12">
                 <v-tabs v-model="tab" grow class="mb-10">
-                    <v-tab value="active">Active</v-tab>
-                    <v-tab value="inactive">Inactive</v-tab>
+                    <v-tab value="active">{{ t('item.active') }}</v-tab>
+                    <v-tab value="inactive">{{ t('item.inactive') }}</v-tab>
                 </v-tabs>
 
                 <v-tabs-window v-model="tab">
