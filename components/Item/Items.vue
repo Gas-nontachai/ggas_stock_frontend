@@ -164,7 +164,7 @@ const editItem = (item_id: string) => {
                                     <v-list-item @click="viewItemDetails(item.item_id)">
                                         <div class="d-flex">
                                             <v-icon left>mdi-eye</v-icon>
-                                            <v-list-item-title>{{ t('button.edit') }}</v-list-item-title>
+                                            <v-list-item-title>{{ t('button.detail') }}</v-list-item-title>
                                         </div>
                                     </v-list-item>
                                     <v-list-item @click="editItem(item.item_id)">

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Swal from 'sweetalert2';
 import type { Item } from "@/misc/type";
@@ -13,6 +13,9 @@ const props = defineProps({
     item_id: {
         type: String,
         required: true,
+    },
+    category_items: {
+        type: Array as PropType<{ title: string, value: string }[]>,
     },
 });
 
@@ -73,7 +76,7 @@ const submitForm = async () => {
         Swal.fire({
             icon: 'success',
             title: 'Success',
-            text: 'Item added successfully!',
+            text: 'Item updated successfully!',
             toast: true,
             position: 'top-end',
             showConfirmButton: false,
@@ -149,6 +152,13 @@ const restoreImage = (img: string) => {
                     <v-col cols="12">
                         <v-textarea v-model="item.note" :label="t('Note')" variant="outlined" rows="3"></v-textarea>
                     </v-col>
+
+                    <!-- Category Select Dropdown -->
+                    <v-col cols="12" md="6">
+                        <v-select v-model="item.item_category_id" :items="props.category_items" item-value="value"
+                            item-text="title" :label="t('Category')" variant="outlined" required></v-select>
+                    </v-col>
+
                     <v-col cols="12">
                         <v-file-input accept="image/*" @change="uploadFile" :label="t('Item Image')" variant="outlined"
                             multiple prepend-icon="mdi-camera" />

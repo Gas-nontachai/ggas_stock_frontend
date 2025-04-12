@@ -27,6 +27,7 @@ const login = async () => {
       password: password.value,
     })
     useCookie('Authorization').value = response.token
+    useCookie('User').value = response.user
 
     router.push('/')
   } catch (err: any) {

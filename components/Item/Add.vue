@@ -9,6 +9,12 @@ const { insertItemBy } = useItem();
 const { t } = useI18n();
 const emit = defineEmits(['done', 'close']);
 
+const props = defineProps({
+    category_items: {
+        type: Array as PropType<{ title: string, value: string }[]>,
+    },
+});
+
 const item = ref<Item>({
     item_id: '',
     item_name: '',
@@ -18,6 +24,7 @@ const item = ref<Item>({
     item_category_id: '',
     item_status: 0,
 });
+
 const buffer_image = ref<Array<{ files?: File[], src: string }>>([]);
 
 const submitForm = async () => {
@@ -105,6 +112,12 @@ function uploadFile(e: Event) {
                     <v-col cols="12">
                         <v-textarea v-model="item.note" :label="t('Note')" variant="outlined" rows="3"></v-textarea>
                     </v-col>
+
+                    <v-col cols="12" md="6">
+                        <v-select v-model="item.item_category_id" :items="props.category_items" item-value="value"
+                            item-text="title" :label="t('Select Category')" variant="outlined" required />
+                    </v-col>
+
                     <v-col cols="12">
                         <v-file-input accept="image/*" @change="uploadFile" :label="t('Item Image')" variant="outlined"
                             multiple prepend-icon="mdi-camera" />

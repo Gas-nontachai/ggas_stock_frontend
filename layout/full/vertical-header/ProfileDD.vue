@@ -41,12 +41,13 @@ const logout = async () => {
   }
 };
 
+const user = useCookie<{ user_id: string }>('User');
 const items = computed(() => {
   return [
-    { title: t('profile_dropdown.title'), href: '/user/profile', icon: 'mdi-account' },
+    { title: t('profile_dropdown.title'), href: `/user/profile?user_id=${user.value?.user_id}`, icon: 'mdi-account' },
     { title: t('profile_dropdown.logout'), action: logout, icon: 'mdi-logout' },
   ];
-});
+}); 
 </script>
 
 <template>
