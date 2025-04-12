@@ -7,7 +7,7 @@ import type { Item } from "@/misc/type";
 const { insertItemBy } = useItem();
 
 const { t } = useI18n();
-const emit = defineEmits(['addDone', 'close']);
+const emit = defineEmits(['done', 'close']);
 
 const item = ref<Item>({
     item_id: '',
@@ -15,8 +15,10 @@ const item = ref<Item>({
     item_buy_price: 0,
     note: '',
     item_image: '',
-    item_status: 1,
+    item_category_id: '',
+    item_status: 0,
 });
+const buffer_image = ref<Array<{ files?: File[], src: string }>>([]);
 
 const submitForm = async () => {
     Swal.fire({
@@ -29,7 +31,16 @@ const submitForm = async () => {
         showConfirmButton: false,
     });
     try {
-        await insertItemBy(item.value);
+        let condition: { file: File[] } = {
+            file: []
+        };
+
+        if (buffer_image.value.length) {
+            condition.file = buffer_image.value
+                .flatMap(item => item.files ?? []);
+        }
+
+        await insertItemBy({ item: item.value, ...condition });
 
         Swal.close();
         Swal.fire({
@@ -41,7 +52,7 @@ const submitForm = async () => {
             showConfirmButton: false,
             timer: 3000,
         });
-        emit('addDone', true);
+        emit('done', true);
     } catch (error) {
         Swal.close();
         Swal.fire({
@@ -53,9 +64,26 @@ const submitForm = async () => {
             showConfirmButton: false,
             timer: 3000,
         });
-        emit('addDone', true);
+        emit('done', true);
     }
 };
+
+function uploadFile(e: Event) {
+    const target = e.target as HTMLInputElement;
+    if (target.files?.length) {
+        for (const file of target.files) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const newItem = {
+                    files: [file],
+                    src: reader.result as string,
+                };
+                buffer_image.value = [...buffer_image.value, newItem];
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+} 
 </script>
 
 <template>
@@ -67,17 +95,19 @@ const submitForm = async () => {
             <v-form>
                 <v-row>
                     <v-col cols="12">
-                        <v-text-field :label="t('Item Name')" variant="outlined" required></v-text-field>
+                        <v-text-field v-model="item.item_name" :label="t('Item Name')" variant="outlined"
+                            required></v-text-field>
                     </v-col>
                     <v-col cols="12" md="6">
-                        <v-text-field :label="t('Price')" variant="outlined" type="number" required></v-text-field>
+                        <v-text-field v-model="item.item_buy_price" :label="t('Price')" variant="outlined" type="number"
+                            required></v-text-field>
                     </v-col>
                     <v-col cols="12">
-                        <v-textarea :label="t('Note')" variant="outlined" rows="3"></v-textarea>
+                        <v-textarea v-model="item.note" :label="t('Note')" variant="outlined" rows="3"></v-textarea>
                     </v-col>
                     <v-col cols="12">
-                        <v-file-input :label="t('Item Image')" variant="outlined" accept="image/*"
-                            prepend-icon="mdi-camera"></v-file-input>
+                        <v-file-input accept="image/*" @change="uploadFile" :label="t('Item Image')" variant="outlined"
+                            multiple prepend-icon="mdi-camera" />
                     </v-col>
                 </v-row>
             </v-form>
@@ -85,7 +115,7 @@ const submitForm = async () => {
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="error" variant="text" @click="emit('close', true);">{{ t('Cancel') }}</v-btn>
-            <v-btn color="primary" variant="elevated">{{ t('Save') }}</v-btn>
+            <v-btn color="primary" variant="elevated" @click="submitForm">{{ t('Save') }}</v-btn>
         </v-card-actions>
     </v-card>
 </template>

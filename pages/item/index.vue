@@ -3,20 +3,20 @@ import { onMounted, ref } from 'vue';
 import type { Item, Category } from "@/misc/type";
 import { useI18n } from 'vue-i18n';
 
-const { getItemBy, deleteItemBy } = useItem();
+const { getItemBy } = useItem();
 const { getCategoryBy } = useCategory();
 const { t } = useI18n();
 
-const menu = ref(false);
 const tab = ref("active");
 const active_items = ref<Item[]>([]);
 const inactive_items = ref<Item[]>([]);
 const categories = ref<Category[]>([]);
 const loading = ref(true);
+const menu = ref(false);
 const add_item_dialog = ref(false);
 const edit_item_dialog = ref(false);
-const item_id_current = ref('');
 const search_query = ref('');
+const item_id_current = ref('');
 
 const sort = ref<{ name: string; order: "ASC" | "DESC" }>({
     name: "createdAt",
@@ -95,7 +95,12 @@ const done = async () => {
     add_item_dialog.value = false;
     edit_item_dialog.value = false;
     await fetchData();
-};  
+};
+
+const openEdit = async (item_id: string) => {
+    item_id_current.value = item_id;
+    edit_item_dialog.value = true;
+};
 </script>
 
 <template>
@@ -153,12 +158,12 @@ const done = async () => {
 
                 <v-tabs-window v-model="tab">
                     <v-tabs-window-item value="active">
-                        <ItemActiveItems :items="active_items" :categories="categories" :status="1"
-                            @fetchData="fetchData" />
+                        <ItemItems :items="active_items" :categories="categories" :status="1" @fetchData="fetchData"
+                            @openEdit="openEdit" />
                     </v-tabs-window-item>
 
                     <v-tabs-window-item value="inactive">
-                        <ItemActiveItems :items="inactive_items" :categories="categories" :status="0"
+                        <ItemItems :items="inactive_items" :categories="categories" :status="0"
                             @fetchData="fetchData" />
                     </v-tabs-window-item>
                 </v-tabs-window>
@@ -166,11 +171,11 @@ const done = async () => {
         </v-row>
 
         <v-dialog v-model="add_item_dialog" max-width="600px">
-            <ItemAdd @done="done" />
+            <ItemAdd @done="done" @close="() => { add_item_dialog = false }" />
         </v-dialog>
 
         <v-dialog v-model="edit_item_dialog" max-width="600px">
-            <ItemEdit @done="done" />
+            <ItemEdit :item_id="item_id_current" @done="done" @close="() => { edit_item_dialog = false }" />
         </v-dialog>
     </v-container>
 </template>

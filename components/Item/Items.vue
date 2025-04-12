@@ -9,6 +9,7 @@ import { useI18n } from 'vue-i18n';
 const { deleteItemBy } = useItem();
 const router = useRouter();
 const { t } = useI18n();
+
 const props = defineProps({
     items: {
         type: Array as PropType<Item[]>,
@@ -23,10 +24,11 @@ const props = defineProps({
         required: true
     }
 });
-const emit = defineEmits(['fetchData',]);
 
-const viewItemDetails = (item: Item) => {
-    router.push(`/items/${item.item_id}`);
+const emit = defineEmits(['fetchData', 'openEdit']);
+
+const viewItemDetails = (item_id: string) => {
+    router.push(`/items/${item_id}`);
 };
 
 const getCategoryName = (category_id: string) => {
@@ -75,9 +77,8 @@ const deleteItem = async (item_id: string) => {
     }
 };
 
-const editItem = (item: Item) => {
-    // item_id_current.value = item.item_id;
-    // edit_item_dialog.value = true;
+const editItem = (item_id: string) => {
+    emit('openEdit', item_id);
 };
 </script>
 
@@ -94,9 +95,16 @@ const editItem = (item: Item) => {
                 <div :class="{
                     'opacity-50': props.status === 0
                 }">
-                    <v-img v-if="item.item_image" :src="item.item_image" :alt="item.item_name" height="200" cover
-                        class="bg-grey-lighten-2" />
-                    <v-img v-else src="/default-cart.png" height="200" cover class="bg-grey-lighten-2">
+                    <v-carousel v-if="item.item_image" height="300" :show-arrows="item.item_image.split(',').length > 1"
+                        hide-delimiter-background cycle>
+                        <v-carousel-item v-for="(img, index) in item.item_image.split(',')" :key="index">
+                            <v-img :src="`${useRuntimeConfig().public.apiBaseUrl}${img.trim()}`"
+                                :alt="`Image ${index + 1}`" cover class="bg-grey-lighten-2"
+                                style="object-fit: cover; height: 300px;" />
+                        </v-carousel-item>
+                    </v-carousel>
+                    <v-img v-else src="/default-cart.png" height="200" cover class="bg-grey-lighten-2"
+                        style="object-fit: cover; height: 300px;">
                         <template v-slot:placeholder>
                             <div class="d-flex align-center justify-center fill-height">
                                 <v-icon icon="mdi-image" size="large" color="grey-lighten-1" />
@@ -126,7 +134,7 @@ const editItem = (item: Item) => {
                                 <div class="d-flex align-center mb-2">
                                     <v-icon icon="mdi-currency-thb" class="mr-1" color="success" />
                                     <span :class="{
-                                        'text-subtitle-1': true,
+                                        'text-h6': true,
                                         'font-weight-bold': true,
                                         'text-truncate': true,
                                         'text-decoration-line-through': props.status === 0
@@ -153,26 +161,22 @@ const editItem = (item: Item) => {
                                     </v-btn>
                                 </template>
                                 <v-list>
-                                    <v-list-item @click="viewItemDetails(item)">
+                                    <v-list-item @click="viewItemDetails(item.item_id)">
                                         <div class="d-flex">
                                             <v-icon left>mdi-eye</v-icon>
-                                            <v-list-item-title>{{ t('button.edit')
-                                            }}</v-list-item-title>
+                                            <v-list-item-title>{{ t('button.edit') }}</v-list-item-title>
                                         </div>
                                     </v-list-item>
-                                    <v-list-item @click="editItem(item)">
+                                    <v-list-item @click="editItem(item.item_id)">
                                         <div class="d-flex">
                                             <v-icon>mdi-pencil</v-icon>
-                                            <v-list-item-title>{{ t('button.edit')
-                                            }}</v-list-item-title>
+                                            <v-list-item-title>{{ t('button.edit') }}</v-list-item-title>
                                         </div>
                                     </v-list-item>
                                     <v-list-item @click="deleteItem(item.item_id)">
                                         <div class="d-flex">
                                             <v-icon>mdi-delete</v-icon>
-                                            <v-list-item-title>
-                                                {{ t('button.delete') }}
-                                            </v-list-item-title>
+                                            <v-list-item-title>{{ t('button.delete') }}</v-list-item-title>
                                         </div>
                                     </v-list-item>
                                 </v-list>
