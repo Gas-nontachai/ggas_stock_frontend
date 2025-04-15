@@ -21,9 +21,11 @@
         "edit": "แก้ไข",
         "delete": "ลบ",
         "submit": "ส่ง",
+        "select": "เลือก",
         "back": "ย้อนกลับ",
         "filter": "ตัวกรอง",
-        "clear_filter": "ล้างตัวกรอง"
+        "clear_filter": "ล้างตัวกรอง",
+        "select_date": "เลือกวันที่"
     },
     "filter": {
         "date": "เรียงตามวันที่",
@@ -90,5 +92,19 @@
         "item_category": "หมวดหมู่สินค้า",
         "item_image": "รูปภาพสินค้า",
         "item_image_delete": "กำลังลบรูปภาพสินค้า.."
+    },
+    "expense": {
+        "title": "การจัดการรายจ่าย",
+        "add_title": "เพิ่มรายจ่ายใหม่",
+        "edit_title": "แก้ไขรายจ่าย",
+        "description": "จัดการรายจ่ายของคุณที่นี่",
+        "add_btn": "เพิ่มรายจ่าย",
+        "search": "ค้นหารายจ่าย",
+        "expense_id": "รหัสรายจ่าย",
+        "expense_name": "ชื่อรายจ่าย",
+        "expense_amount": "จำนวนเงินรายจ่าย",
+        "expense_category": "หมวดหมู่รายจ่าย",
+        "createdAt": "วันที่รายจ่าย",
+        "actions": "การกระทำ"
     }
 }

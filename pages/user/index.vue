@@ -4,7 +4,7 @@ import { onMounted, ref, computed } from 'vue';
 import { formatDate } from '@/utils/date-func';
 import type { User } from "@/misc/type";
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router'; 
+import { useRouter } from 'vue-router';
 
 const { getUserBy, deleteUserBy } = useUser();
 const { t } = useI18n();
@@ -15,7 +15,7 @@ const loading = ref(true);
 const add_paltform_dialog = ref(false);
 const edit_paltform_dialog = ref(false);
 const user_id_current = ref('');
-const searchQuery = ref('');
+const search_query = ref('');
 
 onMounted(async () => {
     await fetchData();
@@ -41,11 +41,11 @@ const headers = computed(() => [
 ]);
 
 const filteredUsers = computed(() => {
-    if (!searchQuery.value) return users.value;
+    if (!search_query.value) return users.value;
     return users.value.filter(user =>
-        user.user_id.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        user.username.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchQuery.value.toLowerCase())
+        user.user_id.toLowerCase().includes(search_query.value.toLowerCase()) ||
+        user.username.toLowerCase().includes(search_query.value.toLowerCase()) ||
+        user.email.toLowerCase().includes(search_query.value.toLowerCase())
     );
 });
 
@@ -120,7 +120,7 @@ const editUser = (user_id: string) => {
 </script>
 
 <template>
-    <v-container> 
+    <v-container>
         <div class="d-flex justify-space-between align-center mb-4">
             <div>
                 <h1 class="text-h5 font-weight-bold">{{ t('user.title') }}</h1>
@@ -129,8 +129,13 @@ const editUser = (user_id: string) => {
             <v-btn @click="addUser" color="primary">{{ t('user.add_btn') }}</v-btn>
         </div>
 
-        <v-text-field v-model="searchQuery" max-width="40%" label="Search" clearable prepend-inner-icon="mdi-magnify"
-            class="mb-4 w-4/16" />
+        <v-row>
+            <v-col cols="6" class="mb-4">
+                <v-text-field v-model="search_query" :label="t('expense.search')" prepend-inner-icon="mdi-magnify"
+                    clearable single-line hide-details density="compact" variant="outlined"
+                    @click:prepend-inner="fetchData" @keyup.enter="fetchData" class="rounded-lg"></v-text-field>
+            </v-col>
+        </v-row>
 
         <template v-if="loading" class="d-flex justify-center align-center">
             <v-progress-circular indeterminate color="primary" size="24" class="d-flex justify-center align-center" />

@@ -21,9 +21,11 @@
         "edit": "Edit",
         "delete": "Delete",
         "submit": "Submit",
+        "select": "Select",
         "back": "Back",
         "filter": "Filters",
-        "clear_filter": "Clear Filters"
+        "clear_filter": "Clear Filters",
+        "select_date": "Select Date"
     },
     "filter": {
         "date": "Sort by Date",
@@ -90,5 +92,19 @@
         "item_category": "Item Category",
         "item_image": "Item Image",
         "item_image_delete": "Item Image Deleting.."
+    },
+    "expense": {
+        "title": "Expense Management",
+        "add_title": "Add New Expense",
+        "edit_title": "Edit Expense",
+        "description": "Manage your Expense here.",
+        "add_btn": "Add Expense",
+        "search": "Search Expense",
+        "expense_id": "Expense ID",
+        "expense_name": "Expense Name",
+        "expense_amount": "Expense Amount",
+        "expense_category": "Expense Category",
+        "createdAt": "Expense Date",
+        "actions": "Actions"
     }
 }

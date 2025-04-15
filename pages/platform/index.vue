@@ -3,7 +3,7 @@ import Swal from 'sweetalert2';
 import { onMounted, ref, computed } from 'vue';
 import { formatDate } from '@/utils/date-func';
 import type { Platform } from "@/misc/type";
-import { useI18n } from 'vue-i18n'; 
+import { useI18n } from 'vue-i18n';
 
 const { getPlatformBy, deletePlatformBy } = usePlatform();
 const { t } = useI18n();
@@ -13,7 +13,7 @@ const loading = ref(true);
 const add_paltform_dialog = ref(false);
 const edit_paltform_dialog = ref(false);
 const platform_id_current = ref('');
-const searchQuery = ref('');
+const search_query = ref('');
 
 onMounted(async () => {
     await fetchData();
@@ -38,10 +38,10 @@ const headers = computed(() => [
 ]);
 
 const filteredPlatforms = computed(() => {
-    if (!searchQuery.value) return platforms.value;
+    if (!search_query.value) return platforms.value;
     return platforms.value.filter(platform =>
-        platform.platform_id.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        platform.platform_name.toLowerCase().includes(searchQuery.value.toLowerCase())
+        platform.platform_id.toLowerCase().includes(search_query.value.toLowerCase()) ||
+        platform.platform_name.toLowerCase().includes(search_query.value.toLowerCase())
     );
 });
 
@@ -121,8 +121,13 @@ const editPlatform = (platform_id: string) => {
             <v-btn @click="addPlatform" color="primary">{{ t('platform.add_btn') }}</v-btn>
         </div>
 
-        <v-text-field v-model="searchQuery" max-width="40%" label="Search" clearable prepend-inner-icon="mdi-magnify"
-            class="mb-4 w-4/16" />
+        <v-row>
+            <v-col cols="6" class="mb-4">
+                <v-text-field v-model="search_query" :label="t('expense.search')" prepend-inner-icon="mdi-magnify"
+                    clearable single-line hide-details density="compact" variant="outlined"
+                    @click:prepend-inner="fetchData" @keyup.enter="fetchData" class="rounded-lg"></v-text-field>
+            </v-col>
+        </v-row>
 
         <template v-if="loading" class="d-flex justify-center align-center">
             <v-progress-circular indeterminate color="primary" size="24" class="d-flex justify-center align-center" />
