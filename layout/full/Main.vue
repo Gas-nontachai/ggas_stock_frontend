@@ -5,9 +5,16 @@ import { RouterLink, useRoute } from "vue-router";
 import LanguageSwitcher from "./vertical-header/LanguageSwitcher.vue";
 import ThemeSwitcher from "./vertical-header/ThemeSwitcher.vue";
 import ProfileDD from "./vertical-header/ProfileDD.vue";
+import { useTheme } from 'vuetify'
+
+const theme = useTheme()
+const isDarkTheme = computed(() => theme.global.current.value.dark)
+const drawerColor = computed(() => isDarkTheme.value ? 'grey-darken-4' : 'grey-lighten-4')
+const appBarColor = computed(() => isDarkTheme.value ? 'grey-darken-3' : 'grey-lighten-3')
+const iconTextColor = computed(() => isDarkTheme.value ? 'white' : 'black')
 
 const { t } = useI18n();
-const drawer = ref(false);
+const drawer = ref(true);
 const route = useRoute();
 
 const navbar_items = computed(() => [
@@ -27,7 +34,7 @@ const fullText = "GGAS Stock ";
 
 
 <template>
-    <v-app-bar app fixed elevation="4" density="comfortable" class="custom-app-bar">
+    <v-app-bar app fixed elevation="4" density="comfortable" :color="appBarColor">
         <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
         <v-row align="center" style="width: 100%;" justify="space-between" class="px-8">
             <v-responsive class="d-flex align-center">
@@ -43,15 +50,15 @@ const fullText = "GGAS Stock ";
         </v-row>
     </v-app-bar>
 
-    <v-navigation-drawer v-model="drawer" app temporary>
+    <v-navigation-drawer v-model="drawer" app :color="drawerColor" :dark="isDarkTheme">
         <v-list>
             <RouterLink v-for="(item, index) in navbar_items" :key="index" :to="item.href"
                 class="router-link text-decoration-none cursor-pointer">
-                <v-list-item :class="{ 'bg-blue-lighten-2 text-white': isActive(item.href) }" @click="drawer = false">
+                <v-list-item :class="{ 'bg-blue-lighten-2 text-white': isActive(item.href) }">
                     <template #prepend>
-                        <v-icon class="text-black">{{ item.icon }}</v-icon>
+                        <v-icon :style="{ color: iconTextColor }">{{ item.icon }}</v-icon>
                     </template>
-                    <v-list-item-title class="text-black">{{ item.text }}</v-list-item-title>
+                    <v-list-item-title :style="{ color: iconTextColor }">{{ item.text }}</v-list-item-title>
                 </v-list-item>
             </RouterLink>
         </v-list>

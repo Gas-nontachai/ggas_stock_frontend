@@ -4,10 +4,14 @@ import { onMounted, ref, computed } from 'vue';
 import { formatDate } from '@/utils/date-func';
 import type { Expense, Category } from "@/misc/type";
 import { useI18n } from 'vue-i18n';
+import { useTheme } from 'vuetify'
 
 const { getExpenseBy, deleteExpenseBy } = useExpense();
 const { getCategoryBy } = useCategory();
 const { t, locale } = useI18n();
+
+const theme = useTheme()
+const isDarkTheme = computed(() => theme.global.current.value.dark)
 
 const expenses = ref<Expense[]>([]);
 const categories = ref<Category[]>([]);
@@ -194,9 +198,10 @@ const getCategoryName = (category_id: string) => {
                     </v-card>
                 </v-menu>
             </v-col>
+
             <v-col cols="3" class="mb-4">
-                <DatePicker range :locale="locale" :cancelText="t('button.cancel')" :selectText="t('button.select')"
-                    preview-format="dd MMMM yyyy" :markers="[
+                <DatePicker range :locale="locale" :dark="isDarkTheme" :teleport="true" :cancelText="t('button.cancel')"
+                    :selectText="t('button.select')" preview-format="dd MMMM yyyy" :markers="[
                         { date: new Date(), type: 'dot', tooltip: [{ text: 'วันนี้', color: 'red' }] }
                     ]" v-model="date_selected" :enable-time-picker="false" :placeholder="t('button.select_date')"
                     class="mb-4 w-full " />

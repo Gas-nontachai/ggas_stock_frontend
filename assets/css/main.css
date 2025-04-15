@@ -1,15 +1,8 @@
+/* กำหนด font family */
 @import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 body {
     font-family: "Kanit", sans-serif;
-}
-
-.swal2-confirm-white {
-    color: white !important;
-}
-
-.swal2-cancel-white {
-    color: white !important;
 }
 
 .swal2-container {
@@ -18,4 +11,50 @@ body {
 
 .swal2-popup {
     z-index: 10000 !important;
+    font-family: "Kanit", sans-serif !important;
+    border-radius: 8px;
+}
+
+.swal2-confirm-white {
+    color: white !important;
+    background-color: #007bff !important;
+    border-color: #007bff !important;
+    font-weight: bold;
+}
+
+.swal2-cancel-white {
+    color: white !important;
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+    font-weight: bold;
+}
+
+.swal2-popup.swal2-dark {
+    background-color: #2e2e2e !important;
+    color: #fff !important;
+}
+
+.swal2-popup.swal2-light {
+    background-color: #fff !important;
+    color: #000 !important;
+}
+
+.swal2-popup.swal2-dark .swal2-confirm {
+    background-color: #007bff !important;
+    color: white !important;
+}
+
+.swal2-popup.swal2-dark .swal2-cancel {
+    background-color: #6c757d !important;
+    color: white !important;
+}
+
+.swal2-popup.swal2-light .swal2-confirm {
+    background-color: #007bff !important;
+    color: white !important;
+}
+
+.swal2-popup.swal2-light .swal2-cancel {
+    background-color: #6c757d !important;
+    color: white !important;
 }
