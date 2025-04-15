@@ -2,6 +2,7 @@
 import Swal from 'sweetalert2';
 import { onMounted, ref, computed } from 'vue';
 import { formatDate } from '@/utils/date-func';
+import { decimalFix } from '@/utils/number-func';
 import type { Expense, Category } from "@/misc/type";
 import { useI18n } from 'vue-i18n';
 import { useTheme } from 'vuetify'
@@ -21,7 +22,7 @@ const add_expenses_dialog = ref(false);
 const edit_expenses_dialog = ref(false);
 const expense_id_current = ref('');
 const search_query = ref('');
-const date_selected = ref<Date | null>(null);
+const date_selected = ref<[Date, Date] | null>(null);
 const selected_category = ref<string[]>([]);
 const category_expenses = ref<{ title: string, value: string }[]>()
 
@@ -76,7 +77,7 @@ watch([selected_category, date_selected], async () => {
 const headers = computed(() => [
     { title: t('expense.expense_id'), align: 'start' as const, key: 'expense_id' },
     { title: t('expense.expense_name'), align: 'start' as const, key: 'expense_name' },
-    { title: t('expense.expense_name'), align: 'start' as const, key: 'expense_amount' },
+    { title: t('expense.expense_amount'), align: 'start' as const, key: 'expense_amount' },
     { title: t('expense.expense_category'), align: 'start' as const, key: 'expense_category_id' },
     { title: t('expense.createdAt'), align: 'start' as const, key: 'createdAt' },
     { title: t('expense.actions'), align: 'center' as const, key: 'actions' }
@@ -150,7 +151,11 @@ const editExpense = (expense_id: string) => {
 const getCategoryName = (category_id: string) => {
     const category = categories.value.find(cat => cat.category_id === category_id);
     return category ? category.category_name : 'category';
-}; 
+};
+
+const totalAmount = computed(() => {
+    return decimalFix(expenses.value.reduce((sum, item) => sum + Number(item.expense_amount || 0), 0))
+})
 </script>
 
 <template>
@@ -164,12 +169,12 @@ const getCategoryName = (category_id: string) => {
         </div>
 
         <v-row>
-            <v-col cols="6" class="mb-4">
+            <v-col cols="6">
                 <v-text-field v-model="search_query" :label="t('expense.search')" prepend-inner-icon="mdi-magnify"
                     clearable single-line hide-details density="compact" variant="outlined"
                     @click:prepend-inner="fetchData" @keyup.enter="fetchData" class="rounded-lg"></v-text-field>
             </v-col>
-            <v-col cols="3" class="mb-4">
+            <v-col cols="3">
                 <v-menu v-model="menu_filter" :close-on-content-click="false" max-width="300px">
                     <template #activator="{ props }">
                         <v-btn v-bind="props" :color="selected_category.length ? 'primary' : ''" variant="outlined"
@@ -199,12 +204,12 @@ const getCategoryName = (category_id: string) => {
                 </v-menu>
             </v-col>
 
-            <v-col cols="3" class="mb-4">
+            <v-col cols="3">
                 <DatePicker range :locale="locale" :dark="isDarkTheme" :teleport="true" :cancelText="t('button.cancel')"
                     :selectText="t('button.select')" preview-format="dd MMMM yyyy" :markers="[
                         { date: new Date(), type: 'dot', tooltip: [{ text: 'วันนี้', color: 'red' }] }
                     ]" v-model="date_selected" :enable-time-picker="false" :placeholder="t('button.select_date')"
-                    class="mb-4 w-full " />
+                    class=" w-full " />
             </v-col>
         </v-row>
 
@@ -213,42 +218,82 @@ const getCategoryName = (category_id: string) => {
             <span> Loading..</span>
         </template>
 
-        <v-data-table v-else :items="expenses" :headers="headers" item-key="expense_id" class="elevation-1">
+        <template v-else>
+            <v-card class="pa-4 elevation-3 rounded-lg my-3 gradient-border">
+                <v-row align="center" justify="space-evenly" no-gutters>
+                    <v-col cols="12" md="4" class="mb-3 mb-md-0 px-2">
+                        <div class="d-flex flex-column align-center text-center">
+                            <div class="text-caption text-grey-darken-1 mb-1">{{ $t('expense.total_amount') }}</div>
+                            <div class="text-h4 font-weight-bold text-error d-flex align-center">
+                                <v-icon color="error" size="large" class="mr-1">mdi-currency-thb</v-icon>
+                                {{ totalAmount }}
+                            </div>
+                        </div>
+                    </v-col>
 
-            <template v-slot:item.expense_category_id="{ item }">
-                <span>{{ getCategoryName(item.expense_category_id) }}</span>
-            </template>
+                    <v-col cols="12" md="4" class="mb-3 mb-md-0 px-2">
+                        <div class="d-flex flex-column align-center text-center">
+                            <div class="text-caption text-grey-darken-1 mb-1">{{ $t('expense.transaction_count') }}
+                            </div>
+                            <div class="text-h5 font-weight-bold text-primary d-flex align-center">
+                                <v-icon color="primary" class="mr-1">mdi-format-list-bulleted</v-icon>
+                                {{ expenses.length }} {{ $t('expense.items') }}
+                            </div>
+                        </div>
+                    </v-col>
 
-            <template v-slot:item.createdAt="{ item }">
-                <span>{{ formatDate(item.createdAt, "dd/MM/yyyy HH:mm") }}</span>
-            </template>
-
-            <template v-slot:item.actions="{ item }">
-                <v-menu bottom right>
-                    <template v-slot:activator="{ props }">
-                        <v-btn icon variant="text" size="small" v-bind="props">
-                            <v-chip color="red">
-                                <v-icon>mdi-dots-vertical</v-icon>
+                    <v-col cols="12" md="4" class="text-center text-md-end px-2">
+                        <template v-if="date_selected">
+                            <div class="text-caption text-grey-darken-1 mb-1">{{ $t('expense.date_range') }}</div>
+                            <v-chip color="deep-purple-lighten-4" class="pa-3 text-body-2 font-weight-medium"
+                                variant="elevated" prepend-icon="mdi-calendar-range">
+                                <span class="text-deep-purple-darken-3">
+                                    {{ formatDate(date_selected[0]) }}
+                                    <span v-if="date_selected[1]"> - {{ formatDate(date_selected[1])
+                                    }}</span>
+                                </span>
                             </v-chip>
-                        </v-btn>
-                    </template>
-                    <v-list>
-                        <v-list-item @click="editExpense(item.expense_id)">
-                            <div class="d-flex">
-                                <v-icon>mdi-pencil</v-icon>
-                                <v-list-item-title>{{ t('button.edit') }}</v-list-item-title>
-                            </div>
-                        </v-list-item>
-                        <v-list-item @click="deleteExpense(item.expense_id)">
-                            <div class="d-flex">
-                                <v-icon>mdi-delete</v-icon>
-                                <v-list-item-title>{{ t('button.delete') }}</v-list-item-title>
-                            </div>
-                        </v-list-item>
-                    </v-list>
-                </v-menu>
-            </template>
-        </v-data-table>
+                        </template>
+                    </v-col>
+                </v-row>
+            </v-card>
+
+            <v-data-table :items="expenses" :headers="headers" item-key="expense_id" class="elevation-1">
+                <template v-slot:item.expense_category_id="{ item }">
+                    <span>{{ getCategoryName(item.expense_category_id) }}</span>
+                </template>
+
+                <template v-slot:item.createdAt="{ item }">
+                    <span>{{ formatDate(item.createdAt, "dd/MM/yyyy HH:mm") }}</span>
+                </template>
+
+                <template v-slot:item.actions="{ item }">
+                    <v-menu bottom right>
+                        <template v-slot:activator="{ props }">
+                            <v-btn icon variant="text" size="small" v-bind="props">
+                                <v-chip color="red">
+                                    <v-icon>mdi-dots-vertical</v-icon>
+                                </v-chip>
+                            </v-btn>
+                        </template>
+                        <v-list>
+                            <v-list-item @click="editExpense(item.expense_id)">
+                                <div class="d-flex">
+                                    <v-icon>mdi-pencil</v-icon>
+                                    <v-list-item-title>{{ t('button.edit') }}</v-list-item-title>
+                                </div>
+                            </v-list-item>
+                            <v-list-item @click="deleteExpense(item.expense_id)">
+                                <div class="d-flex">
+                                    <v-icon>mdi-delete</v-icon>
+                                    <v-list-item-title>{{ t('button.delete') }}</v-list-item-title>
+                                </div>
+                            </v-list-item>
+                        </v-list>
+                    </v-menu>
+                </template>
+            </v-data-table>
+        </template>
 
         <v-dialog v-model="add_expenses_dialog" max-width="600px">
             <ExpenseAdd :category_expenses="category_expenses" @done="Done"
@@ -262,3 +307,22 @@ const getCategoryName = (category_id: string) => {
 
     </v-container>
 </template>
+
+<style>
+.gradient-border {
+    position: relative;
+    background: linear-gradient(to right, #ffffff, #f5f5f5);
+    border: none;
+    overflow: hidden;
+}
+
+.gradient-border::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(to right, #673ab7, #e91e63);
+}
+</style>

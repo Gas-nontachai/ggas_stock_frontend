@@ -53,6 +53,8 @@
     },
     "platform": {
         "title": "Platform Management",
+        "add_title": "Add New Platform",
+        "edit_title": "Edit Platform",
         "description": "Manage your platforms here.",
         "add_btn": "Add Platform",
         "platform_id": "Platform ID",
@@ -61,6 +63,8 @@
     },
     "category": {
         "title": "Category Management",
+        "add_title": "Add New Category",
+        "edit_title": "Edit Category",
         "description": "Manage your categorys here.",
         "add_btn": "Add Category",
         "category_id": "Category ID",
@@ -69,6 +73,8 @@
     },
     "user": {
         "title": "User Management",
+        "add_title": "Add New User",
+        "edit_title": "Edit User",
         "description": "Manage your Users here.",
         "add_btn": "Add new User",
         "user_id": "User ID",
@@ -105,6 +111,10 @@
         "expense_amount": "Expense Amount",
         "expense_category": "Expense Category",
         "createdAt": "Expense Date",
-        "actions": "Actions"
+        "actions": "Actions",
+        "total_amount": "Total Amount",
+        "transaction_count": "Transaction Count",
+        "date_range": "Date Range",
+        "items": "items"
     }
 }
