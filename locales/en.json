@@ -5,7 +5,8 @@
         "confirm": "Are you sure?",
         "text_delete": "You won't be able to revert this!",
         "text_mark_sold": "Are you sure you want to mark this item as sold?",
-        "text_unprofit": "Selling price is lower than cost, are you sure?"
+        "text_unprofit": "Selling price is lower than cost, are you sure?",
+        "text_mark_re_sell": "Are you sure you want to mark this item as ready to sell?"
     },
     "message": {
         "logout_success_title": "Logout Successful",

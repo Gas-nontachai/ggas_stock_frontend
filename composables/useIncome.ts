@@ -20,10 +20,13 @@ const insertIncomeBy = (data: Income): Promise<Income> => secureFetch(
     body: data,
 })
 
-const updateIncomeBy = (data: Income): Promise<Income> => secureFetch(
+const updateIncomeBy = (data: Income, update: '' | 'mark_re_sell' = ''): Promise<Income> => secureFetch(
     `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/updateIncomeBy`, {
     method: "POST",
-    body: data,
+    body: {
+        ...data,
+        update: update || undefined,
+    }
 })
 
 const deleteIncomeBy = (data: { income_id: string }): Promise<Income> => secureFetch(

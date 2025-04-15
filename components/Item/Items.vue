@@ -7,6 +7,7 @@ import { decimalFix } from '@/utils/number-func';
 import { useI18n } from 'vue-i18n';
 
 const { deleteItemBy } = useItem();
+const { getIncomeBy, updateIncomeBy } = useIncome();
 const router = useRouter();
 const { t } = useI18n();
 
@@ -96,6 +97,46 @@ const markSold = async (item_id: string) => {
         try {
             item_current.value = props.items.find(i => i.item_id === item_id);
             income_item_dialog.value = true
+        } catch (error) {
+            console.error('Error deleting item:', error);
+        }
+    }
+};
+
+const markReSell = async (item_id: string) => {
+    const result = await Swal.fire({
+        title: t('alert.confirm'),
+        text: t("alert.text_mark_re_sell"),
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: t('button.confirm'),
+        customClass: {
+            confirmButton: 'swal2-confirm-white',
+            cancelButton: 'swal2-cancel-white',
+        },
+    });
+
+    if (result.isConfirmed) {
+        try {
+            const res = await getIncomeBy({
+                where: {
+                    item_id: {
+                        item_id
+                    }
+                }
+            })
+            console.log(res[0]);
+            await updateIncomeBy(res[0], 'mark_re_sell')
+            await emit('fetchData', true)
+            await Swal.fire({
+                title: t('message.delete_success_title'),
+                text: t('message.delete_success_text'),
+                icon: 'success',
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+            });
         } catch (error) {
             console.error('Error deleting item:', error);
         }
@@ -224,7 +265,7 @@ const done = async () => {
                     <template v-else>
                         <v-card-actions class="d-flex justify-end pa-4">
                             <v-btn variant="outlined" color="success" class="text-capitalize"
-                                prepend-icon="mdi-check-circle-outline" @click="markSold(item.item_id)">
+                                prepend-icon="mdi-check-circle-outline" @click="markReSell(item.item_id)">
                                 {{ t('item.mark_unsold') }}
                             </v-btn>
                         </v-card-actions>
