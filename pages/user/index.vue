@@ -185,11 +185,11 @@ const editUser = (user_id: string) => {
         </v-data-table>
 
         <v-dialog v-model="add_paltform_dialog" max-width="600px">
-            <UserAdd @addDone="Done" />
+            <UserAdd @done="Done" @close="() => { add_paltform_dialog = false }" />
         </v-dialog>
 
         <v-dialog v-model="edit_paltform_dialog" max-width="600px">
-            <UserEdit :user_id="user_id_current" @addDone="Done" />
+            <UserEdit :user_id="user_id_current" @done="Done" @close="() => { edit_paltform_dialog = false }" />
         </v-dialog>
 
     </v-container>

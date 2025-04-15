@@ -171,11 +171,11 @@ const editPlatform = (platform_id: string) => {
         </v-data-table>
 
         <v-dialog v-model="add_paltform_dialog" max-width="600px">
-            <PlatformAdd @addDone="Done" />
+            <PlatformAdd @done="Done"    @close="() => { add_paltform_dialog = false }"/>
         </v-dialog>
 
         <v-dialog v-model="edit_paltform_dialog" max-width="600px">
-            <PlatformEdit :platform_id="platform_id_current" @addDone="Done" />
+            <PlatformEdit :platform_id="platform_id_current" @done="Done"   @close="() => { edit_paltform_dialog = false }"/>
         </v-dialog>
 
     </v-container>

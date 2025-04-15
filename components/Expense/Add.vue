@@ -69,7 +69,7 @@ const submitForm = async () => {
                 <v-col cols="auto">
                     <div class="d-flex align-center">
                         <v-icon color="primary" class="mr-3" size="large">
-                            mdi-cash-multiple
+                            mdi-cash-minus
                         </v-icon>
                         <span class="text-h5 font-weight-medium gradient-text">{{ t('expense.add_title') }}</span>
                     </div>

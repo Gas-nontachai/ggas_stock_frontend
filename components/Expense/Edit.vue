@@ -25,9 +25,6 @@ const expense = ref<Expense>({
     expense_amount: 0,
     expense_category_id: '',
 });
-const buffer_image = ref<Array<{ files?: File[], src: string }>>([]);
-const image_arr = ref<string[]>([]);
-const image_delete_arr = ref<string[]>([]);
 
 onMounted(async () => {
     await fetchData();
@@ -89,7 +86,7 @@ const submitForm = async () => {
                 <v-col cols="auto">
                     <div class="d-flex align-center">
                         <v-icon color="primary" class="mr-3" size="large">
-                            mdi-cash-multiple
+                            mdi-cash-minus
                         </v-icon>
                         <span class="text-h5 font-weight-medium gradient-text">{{ t('expense.edit_title') }}</span>
                     </div>

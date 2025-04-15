@@ -171,11 +171,12 @@ const editCategory = (category_id: string) => {
         </v-data-table>
 
         <v-dialog v-model="add_paltform_dialog" max-width="600px">
-            <CategoryAdd @addDone="Done" />
+            <CategoryAdd @done="Done" @close="() => { add_paltform_dialog = false }" />
         </v-dialog>
 
         <v-dialog v-model="edit_paltform_dialog" max-width="600px">
-            <CategoryEdit :category_id="category_id_current" @addDone="Done" />
+            <CategoryEdit :category_id="category_id_current" @done="Done"
+                @close="() => { edit_paltform_dialog = false }" />
         </v-dialog>
 
     </v-container>
