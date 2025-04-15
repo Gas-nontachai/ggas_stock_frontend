@@ -250,7 +250,7 @@ const totalAmount = computed(() => {
                                 <span class="text-deep-purple-darken-3">
                                     {{ formatDate(date_selected[0]) }}
                                     <span v-if="date_selected[1]"> - {{ formatDate(date_selected[1])
-                                    }}</span>
+                                        }}</span>
                                 </span>
                             </v-chip>
                         </template>
@@ -259,6 +259,10 @@ const totalAmount = computed(() => {
             </v-card>
 
             <v-data-table :items="expenses" :headers="headers" item-key="expense_id" class="elevation-1">
+                <template v-slot:item.expense_amount="{ item }">
+                    <span>{{ decimalFix(item.expense_amount) }} ฿ </span>
+                </template>
+
                 <template v-slot:item.expense_category_id="{ item }">
                     <span>{{ getCategoryName(item.expense_category_id) }}</span>
                 </template>

@@ -2,8 +2,10 @@
     "alert": {
         "logout": "You have been logged out successfully.",
         "confirm_logout": "Are you sure you want to log out?",
-        "confirm_delete": "Are you sure?",
-        "text_delete": "You won't be able to revert this!"
+        "confirm": "Are you sure?",
+        "text_delete": "You won't be able to revert this!",
+        "text_mark_sold": "Are you sure you want to mark this item as sold?",
+        "text_unprofit": "Selling price is lower than cost, are you sure?"
     },
     "message": {
         "logout_success_title": "Logout Successful",
@@ -97,7 +99,9 @@
         "item_note": "Item Note",
         "item_category": "Item Category",
         "item_image": "Item Image",
-        "item_image_delete": "Item Image Deleting.."
+        "item_image_delete": "Item Image Deleting..",
+        "mark_sold": "Mark it Sold",
+        "mark_unsold": "Mark it Ready to Sell"
     },
     "expense": {
         "title": "Expense Management",
@@ -116,5 +120,11 @@
         "transaction_count": "Transaction Count",
         "date_range": "Date Range",
         "items": "items"
+    },
+    "income": {
+        "income_sell_price": "Sell price",
+        "platform_id": "Platform",
+        "income_note": "Note",
+        "add_title": "Add title"
     }
 }

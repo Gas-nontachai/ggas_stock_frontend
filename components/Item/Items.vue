@@ -26,6 +26,8 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['fetchData', 'openEdit']);
+const item_current = ref<Item>()
+const income_item_dialog = ref(false)
 
 const viewItemDetails = (item_id: string) => {
     router.push(`/items/${item_id}`);
@@ -38,7 +40,7 @@ const getCategoryName = (category_id: string) => {
 
 const deleteItem = async (item_id: string) => {
     const result = await Swal.fire({
-        title: t('alert.confirm_delete'),
+        title: t('alert.confirm'),
         text: t("alert.text_delete"),
         icon: 'warning',
         showCancelButton: true,
@@ -77,8 +79,36 @@ const deleteItem = async (item_id: string) => {
     }
 };
 
+const markSold = async (item_id: string) => {
+    const result = await Swal.fire({
+        title: t('alert.confirm'),
+        text: t("alert.text_mark_sold"),
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: t('button.confirm'),
+        customClass: {
+            confirmButton: 'swal2-confirm-white',
+            cancelButton: 'swal2-cancel-white',
+        },
+    });
+
+    if (result.isConfirmed) {
+        try {
+            item_current.value = props.items.find(i => i.item_id === item_id);
+            income_item_dialog.value = true
+        } catch (error) {
+            console.error('Error deleting item:', error);
+        }
+    }
+};
+
 const editItem = (item_id: string) => {
     emit('openEdit', item_id);
+};
+
+const done = async () => {
+    income_item_dialog.value = false
+    await emit('fetchData', true)
 };
 </script>
 
@@ -183,8 +213,28 @@ const editItem = (item_id: string) => {
                             </v-menu>
                         </div>
                     </v-card-text>
+                    <template v-if="props.status === 1">
+                        <v-card-actions class="d-flex justify-end pa-4">
+                            <v-btn variant="outlined" color="success" class="text-capitalize"
+                                prepend-icon="mdi-check-circle-outline" @click="markSold(item.item_id)">
+                                {{ t('item.mark_sold') }}
+                            </v-btn>
+                        </v-card-actions>
+                    </template>
+                    <template v-else>
+                        <v-card-actions class="d-flex justify-end pa-4">
+                            <v-btn variant="outlined" color="success" class="text-capitalize"
+                                prepend-icon="mdi-check-circle-outline" @click="markSold(item.item_id)">
+                                {{ t('item.mark_unsold') }}
+                            </v-btn>
+                        </v-card-actions>
+                    </template>
                 </div>
             </v-card>
         </v-col>
     </v-row>
+
+    <v-dialog v-model="income_item_dialog" v-if="item_current" max-width="600px">
+        <IncomeAdd :item="item_current" @done="done" @close="() => { income_item_dialog = false }" />
+    </v-dialog>
 </template>
