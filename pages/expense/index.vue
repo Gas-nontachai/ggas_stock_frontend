@@ -250,7 +250,7 @@ const totalAmount = computed(() => {
                                 <span class="text-deep-purple-darken-3">
                                     {{ formatDate(date_selected[0]) }}
                                     <span v-if="date_selected[1]"> - {{ formatDate(date_selected[1])
-                                        }}</span>
+                                    }}</span>
                                 </span>
                             </v-chip>
                         </template>

@@ -27,6 +27,8 @@
         "select": "เลือก",
         "back": "ย้อนกลับ",
         "filter": "ตัวกรอง",
+        "filter_category": "ตัวกรองประเภท",
+        "filter_platform": "ตัวกรองช่องทาง",
         "clear_filter": "ล้างตัวกรอง",
         "select_date": "เลือกวันที่"
     },
@@ -123,9 +125,20 @@
         "items": "รายการ"
     },
     "income": {
-        "income_sell_price": "ราคาขาย",
-        "platform_id": "แพลตฟอร์ม",
+        "actions": "การกระทำ",
+        "add_title": "เพิ่มรายรับ",
+        "createdAt": "วันที่รับเงิน",
+        "description": "รายการรายรับทั้งหมดจากสินค้าต่าง ๆ",
+        "income_id": "รหัสรายรับ",
         "income_note": "หมายเหตุ",
-        "add_title": "เพิ่มรายรับ"
+        "income_sell_price": "ราคาขาย",
+        "item_id": "รหัสสินค้า",
+        "platform_id": "แพลตฟอร์ม",
+        "search": "ค้นหารายรับ",
+        "title": "รายรับทั้งหมด",
+        "total_amount": "ราคาขายทั้งหมด",
+        "total_cost": "ต้นทุนทั้งหมด",
+        "total_profit": "กำไรทั้งหมด",
+        "transaction_count": "จำนวนรายการ"
     }
 }

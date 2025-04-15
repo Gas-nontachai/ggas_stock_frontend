@@ -27,6 +27,8 @@
         "select": "Select",
         "back": "Back",
         "filter": "Filters",
+        "filter_category": "Filters Category",
+        "filter_platform": "Filters Platform",
         "clear_filter": "Clear Filters",
         "select_date": "Select Date"
     },
@@ -123,9 +125,20 @@
         "items": "items"
     },
     "income": {
-        "income_sell_price": "Sell price",
-        "platform_id": "Platform",
+        "actions": "Actions",
+        "add_title": "Add Income",
+        "createdAt": "Created Date",
+        "description": "All income records from various items",
+        "income_id": "Income ID",
         "income_note": "Note",
-        "add_title": "Add title"
+        "income_sell_price": "Selling Price",
+        "item_id": "Item ID",
+        "platform_id": "Platform",
+        "search": "Search Income",
+        "title": "Total Income",
+        "total_amount": "Total Selling Price",
+        "total_cost": "Total Cost",
+        "total_profit": "Total Profit",
+        "transaction_count": "Transaction Count"
     }
 }
