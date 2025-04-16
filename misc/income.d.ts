@@ -1,3 +1,5 @@
+import type { Item } from "./item";
+
 export type Income = {
   income_id: string,
   income_sell_price: number,
@@ -8,4 +10,5 @@ export type Income = {
   updateby?: string,
   createdAt?: date | string,
   updatedAt?: date | string,
+  tb_item?: Item
 };

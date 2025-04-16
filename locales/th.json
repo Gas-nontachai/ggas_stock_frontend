@@ -139,6 +139,8 @@
         "total_amount": "ราคาขายทั้งหมด",
         "total_cost": "ต้นทุนทั้งหมด",
         "total_profit": "กำไรทั้งหมด",
-        "transaction_count": "จำนวนรายการ"
+        "transaction_count": "จำนวนรายการ",
+        "date_range": "ช่วงเวลา",
+        "items": "รายการ"
     }
 }

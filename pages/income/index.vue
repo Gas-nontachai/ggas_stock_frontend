@@ -3,11 +3,10 @@ import Swal from 'sweetalert2';
 import { onMounted, ref, computed } from 'vue';
 import { formatDate } from '@/utils/date-func';
 import { decimalFix } from '@/utils/number-func';
-import type { Income, Category, Item, Platform } from "@/misc/type";
+import type { Income, Category, Platform } from "@/misc/type";
 import { useI18n } from 'vue-i18n';
 import { useTheme } from 'vuetify'
 
-const { getItemBy } = useItem();
 const { getIncomeBy, deleteIncomeBy } = useIncome();
 const { getPlatformBy } = usePlatform();
 const { getCategoryBy } = useCategory();
@@ -16,7 +15,6 @@ const { t, locale } = useI18n();
 const theme = useTheme()
 const isDarkTheme = computed(() => theme.global.current.value.dark)
 
-const items = ref<Item[]>([]);
 const incomes = ref<Income[]>([]);
 const categories = ref<Category[]>([]);
 const platforms = ref<Platform[]>([]);
@@ -36,32 +34,26 @@ const platform_options = ref<{ title: string, value: string }[]>()
 const fetchData = async () => {
     loading.value = true;
     try {
-        const item = await getItemBy({
+        const response = await getIncomeBy({
             where: {
-                item_status: 0,
-                item_name: { $like: search_query.value },
-                item_category_id: { $in: selected_category.value },
-            }
-        })
-        items.value = item
-
-        const list_item = item.map(i => i.item_id)
-
-        if (list_item.length) {
-            const response = await getIncomeBy({
-                where: {
-                    item_id: { $in: list_item },
-                    platform_id: { $in: selected_platform.value },
-                    createdAt: {
-                        $gt: date_selected.value && Array.isArray(date_selected.value) ? date_selected.value[0] : null,
-                        $lt: date_selected.value && Array.isArray(date_selected.value) ? date_selected.value[1] : null,
-                    },
+                platform_id: { $in: selected_platform.value },
+                createdAt: {
+                    $gt: date_selected.value && Array.isArray(date_selected.value) ? date_selected.value[0] : null,
+                    $lt: date_selected.value && Array.isArray(date_selected.value) ? date_selected.value[1] : null,
                 },
-            });
-            incomes.value = response;
-        } else {
-            incomes.value = [];
-        }
+            },
+            include: [
+                {
+                    model: "Item",
+                    attributes: ['item_buy_price', 'item_category_id', 'item_name', 'item_id', 'note'],
+                    where: {
+                        item_name: { $like: search_query.value },
+                        item_category_id: { $in: selected_category.value }
+                    }
+                },
+            ]
+        });
+        incomes.value = response
     } catch (error) {
         console.error('Error fetching incomes:', error);
     } finally {
@@ -187,18 +179,13 @@ const editIncome = (income_id: string) => {
     edit_incomes_dialog.value = true;
 };
 
-const getItemName = (item_id: string) => {
-    const item = items.value.find(i => i.item_id === item_id);
-    return item ? item.item_name : 'item';
-};
-
 const getPlatformName = (platform_id: string) => {
     const platform = platforms.value.find(i => i.platform_id === platform_id);
     return platform ? platform.platform_name : 'item';
 };
 
 const totalCost = computed(() => {
-    return decimalFix(items.value.reduce((sum, item) => sum + Number(item.item_buy_price || 0), 0))
+    return decimalFix(incomes.value.reduce((sum, item) => sum + Number(item.tb_item?.item_buy_price || 0), 0))
 })
 
 const totalAmount = computed(() => {
@@ -365,7 +352,7 @@ const totalProfit = computed(() => {
             <v-data-table :items="incomes" :headers="headers" item-key="income_id" class="elevation-1">
 
                 <template v-slot:item.item_id="{ item }">
-                    <span>{{ getItemName(item.item_id) }} ฿ </span>
+                    <span>{{ item.tb_item?.item_name }} ฿ </span>
                 </template>
 
                 <template v-slot:item.platform_id="{ item }">

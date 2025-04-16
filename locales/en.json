@@ -139,6 +139,8 @@
         "total_amount": "Total Selling Price",
         "total_cost": "Total Cost",
         "total_profit": "Total Profit",
-        "transaction_count": "Transaction Count"
+        "transaction_count": "Transaction Count",
+        "date_range": "Date Range",
+        "items": "items"
     }
 }
