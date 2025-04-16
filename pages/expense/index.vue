@@ -20,6 +20,7 @@ const loading = ref(true);
 const menu_filter = ref(false);
 const add_expenses_dialog = ref(false);
 const edit_expenses_dialog = ref(false);
+const collapseOpen = ref(false);
 const expense_id_current = ref('');
 const search_query = ref('');
 const date_selected = ref<[Date, Date] | null>(null);
@@ -169,12 +170,19 @@ const totalAmount = computed(() => {
         </div>
 
         <v-row>
-            <v-col cols="6">
+            <v-col cols="2" md="1">
+                <v-btn @click="collapseOpen = !collapseOpen" variant="text">
+                    <v-icon>
+                        {{ collapseOpen ? 'mdi-arrow-collapse' : 'mdi-arrow-expand' }}
+                    </v-icon>
+                </v-btn>
+            </v-col>
+            <v-col cols="10" md="4">
                 <v-text-field v-model="search_query" :label="t('expense.search')" prepend-inner-icon="mdi-magnify"
                     clearable single-line hide-details density="compact" variant="outlined"
                     @click:prepend-inner="fetchData" @keyup.enter="fetchData" class="rounded-lg"></v-text-field>
             </v-col>
-            <v-col cols="3">
+            <v-col cols="6" md="3">
                 <v-menu v-model="menu_filter" :close-on-content-click="false" max-width="300px">
                     <template #activator="{ props }">
                         <v-btn v-bind="props" :color="selected_category.length ? 'primary' : ''" variant="outlined"
@@ -204,7 +212,7 @@ const totalAmount = computed(() => {
                 </v-menu>
             </v-col>
 
-            <v-col cols="3">
+            <v-col cols="6" md="3">
                 <DatePicker range :locale="locale" :dark="isDarkTheme" :teleport="true" :cancelText="t('button.cancel')"
                     :selectText="t('button.select')" preview-format="dd MMMM yyyy" :markers="[
                         { date: new Date(), type: 'dot', tooltip: [{ text: 'วันนี้', color: 'red' }] }
@@ -220,42 +228,44 @@ const totalAmount = computed(() => {
 
         <template v-else>
             <v-card class="pa-4 elevation-3 rounded-lg my-3 gradient-border">
-                <v-row align="center" justify="space-evenly" no-gutters>
-                    <v-col cols="12" md="4" class="mb-3 mb-md-0 px-2">
-                        <div class="d-flex flex-column align-center text-center">
-                            <div class="text-caption text-grey-darken-1 mb-1">{{ $t('expense.total_amount') }}</div>
-                            <div class="text-h4 font-weight-bold text-error d-flex align-center">
-                                <v-icon color="error" size="large" class="mr-1">mdi-currency-thb</v-icon>
-                                {{ totalAmount }}
+                <v-expand-transition>
+                    <v-row align="center" justify="space-evenly" no-gutters v-show="collapseOpen">
+                        <v-col cols="12" md="4" class="mb-3 mb-md-0 px-2">
+                            <div class="d-flex flex-column align-center text-center">
+                                <div class=" text-grey-darken-1 mb-1">{{ $t('expense.total_amount') }}</div>
+                                <div class="text-h4 font-weight-bold text-error d-flex align-center">
+                                    <v-icon color="error" size="large" class="mr-1">mdi-currency-thb</v-icon>
+                                    {{ totalAmount }}
+                                </div>
                             </div>
-                        </div>
-                    </v-col>
+                        </v-col>
 
-                    <v-col cols="12" md="4" class="mb-3 mb-md-0 px-2">
-                        <div class="d-flex flex-column align-center text-center">
-                            <div class="text-caption text-grey-darken-1 mb-1">{{ $t('expense.transaction_count') }}
+                        <v-col cols="12" md="4" class="mb-3 mb-md-0 px-2">
+                            <div class="d-flex flex-column align-center text-center">
+                                <div class=" text-grey-darken-1 mb-1">{{ $t('expense.transaction_count') }}
+                                </div>
+                                <div class="text-h5 font-weight-bold text-primary d-flex align-center">
+                                    <v-icon color="primary" class="mr-1">mdi-format-list-bulleted</v-icon>
+                                    {{ expenses.length }} {{ $t('expense.items') }}
+                                </div>
                             </div>
-                            <div class="text-h5 font-weight-bold text-primary d-flex align-center">
-                                <v-icon color="primary" class="mr-1">mdi-format-list-bulleted</v-icon>
-                                {{ expenses.length }} {{ $t('expense.items') }}
-                            </div>
-                        </div>
-                    </v-col>
+                        </v-col>
 
-                    <v-col cols="12" md="4" class="text-center text-md-end px-2">
-                        <template v-if="date_selected">
-                            <div class="text-caption text-grey-darken-1 mb-1">{{ $t('expense.date_range') }}</div>
-                            <v-chip color="deep-purple-lighten-4" class="pa-3 text-body-2 font-weight-medium"
-                                variant="elevated" prepend-icon="mdi-calendar-range">
-                                <span class="text-deep-purple-darken-3">
-                                    {{ formatDate(date_selected[0]) }}
-                                    <span v-if="date_selected[1]"> - {{ formatDate(date_selected[1])
-                                    }}</span>
-                                </span>
-                            </v-chip>
-                        </template>
-                    </v-col>
-                </v-row>
+                        <v-col cols="12" md="4" class="text-center text-md-end px-2">
+                            <template v-if="date_selected">
+                                <div class=" text-grey-darken-1 mb-1">{{ $t('expense.date_range') }}</div>
+                                <v-chip color="deep-purple-lighten-4" class="pa-3 text-body-2 font-weight-medium"
+                                    variant="elevated" prepend-icon="mdi-calendar-range">
+                                    <span class="text-deep-purple-darken-3">
+                                        {{ formatDate(date_selected[0]) }}
+                                        <span v-if="date_selected[1]"> - {{ formatDate(date_selected[1])
+                                        }}</span>
+                                    </span>
+                                </v-chip>
+                            </template>
+                        </v-col>
+                    </v-row>
+                </v-expand-transition>
             </v-card>
 
             <v-data-table :items="expenses" :headers="headers" item-key="expense_id" class="elevation-1">

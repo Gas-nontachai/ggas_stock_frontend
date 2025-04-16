@@ -141,6 +141,7 @@
         "total_profit": "กำไรทั้งหมด",
         "transaction_count": "จำนวนรายการ",
         "date_range": "ช่วงเวลา",
-        "items": "รายการ"
+        "items": "รายการ",
+        "profit": "กำไร"
     }
 }

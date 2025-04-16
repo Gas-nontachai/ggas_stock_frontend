@@ -218,7 +218,7 @@ const done = async () => {
                                     {{ item.note }}
                                 </div>
 
-                                <div class="d-flex align-center text-caption text-grey">
+                                <div class="d-flex align-center  text-grey">
                                     <v-icon icon="mdi-clock-outline" size="small" class="mr-1" />
                                     {{ formatDate(item.createdAt) }}
                                 </div>

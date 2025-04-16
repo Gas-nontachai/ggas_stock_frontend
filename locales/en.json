@@ -141,6 +141,7 @@
         "total_profit": "Total Profit",
         "transaction_count": "Transaction Count",
         "date_range": "Date Range",
-        "items": "items"
+        "items": "items",
+        "profit": "Profit"
     }
 }

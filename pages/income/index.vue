@@ -23,6 +23,7 @@ const menu_filter_cat = ref(false);
 const menu_filter_plat = ref(false);
 const add_incomes_dialog = ref(false);
 const edit_incomes_dialog = ref(false);
+const collapseOpen = ref(false);
 const income_id_current = ref('');
 const search_query = ref('');
 const date_selected = ref<[Date, Date] | null>(null);
@@ -105,7 +106,9 @@ const headers = computed(() => [
     { title: t('income.income_id'), align: 'start' as const, key: 'income_id' },
     { title: t('income.item_id'), align: 'start' as const, key: 'item_id' },
     { title: t('income.platform_id'), align: 'start' as const, key: 'platform_id' },
+    { title: t('item.item_buy_price'), align: 'start' as const, key: 'tb_item.item_buy_price' },
     { title: t('income.income_sell_price'), align: 'start' as const, key: 'income_sell_price' },
+    { title: t('income.profit'), align: 'start' as const, key: 'profit' },
     { title: t('income.createdAt'), align: 'start' as const, key: 'createdAt' },
     { title: t('income.actions'), align: 'center' as const, key: 'actions' }
 ]);
@@ -209,12 +212,19 @@ const totalProfit = computed(() => {
         </div>
 
         <v-row>
-            <v-col cols="4">
+            <v-col cols="2" md="1">
+                <v-btn @click="collapseOpen = !collapseOpen" variant="text">
+                    <v-icon>
+                        {{ collapseOpen ? 'mdi-arrow-collapse' : 'mdi-arrow-expand' }}
+                    </v-icon>
+                </v-btn>
+            </v-col>
+            <v-col cols="10" md="3">
                 <v-text-field v-model="search_query" :label="t('income.search')" prepend-inner-icon="mdi-magnify"
                     clearable single-line hide-details density="compact" variant="outlined"
                     @click:prepend-inner="fetchData" @keyup.enter="fetchData" class="rounded-lg"></v-text-field>
             </v-col>
-            <v-col cols="2">
+            <v-col cols="6" md="2">
                 <v-menu v-model="menu_filter_cat" :close-on-content-click="false" max-width="300px">
                     <template #activator="{ props }">
                         <v-btn v-bind="props" :color="selected_category.length ? 'primary' : ''" variant="outlined"
@@ -242,7 +252,7 @@ const totalProfit = computed(() => {
                     </v-card>
                 </v-menu>
             </v-col>
-            <v-col cols="2">
+            <v-col cols="6" md="2">
                 <v-menu v-model="menu_filter_plat" :close-on-content-click="false" max-width="300px">
                     <template #activator="{ props }">
                         <v-btn v-bind="props" :color="selected_platform.length ? 'primary' : ''" variant="outlined"
@@ -270,14 +280,14 @@ const totalProfit = computed(() => {
                     </v-card>
                 </v-menu>
             </v-col>
-            <v-col cols="2">
+            <v-col cols="8" md="2">
                 <DatePicker range :locale="locale" :dark="isDarkTheme" :teleport="true" :cancelText="t('button.cancel')"
                     :selectText="t('button.select')" preview-format="dd MMMM yyyy" :markers="[
                         { date: new Date(), type: 'dot', tooltip: [{ text: 'วันนี้', color: 'red' }] }
                     ]" v-model="date_selected" :enable-time-picker="false" :placeholder="t('button.select_date')"
                     class=" w-full " />
             </v-col>
-            <v-col cols="12" md="2">
+            <v-col cols="4" md="2">
                 <v-btn variant="tonal" color="error" class="w-100 rounded-lg" @click="clearAllFilters">
                     <v-icon class="mr-2">mdi-filter-remove</v-icon>
                     {{ t('button.clear_filter') }}
@@ -291,62 +301,63 @@ const totalProfit = computed(() => {
         </template>
 
         <template v-else>
-            <v-card class="pa-3 elevation-2 rounded-lg my-2 gradient-border">
-                <v-row align="center" justify="space-evenly" no-gutters>
-                    <v-col cols="12" md="2" class="mb-2 mb-md-0 px-1">
-                        <div class="d-flex flex-column align-center text-center">
-                            <div class="text-caption text-grey-darken-1 mb-1">{{ $t('income.total_cost') }}</div>
-                            <div class="text-h5 font-weight-bold text-error d-flex align-center">
-                                <v-icon color="error" size="medium" class="mr-1">mdi-currency-thb</v-icon>
-                                {{ totalCost }}
+            <v-card class="pa-3 elevation-2 rounded-lg  gradient-border">
+                <v-expand-transition>
+                    <v-row align="center" justify="space-evenly" no-gutters v-show="collapseOpen">
+                        <v-col cols="6" md="2" class="mb-2 mb-md-0 px-1">
+                            <div class="d-flex flex-column align-center text-center">
+                                <div class="text-grey-darken-1 mb-1">{{ $t('income.total_cost') }}</div>
+                                <div class="text-h5 font-weight-bold text-error d-flex align-center">
+                                    <v-icon color="error" size="medium" class="mr-1">mdi-currency-thb</v-icon>
+                                    {{ totalCost }}
+                                </div>
                             </div>
-                        </div>
-                    </v-col>
-
-                    <v-col cols="12" md="2" class="mb-2 mb-md-0 px-1">
-                        <div class="d-flex flex-column align-center text-center">
-                            <div class="text-caption text-grey-darken-1 mb-1">{{ $t('income.total_amount') }}</div>
-                            <div class="text-h5 font-weight-bold text-warning d-flex align-center">
-                                <v-icon color="warning" size="medium" class="mr-1">mdi-currency-thb</v-icon>
-                                {{ totalAmount }}
-                            </div>
-                        </div>
-                    </v-col>
-
-                    <v-col cols="12" md="2" class="mb-2 mb-md-0 px-1">
-                        <div class="d-flex flex-column align-center text-center">
-                            <div class="text-caption text-grey-darken-1 mb-1">{{ $t('income.total_profit') }}</div>
-                            <div class="text-h5 font-weight-bold text-success d-flex align-center">
-                                <v-icon color="success" size="medium" class="mr-1">mdi-currency-thb</v-icon>
-                                {{ totalProfit }}
-                            </div>
-                        </div>
-                    </v-col>
-
-                    <v-col cols="12" md="2" class="mb-2 mb-md-0 px-1">
-                        <div class="d-flex flex-column align-center text-center">
-                            <div class="text-caption text-grey-darken-1 mb-1">{{ $t('income.transaction_count') }}
-                            </div>
-                            <div class="text-body-1 font-weight-bold text-primary d-flex align-center">
-                                <v-icon color="primary" class="mr-1">mdi-format-list-bulleted</v-icon>
-                                {{ incomes.length }} {{ $t('income.items') }}
-                            </div>
-                        </div>
-                    </v-col>
-
-                    <template v-if="date_selected">
-                        <v-col cols="12" md="2" class="text-center text-md-end px-1">
-                            <div class="text-caption text-grey-darken-1 mb-1">{{ $t('income.date_range') }}</div>
-                            <v-chip color="deep-purple-lighten-4" class="pa-2 text-body-2 font-weight-medium"
-                                variant="elevated" prepend-icon="mdi-calendar-range">
-                                <span class="text-deep-purple-darken-3">
-                                    {{ formatDate(date_selected[0]) }}
-                                    <span v-if="date_selected[1]"> - {{ formatDate(date_selected[1]) }}</span>
-                                </span>
-                            </v-chip>
                         </v-col>
-                    </template>
-                </v-row>
+
+                        <v-col cols="6" md="2" class="mb-2 mb-md-0 px-1">
+                            <div class="d-flex flex-column align-center text-center">
+                                <div class="text-grey-darken-1 mb-1">{{ $t('income.total_amount') }}</div>
+                                <div class="text-h5 font-weight-bold text-warning d-flex align-center">
+                                    <v-icon color="warning" size="medium" class="mr-1">mdi-currency-thb</v-icon>
+                                    {{ totalAmount }}
+                                </div>
+                            </div>
+                        </v-col>
+
+                        <v-col cols="6" md="2" class="mb-2 mb-md-0 px-1">
+                            <div class="d-flex flex-column align-center text-center">
+                                <div class="text-grey-darken-1 mb-1">{{ $t('income.total_profit') }}</div>
+                                <div class="text-h5 font-weight-bold text-success d-flex align-center">
+                                    <v-icon color="success" size="medium" class="mr-1">mdi-currency-thb</v-icon>
+                                    {{ totalProfit }}
+                                </div>
+                            </div>
+                        </v-col>
+
+                        <v-col cols="6" md="2" class="mb-2 mb-md-0 px-1">
+                            <div class="d-flex flex-column align-center text-center">
+                                <div class="text-grey-darken-1 mb-1">{{ $t('income.transaction_count') }}</div>
+                                <div class="text-body-1 font-weight-bold text-primary d-flex align-center">
+                                    <v-icon color="primary" class="mr-1">mdi-format-list-bulleted</v-icon>
+                                    {{ incomes.length }} {{ $t('income.items') }}
+                                </div>
+                            </div>
+                        </v-col>
+
+                        <template v-if="date_selected">
+                            <v-col cols="12" md="2" class="text-center text-md-end px-1">
+                                <div class="text-grey-darken-1 mb-1">{{ $t('income.date_range') }}</div>
+                                <v-chip color="deep-purple-lighten-4" class="pa-2 text-body-2 font-weight-medium"
+                                    variant="elevated" prepend-icon="mdi-calendar-range">
+                                    <span class="text-deep-purple-darken-3">
+                                        {{ formatDate(date_selected[0]) }}
+                                        <span v-if="date_selected[1]"> - {{ formatDate(date_selected[1]) }}</span>
+                                    </span>
+                                </v-chip>
+                            </v-col>
+                        </template>
+                    </v-row>
+                </v-expand-transition>
             </v-card>
 
             <v-data-table :items="incomes" :headers="headers" item-key="income_id" class="elevation-1">
@@ -359,8 +370,16 @@ const totalProfit = computed(() => {
                     <span>{{ getPlatformName(item.platform_id) }} ฿ </span>
                 </template>
 
+                <template v-slot:item.tb_item.item_buy_price="{ item }">
+                    <span>{{ decimalFix(item.tb_item?.item_buy_price) }} ฿ </span>
+                </template>
+
                 <template v-slot:item.income_sell_price="{ item }">
                     <span>{{ decimalFix(item.income_sell_price) }} ฿ </span>
+                </template>
+
+                <template v-slot:item.profit="{ item }">
+                    <span>{{ decimalFix(item.income_sell_price - (item.tb_item?.item_buy_price ?? 0)) }} ฿ </span>
                 </template>
 
                 <template v-slot:item.createdAt="{ item }">
@@ -396,8 +415,7 @@ const totalProfit = computed(() => {
         </template>
 
         <v-dialog v-model="edit_incomes_dialog" max-width="600px">
-            <IncomeEdit :category_options="category_options" :income_id="income_id_current" @done="Done"
-                @close="() => { edit_incomes_dialog = false }" />
+            <IncomeEdit :income_id="income_id_current" @done="Done" @close="() => { edit_incomes_dialog = false }" />
         </v-dialog>
 
     </v-container>
