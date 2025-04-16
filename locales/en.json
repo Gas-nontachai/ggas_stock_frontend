@@ -74,6 +74,9 @@
         "add_btn": "Add Category",
         "category_id": "Category ID",
         "category_name": "Category Name",
+        "use_for": "Use For",
+        "item": "Item",
+        "expense": "Expense",
         "actions": "Action"
     },
     "user": {

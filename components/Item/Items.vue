@@ -166,8 +166,8 @@ const done = async () => {
                 <div :class="{
                     'opacity-50': props.status === 0
                 }">
-                    <v-carousel v-if="item.item_image" height="300" :show-arrows="item.item_image.split(',').length > 1"
-                        hide-delimiter-background cycle>
+                    <v-carousel v-if="item.item_image" height="300"
+                        :show-arrows="item.item_image.split(',').length > 1">
                         <v-carousel-item v-for="(img, index) in item.item_image.split(',')" :key="index">
                             <v-img :src="`${useRuntimeConfig().public.apiBaseUrl}${img.trim()}`"
                                 :alt="`Image ${index + 1}`" cover class="bg-grey-lighten-2"

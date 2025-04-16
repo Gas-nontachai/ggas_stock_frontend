@@ -104,7 +104,7 @@ watch([selected_category, date_selected, selected_platform], async () => {
 
 const headers = computed(() => [
     { title: t('income.income_id'), align: 'start' as const, key: 'income_id' },
-    { title: t('income.item_id'), align: 'start' as const, key: 'item_id' },
+    { title: t('item.item_name'), align: 'start' as const, key: 'tb_item.item_name' },
     { title: t('income.platform_id'), align: 'start' as const, key: 'platform_id' },
     { title: t('item.item_buy_price'), align: 'start' as const, key: 'tb_item.item_buy_price' },
     { title: t('income.income_sell_price'), align: 'start' as const, key: 'income_sell_price' },

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import Swal from 'sweetalert2';
 import { onMounted, ref, computed } from 'vue';
-import { formatDate } from '@/utils/date-func';
 import type { Category } from "@/misc/type";
 import { useI18n } from 'vue-i18n';
 
@@ -9,11 +8,14 @@ const { getCategoryBy, deleteCategoryBy } = useCategory();
 const { t } = useI18n();
 
 const categorys = ref<Category[]>([]);
+const item_categorys = ref<Category[]>([]);
+const expense_categorys = ref<Category[]>([]);
 const loading = ref(true);
 const add_paltform_dialog = ref(false);
 const edit_paltform_dialog = ref(false);
 const category_id_current = ref('');
 const search_query = ref('');
+const tab = ref('item');
 
 onMounted(async () => {
     await fetchData();
@@ -22,8 +24,14 @@ onMounted(async () => {
 const fetchData = async () => {
     loading.value = true;
     try {
-        const response = await getCategoryBy();
+        const response = await getCategoryBy({
+            where: {
+                category_name: { $like: search_query.value }
+            }
+        });
         categorys.value = response;
+        item_categorys.value = response.filter(item => item.use_for == "item");
+        expense_categorys.value = response.filter(item => item.use_for == "expense");
     } catch (error) {
         console.error('Error fetching categorys:', error);
     } finally {
@@ -31,68 +39,9 @@ const fetchData = async () => {
     }
 };
 
-const headers = computed(() => [
-    { title: t('category.category_id'), align: 'start' as const, key: 'category_id' },
-    { title: t('category.category_name'), align: 'start' as const, key: 'category_name' },
-    { title: t('category.actions'), align: 'center' as const, key: 'actions' }
-]);
-
-const filteredCategorys = computed(() => {
-    if (!search_query.value) return categorys.value;
-    return categorys.value.filter(category =>
-        category.category_id.toLowerCase().includes(search_query.value.toLowerCase()) ||
-        category.category_name.toLowerCase().includes(search_query.value.toLowerCase())
-    );
-});
-
-const deleteCategory = (category_id: string) => {
-    Swal.fire({
-        title: 'Are you sure?',
-        text: 'This action cannot be undone.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'No, keep it',
-        customClass: {
-            confirmButton: 'swal2-confirm-white',
-            cancelButton: 'swal2-cancel-white',
-        },
-        preConfirm: async () => {
-            Swal.fire({
-                title: 'Submitting...',
-                text: 'Please wait while we submit the form.',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                },
-                showConfirmButton: false,
-            });
-
-            try {
-                await deleteCategoryBy({ category_id });
-                Swal.close();
-                await fetchData();
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: 'Category deleted successfully!',
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                });
-            } catch (error) {
-                Swal.close();
-                await fetchData();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'There was an issue deleting the category. Please try again.',
-                    showConfirmButton: true,
-                });
-            }
-        }
-    });
+const editCategory = (category_id: string) => {
+    category_id_current.value = category_id
+    edit_paltform_dialog.value = true;
 };
 
 const addCategory = () => {
@@ -103,11 +52,6 @@ const Done = async () => {
     add_paltform_dialog.value = false;
     edit_paltform_dialog.value = false;
     await fetchData();
-};
-
-const editCategory = (category_id: string) => {
-    category_id_current.value = category_id
-    edit_paltform_dialog.value = true;
 };
 </script>
 
@@ -134,41 +78,24 @@ const editCategory = (category_id: string) => {
             <span> Loading..</span>
         </template>
 
-        <v-data-table v-else :items="filteredCategorys" :headers="headers" item-key="category_id" class="elevation-1">
-            <template v-slot:item.createdAt="{ item }">
-                <span>{{ formatDate(item.createdAt, "dd/MM/yyyy HH:mm") }}</span>
-            </template>
+        <v-col v-else cols="12">
+            <v-tabs v-model="tab" grow class="mb-10">
+                <v-tab value="item">{{ t('category.item') }}</v-tab>
+                <v-tab value="expense">{{ t('category.expense') }}</v-tab>
+            </v-tabs>
 
-            <template v-slot:item.updatedAt="{ item }">
-                <span>{{ formatDate(item.updatedAt, "dd/MM/yyyy HH:mm") }}</span>
-            </template>
+            <v-tabs-window v-model="tab">
+                <v-tabs-window-item value="item">
+                    <CategoryTable :category="item_categorys" @edit="editCategory" @fetchData="fetchData">
+                    </CategoryTable>
+                </v-tabs-window-item>
 
-            <template v-slot:item.actions="{ item }">
-                <v-menu bottom right>
-                    <template v-slot:activator="{ props }">
-                        <v-btn icon variant="text" size="small" v-bind="props">
-                            <v-chip color="red">
-                                <v-icon>mdi-dots-vertical</v-icon>
-                            </v-chip>
-                        </v-btn>
-                    </template>
-                    <v-list>
-                        <v-list-item @click="editCategory(item.category_id)">
-                            <div class="d-flex">
-                                <v-icon>mdi-pencil</v-icon>
-                                <v-list-item-title>{{ t('button.edit') }}</v-list-item-title>
-                            </div>
-                        </v-list-item>
-                        <v-list-item @click="deleteCategory(item.category_id)">
-                            <div class="d-flex">
-                                <v-icon>mdi-delete</v-icon>
-                                <v-list-item-title>{{ t('button.delete') }}</v-list-item-title>
-                            </div>
-                        </v-list-item>
-                    </v-list>
-                </v-menu>
-            </template>
-        </v-data-table>
+                <v-tabs-window-item value="expense">
+                    <CategoryTable :category="expense_categorys" @edit="editCategory" @fetchData="fetchData">
+                    </CategoryTable>
+                </v-tabs-window-item>
+            </v-tabs-window>
+        </v-col>
 
         <v-dialog v-model="add_paltform_dialog" max-width="600px">
             <CategoryAdd @done="Done" @close="() => { add_paltform_dialog = false }" />

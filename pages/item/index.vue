@@ -59,7 +59,11 @@ const fetchData = async () => {
 
 const fetchCategory = async () => {
     try {
-        const response = await getCategoryBy();
+        const response = await getCategoryBy({
+            where: {
+                use_for: 'item'
+            }
+        });
         categories.value = response;
         category_items.value = response.map((item) => ({
             title: item.category_name,

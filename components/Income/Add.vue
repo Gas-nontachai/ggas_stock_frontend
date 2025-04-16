@@ -24,7 +24,6 @@ const income = ref<Income>({
 });
 
 const platform_items = ref<{ title: string, value: string }[]>([]);
-
 const profitAmount = computed(() => income.value.income_sell_price - props.item.item_buy_price);
 const isProfit = computed(() => profitAmount.value > 0);
 const profitStatus = computed(() => isProfit.value ? 'กำไร' : 'ขาดทุน');
@@ -119,7 +118,7 @@ const submitForm = async () => {
             </v-row>
         </v-card-title>
         <v-card-text>
-            <v-form>
+            <v-form ref="form" @submit.prevent="submitForm">
                 <v-row>
                     <v-col cols="12" md="6">
                         <v-text-field v-model="income.income_sell_price" :label="t('income.income_sell_price')"
@@ -134,15 +133,20 @@ const submitForm = async () => {
                             </span>
                         </div>
                     </v-col>
+
                     <v-col cols="12" md="6">
                         <v-select v-model="income.platform_id" :items="platform_items" item-value="value"
-                            item-text="title" :label="t('income.platform_id')" variant="outlined" required />
+                            item-text="title" :label="t('income.platform_id')" variant="outlined"
+                            :rules="[v => !!v || 'กรุณาเลือกแพลตฟอร์ม']" required />
                     </v-col>
+
                     <v-col cols="12">
                         <v-textarea v-model="income.note" :label="t('income.income_note')" variant="outlined"
                             rows="3"></v-textarea>
                     </v-col>
                 </v-row>
+
+                <v-btn color="primary" type="submit">บันทึก</v-btn>
             </v-form>
         </v-card-text>
         <v-card-actions>

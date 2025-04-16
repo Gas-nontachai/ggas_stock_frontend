@@ -12,8 +12,10 @@ const emit = defineEmits(['done', 'close']);
 const category = ref<Category>({
     category_id: '',
     category_name: '',
-    category_image: '',
+    use_for: '',
 });
+
+const use_for_item = ['item', 'expense']
 
 const submitForm = async () => {
     Swal.fire({
@@ -78,9 +80,13 @@ const submitForm = async () => {
         <v-card-text>
             <v-form>
                 <v-row>
-                    <v-col cols="12">
+                    <v-col cols="12" md="6">
                         <v-text-field v-model="category.category_name" :label="t('category.category_name')"
                             variant="outlined" required></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="6">
+                        <v-select v-model="category.use_for" :items="use_for_item" expense-value="value"
+                            expense-text="title" :label="t('category.use_for')" variant="outlined" required></v-select>
                     </v-col>
                 </v-row>
             </v-form>
