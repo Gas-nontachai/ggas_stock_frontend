@@ -126,7 +126,7 @@ const clearAllFilters = async () => {
     <v-container fluid max-width="95%">
         <v-card class="mb-6">
             <v-card-title class="d-flex align-center justify-space-between flex-wrap">
-                <div class="text-h5 font-weight-bold">{{ t('item.title') }}</div>
+                <h1 class="font-weight-bold">{{ t('item.title') }}</h1>
                 <v-btn color="primary" prepend-icon="mdi-plus" @click="add_item_dialog = true">
                     {{ t('item.add_btn') }}
                 </v-btn>

@@ -1,4 +1,4 @@
-import type { Item } from "./item";
+import type { Item, Platform } from "./type";
 
 export type Income = {
   income_id: string,
@@ -11,4 +11,5 @@ export type Income = {
   createdAt?: date | string,
   updatedAt?: date | string,
   tb_item?: Item
+  tb_platform?: Platform
 };

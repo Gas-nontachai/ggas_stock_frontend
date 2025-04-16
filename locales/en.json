@@ -54,7 +54,9 @@
         "expense": "Expense",
         "category": "Category",
         "platform": "Platform",
-        "user": "User"
+        "user": "User",
+        "user_profile": "User Profile",
+        "item_detail": "Item Detail"
     },
     "platform": {
         "title": "Platform Management",
@@ -105,9 +107,17 @@
         "item_note": "Item Note",
         "item_category": "Item Category",
         "item_image": "Item Image",
+        "item_status": "Item Status",
         "item_image_delete": "Item Image Deleting..",
         "mark_sold": "Mark it Sold",
-        "mark_unsold": "Mark it Ready to Sell"
+        "mark_unsold": "Mark it Ready to Sell",
+        "sold_data": "Sold Data",
+        "specifications": "Specifications",
+        "related_items": "Related Items",
+        "addby": "Related Items",
+        "add_date": "Add Date",
+        "update_by": "Updated By",
+        "update_date": "Update Date"
     },
     "expense": {
         "title": "Expense Management",

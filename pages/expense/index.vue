@@ -167,7 +167,7 @@ const totalAmount = computed(() => {
     <v-container>
         <div class="d-flex justify-space-between align-center mb-4">
             <div>
-                <h1 class="text-h5 font-weight-bold">{{ t('expense.title') }}</h1>
+                <h1 class=" font-weight-bold">{{ t('expense.title') }}</h1>
                 <p>{{ t('expense.description') }}</p>
             </div>
             <v-btn @click="addExpense" color="primary">{{ t('expense.add_btn') }}</v-btn>

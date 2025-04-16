@@ -31,7 +31,7 @@ const item_current = ref<Item>()
 const income_item_dialog = ref(false)
 
 const viewItemDetails = (item_id: string) => {
-    router.push(`/items/${item_id}`);
+    router.push(`/item/detail?item_id=${item_id}`);
 };
 
 const getCategoryName = (category_id: string) => {

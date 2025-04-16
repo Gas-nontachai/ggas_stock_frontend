@@ -115,7 +115,7 @@ const editPlatform = (platform_id: string) => {
     <v-container>
         <div class="d-flex justify-space-between align-center mb-4">
             <div>
-                <h1 class="text-h5 font-weight-bold">{{ t('platform.title') }}</h1>
+                <h1 class="  font-weight-bold">{{ t('platform.title') }}</h1>
                 <p>{{ t('platform.description') }}</p>
             </div>
             <v-btn @click="addPlatform" color="primary">{{ t('platform.add_btn') }}</v-btn>

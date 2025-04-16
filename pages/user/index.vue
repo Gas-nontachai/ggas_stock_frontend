@@ -123,7 +123,7 @@ const editUser = (user_id: string) => {
     <v-container>
         <div class="d-flex justify-space-between align-center mb-4">
             <div>
-                <h1 class="text-h5 font-weight-bold">{{ t('user.title') }}</h1>
+                <h1 class="font-weight-bold">{{ t('user.title') }}</h1>
                 <p>{{ t('user.description') }}</p>
             </div>
             <v-btn @click="addUser" color="primary">{{ t('user.add_btn') }}</v-btn>

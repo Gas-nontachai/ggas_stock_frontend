@@ -29,6 +29,10 @@ const currentPage = computed(() => {
             return t('s_drawer.platform');
         case 'user':
             return t('s_drawer.user');
+        case 'user-profile':
+            return t('s_drawer.user_profile');
+        case 'item-detail':
+            return t('s_drawer.item_detail');
         default:
             return 'Unnamed Page';
     }
