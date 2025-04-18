@@ -1,4 +1,7 @@
 {
+    "validation": {
+        "required": "จำเป็น"
+    },
     "alert": {
         "logout": "คุณได้ออกจากระบบเรียบร้อยแล้ว",
         "confirm_logout": "คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?",
@@ -14,7 +17,8 @@
         "delete_success_title": "ลบสำเร็จ",
         "delete_success_text": "รายการถูกลบเรียบร้อยแล้ว",
         "delete_unsuccess_title": "ลบไม่สำเร็จ",
-        "delete_unsuccess_text": "ไม่สามารถลบรายการได้"
+        "delete_unsuccess_text": "ไม่สามารถลบรายการได้",
+        "no_item_found": "ไม่เจอสินค้า"
     },
     "button": {
         "confirm": "ใช่",
@@ -27,6 +31,7 @@
         "select": "เลือก",
         "back": "ย้อนกลับ",
         "filter": "ตัวกรอง",
+        "refresh": "รีเฟรช",
         "filter_category": "ตัวกรองประเภท",
         "filter_platform": "ตัวกรองช่องทาง",
         "clear_filter": "ล้างตัวกรอง",
@@ -89,6 +94,7 @@
         "add_btn": "เพิ่มผู้ใช้ใหม่",
         "user_id": "รหัสผู้ใช้",
         "username": "ชื่อผู้ใช้",
+        "user_image": "รูปภาพผู้ใช้",
         "email": "อีเมล",
         "password": "รหัสผ่าน",
         "actions": "การกระทำ"

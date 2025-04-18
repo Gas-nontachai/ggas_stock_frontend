@@ -35,6 +35,7 @@ const fetchData = async () => {
 
 const headers = computed(() => [
     { title: t('user.user_id'), align: 'start' as const, key: 'user_id' },
+    { title: t('user.user_image'), align: 'start' as const, key: 'user_image' },
     { title: t('user.username'), align: 'start' as const, key: 'username' },
     { title: t('user.email'), align: 'start' as const, key: 'email' },
     { title: t('user.actions'), align: 'center' as const, key: 'actions' }
@@ -143,6 +144,14 @@ const editUser = (user_id: string) => {
         </template>
 
         <v-data-table v-else :items="filteredUsers" :headers="headers" item-key="user_id" class="elevation-1">
+
+            <template v-slot:item.user_image="{ item }">
+                <v-avatar :image="item.user_image
+                    ? `${useRuntimeConfig().public.apiBaseUrl}${item.user_image}`
+                    : '/default-user.png'" size="40">
+                </v-avatar>
+            </template>
+
             <template v-slot:item.createdAt="{ item }">
                 <span>{{ formatDate(item.createdAt, "dd/MM/yyyy HH:mm") }}</span>
             </template>

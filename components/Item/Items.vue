@@ -125,7 +125,6 @@ const markReSell = async (item_id: string) => {
                     }
                 }
             })
-            console.log(res[0]);
             await updateIncomeBy(res[0], 'mark_re_sell')
             await emit('fetchData', true)
             await Swal.fire({
@@ -156,8 +155,8 @@ const done = async () => {
 <template>
     <v-card v-if="props.items.length === 0" class="text-center pa-6">
         <v-icon icon="mdi-alert-circle-outline" size="large" class="mb-2" color="warning"></v-icon>
-        <p class="text-body-1 mb-4">{{ t('No items found') }}</p>
-        <v-btn color="primary" @click="() => emit('fetchData', true)">{{ t('Refresh') }}</v-btn>
+        <p class="text-body-1 mb-4">{{ t('message.no_item_found') }}</p>
+        <v-btn color="primary" @click="() => emit('fetchData', true)">{{ t('button.refresh') }}</v-btn>
     </v-card>
 
     <v-row v-else>

@@ -2,7 +2,6 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n';
-import LanguageSwitcher from "@/layout/full/vertical-header/LanguageSwitcher.vue";
 
 definePageMeta({
   layout: 'blank',
@@ -49,7 +48,7 @@ const login = async () => {
                 <v-icon start size="32" class="mr-2 text-primary">mdi-login</v-icon>
                 {{ t('login.title') }}
               </div>
-              <LanguageSwitcher />
+              <LayoutFullVerticalHeaderLanguageSwitcher />
             </div>
 
           </v-card-title>

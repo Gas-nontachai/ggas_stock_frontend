@@ -1,4 +1,7 @@
 {
+    "validation": {
+        "required": "Required"
+    },
     "alert": {
         "logout": "You have been logged out successfully.",
         "confirm_logout": "Are you sure you want to log out?",
@@ -14,7 +17,8 @@
         "delete_success_title": "Delete Successful",
         "delete_success_text": "The item has been deleted successfully.",
         "delete_unsuccess_title": "Delete Unsuccessful",
-        "delete_unsuccess_text": "The item could not be deleted."
+        "delete_unsuccess_text": "The item could not be deleted.",
+        "no_item_found": "No items found"
     },
     "button": {
         "confirm": "Yes",
@@ -27,6 +31,7 @@
         "select": "Select",
         "back": "Back",
         "filter": "Filters",
+        "refresh": "Refresh",
         "filter_category": "Filters Category",
         "filter_platform": "Filters Platform",
         "clear_filter": "Clear Filters",
@@ -89,6 +94,7 @@
         "add_btn": "Add new User",
         "user_id": "User ID",
         "username": "User Name",
+        "user_image": "User Image",
         "email": "Email",
         "password": "Password",
         "actions": "Action"

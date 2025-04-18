@@ -106,7 +106,7 @@ const headers = computed(() => [
     { title: t('income.income_id'), align: 'start' as const, key: 'income_id' },
     { title: t('item.item_name'), align: 'start' as const, key: 'tb_item.item_name' },
     { title: t('income.platform_id'), align: 'start' as const, key: 'platform_id' },
-    { title: t('item.item_buy_price'), align: 'start' as const, key: 'tb_item.item_buy_price' },
+    { title: t('item.item_price'), align: 'start' as const, key: 'tb_item.item_price' },
     { title: t('income.income_sell_price'), align: 'start' as const, key: 'income_sell_price' },
     { title: t('income.profit'), align: 'start' as const, key: 'profit' },
     { title: t('income.createdAt'), align: 'start' as const, key: 'createdAt' },
@@ -238,8 +238,7 @@ const totalProfit = computed(() => {
                         <v-list class="pt-2">
                             <v-list-item v-for="(item, index) in category_options" :key="index" density="compact"
                                 class="px-1">
-                                <v-checkbox v-model="selected_category"
-                                    @change="() => { console.log(selected_category); }" :label="item.title"
+                                <v-checkbox v-model="selected_category"  :label="item.title"
                                     :value="item.value" hide-details density="compact"></v-checkbox>
                             </v-list-item>
                         </v-list>
@@ -266,8 +265,7 @@ const totalProfit = computed(() => {
                         <v-list class="pt-2">
                             <v-list-item v-for="(item, index) in platform_options" :key="index" density="compact"
                                 class="px-1">
-                                <v-checkbox v-model="selected_platform"
-                                    @change="() => { console.log(selected_platform); }" :label="item.title"
+                                <v-checkbox v-model="selected_platform"  :label="item.title"
                                     :value="item.value" hide-details density="compact"></v-checkbox>
                             </v-list-item>
                         </v-list>
@@ -370,7 +368,7 @@ const totalProfit = computed(() => {
                     <span>{{ getPlatformName(item.platform_id) }} ฿ </span>
                 </template>
 
-                <template v-slot:item.tb_item.item_buy_price="{ item }">
+                <template v-slot:item.tb_item.item_price="{ item }">
                     <span>{{ decimalFix(item.tb_item?.item_buy_price) }} ฿ </span>
                 </template>
 

@@ -30,11 +30,11 @@ onMounted(async () => {
             <v-col cols="12" md="6">
                 <v-card class="pa-6" elevation="4">
                     <v-row align="center" justify="center">
-                        <v-avatar size="100">
-                            <v-img :src="profile.user_image || '/default-user.png'" />
+                        <v-avatar :image="profile.user_image
+                            ? `${useRuntimeConfig().public.apiBaseUrl}${profile.user_image}`
+                            : '/default-user.png'" size="100">
                         </v-avatar>
                     </v-row>
-
                     <v-card-title class="text-center mt-4">
                         {{ profile.username }}
                     </v-card-title>

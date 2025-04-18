@@ -111,7 +111,7 @@ const getUserName = (user_id: string) => {
                             <div class="font-weight-medium mb-3">
                                 {{ t('item.item_price') }}: <span class="text-primary">${{
                                     decimalFix(item.item_buy_price)
-                                    }}</span>
+                                }}</span>
                             </div>
 
                             <div v-if="item.note" class="mb-4">
@@ -158,7 +158,7 @@ const getUserName = (user_id: string) => {
                                                 <v-icon icon="mdi-cash"></v-icon>
                                             </template>
                                             <v-list-item-title>{{ t('income.income_id') }} : {{ income.income_id
-                                                }}</v-list-item-title>
+                                            }}</v-list-item-title>
                                         </v-list-item>
                                     </v-list>
                                     <v-list>
@@ -177,7 +177,7 @@ const getUserName = (user_id: string) => {
                                             </template>
                                             <v-list-item-title>{{ t('income.profit') }} : {{
                                                 decimalFix(income.income_sell_price - item.item_buy_price)
-                                                }}฿</v-list-item-title>
+                                            }}฿</v-list-item-title>
                                         </v-list-item>
                                     </v-list>
                                     <v-list>
@@ -186,7 +186,7 @@ const getUserName = (user_id: string) => {
                                                 <v-icon icon="mdi-note-text"></v-icon>
                                             </template>
                                             <v-list-item-title>{{ t('income.income_note') }} : {{ income.note
-                                            }}</v-list-item-title>
+                                                }}</v-list-item-title>
                                         </v-list-item>
                                     </v-list>
                                     <v-list>
@@ -209,7 +209,7 @@ const getUserName = (user_id: string) => {
                                                 <v-icon icon="mdi-barcode"></v-icon>
                                             </template>
                                             <v-list-item-title>{{ t('item.item_id') }} : {{ item.item_id
-                                                }}</v-list-item-title>
+                                            }}</v-list-item-title>
                                         </v-list-item>
                                         <v-list-item>
                                             <template v-slot:prepend>
@@ -217,7 +217,7 @@ const getUserName = (user_id: string) => {
                                             </template>
                                             <v-list-item-title>{{ t('category.category_name') }} : {{
                                                 item.tb_category?.category_name
-                                                }}</v-list-item-title>
+                                            }}</v-list-item-title>
                                         </v-list-item>
                                         <v-list-item>
                                             <template v-slot:prepend>
@@ -239,14 +239,14 @@ const getUserName = (user_id: string) => {
                                                 <v-icon icon="mdi-account"></v-icon>
                                             </template>
                                             <v-list-item-title>{{ t('item.addby') }} : {{ getUserName(item.addby || '')
-                                                }}</v-list-item-title>
+                                            }}</v-list-item-title>
                                         </v-list-item>
                                         <v-list-item>
                                             <template v-slot:prepend>
                                                 <v-icon icon="mdi-calendar-clock"></v-icon>
                                             </template>
                                             <v-list-item-title>{{ t('item.add_date') }} : {{ formatDate(item.createdAt)
-                                                }}</v-list-item-title>
+                                            }}</v-list-item-title>
                                         </v-list-item>
                                         <v-list-item>
                                             <template v-slot:prepend>
@@ -262,7 +262,7 @@ const getUserName = (user_id: string) => {
                                             </template>
                                             <v-list-item-title>{{ t('item.update_date') }} : {{
                                                 formatDate(item.updatedAt)
-                                            }}</v-list-item-title>
+                                                }}</v-list-item-title>
                                         </v-list-item>
                                     </v-list>
                                 </v-card-text>

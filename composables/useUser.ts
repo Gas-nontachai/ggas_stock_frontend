@@ -14,17 +14,43 @@ const getUserByID = (data: { user_id: string }): Promise<User> => secureFetch(
     body: data,
 })
 
-const insertUserBy = (data: User): Promise<User> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/insertUserBy`, {
-    method: "POST",
-    body: data,
-})
+const insertUserBy = (data: { user: User, file?: File[] }): Promise<User> => {
+    const formData = new FormData();
 
-const updateUserBy = (data: User): Promise<User> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/updateUserBy`, {
-    method: "POST",
-    body: data,
-})
+    formData.append("user", JSON.stringify(data.user));
+    if (data.file?.length) {
+        data.file.forEach((file, index) => {
+            formData.append(`files`, file);
+        });
+    }
+
+    return secureFetch(
+        `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/insertUserBy`,
+        {
+            method: "POST",
+            body: formData,
+        }
+    );
+};
+
+const updateUserBy = (data: { user: User, file?: File[] }): Promise<User> => {
+    const formData = new FormData();
+
+    formData.append("user", JSON.stringify(data.user));
+    if (data.file?.length) {
+        data.file.forEach((file, index) => {
+            formData.append(`files`, file);
+        });
+    }
+
+    return secureFetch(
+        `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/updateUserBy`,
+        {
+            method: "POST",
+            body: formData,
+        }
+    );
+};
 
 const deleteUserBy = (data: { user_id: string }): Promise<User> => secureFetch(
     `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/deleteUserBy`, {

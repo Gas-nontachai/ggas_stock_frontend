@@ -2,9 +2,6 @@
 import { useI18n } from "vue-i18n";
 import { ref, computed } from "vue";
 import { RouterLink, useRoute } from "vue-router";
-import LanguageSwitcher from "./vertical-header/LanguageSwitcher.vue";
-import ThemeSwitcher from "./vertical-header/ThemeSwitcher.vue";
-import ProfileDD from "./vertical-header/ProfileDD.vue";
 import { useTheme } from 'vuetify'
 
 const theme = useTheme()
@@ -43,9 +40,9 @@ const fullText = "GGAS Stock ";
                 </span>
             </v-responsive>
             <div class="d-flex align-center">
-                <LanguageSwitcher />
-                <ThemeSwitcher />
-                <ProfileDD />
+                <LayoutFullVerticalHeaderLanguageSwitcher />
+                <LayoutFullVerticalHeaderThemeSwitcher />
+                <LayoutFullVerticalHeaderProfileDD />
             </div>
         </v-row>
     </v-app-bar>

@@ -145,8 +145,6 @@ const submitForm = async () => {
                             rows="3"></v-textarea>
                     </v-col>
                 </v-row>
-
-                <v-btn color="primary" type="submit">บันทึก</v-btn>
             </v-form>
         </v-card-text>
         <v-card-actions>

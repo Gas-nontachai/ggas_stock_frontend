@@ -180,8 +180,7 @@ const clearAllFilters = async () => {
                                 <v-list class="pt-2">
                                     <v-list-item v-for="(item, index) in category_items" :key="index" density="compact"
                                         class="px-1">
-                                        <v-checkbox v-model="selected_category"
-                                            @change="() => { console.log(selected_category); }" :label="item.title"
+                                        <v-checkbox v-model="selected_category"  :label="item.title"
                                             :value="item.value" hide-details density="compact"></v-checkbox>
                                     </v-list-item>
                                 </v-list>
