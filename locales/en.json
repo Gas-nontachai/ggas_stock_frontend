@@ -35,7 +35,12 @@
         "filter_category": "Filters Category",
         "filter_platform": "Filters Platform",
         "clear_filter": "Clear Filters",
-        "select_date": "Select Date"
+        "select_date": "Select Date",
+        "forget_password": "Forget Password",
+        "send_otp": "Send OTP",
+        "resend_otp": "Resend OTP",
+        "confirm_otp": "Confirm OTP",
+        "confirm_password": "Confirm Password"
     },
     "filter": {
         "date": "Sort by Date",
@@ -50,7 +55,14 @@
         "title": "Login",
         "username": "Username",
         "password": "Password",
-        "remember_me": "remember me"
+        "remember_me": "remember me",
+        "reset_password": "Reset Password",
+        "email": "Email",
+        "enter_otp": "Enter OTP",
+        "otp": "OTP",
+        "set_new_password": "Set New Password",
+        "new_password": "New Password",
+        "confirm_password": "Confirm Password"
     },
     "s_drawer": {
         "home": "Home",

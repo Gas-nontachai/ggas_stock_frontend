@@ -40,7 +40,7 @@ const login = async () => {
 <template>
   <v-container class="fill-height bg-grey-lighten-5" fluid>
     <v-row justify="center" align="center">
-      <v-col cols="12" sm="8" md="5" lg="4">
+      <v-col cols="12" sm="8" md="5">
         <v-card elevation="12" class="pa-6 rounded-xl">
           <v-card-title class="text-h5 text-center mb-6 font-weight-bold">
             <div class="d-flex justify-space-between align-center">
@@ -68,6 +68,12 @@ const login = async () => {
             <v-btn type="submit" color="primary" class="mt-4" block size="large" :loading="loading" :disabled="loading">
               <v-icon start v-if="!loading">mdi-login-variant</v-icon>
               {{ t('button.login') }}
+            </v-btn>
+
+            <v-btn @click="() => router.push('forget-password')" variant="text" color="primary" class="mt-4" block
+              size="small">
+              <v-icon start>mdi-file-question</v-icon>
+              {{ t('button.forget_password') }}
             </v-btn>
 
             <v-alert v-if="error" type="error" class="mt-4" dense border="start" variant="tonal">

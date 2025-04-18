@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PasswordRules, EmailRules } from '@/utils/rules';
+import { EmailRules } from '@/utils/rules';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Swal from 'sweetalert2';

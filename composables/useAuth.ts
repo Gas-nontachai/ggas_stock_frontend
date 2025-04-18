@@ -25,7 +25,19 @@ const register = async (data: { user: User, user_img?: File[], }) => {
 
 const authLogout = (): Promise<any> => secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/logout`, { method: "POST", })
 
-const changePassword = (data: { current_password: string, new_password: string }): Promise<any> => secureFetch(
+const sendOTP = (data: { email: string }): Promise<any> => preSecureFetch(
+  `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/sendOTP`, {
+  method: "POST",
+  body: JSON.stringify(data),
+})
+
+const confirmOTP = (data: { otp: string, user_id: string }): Promise<any> => preSecureFetch(
+  `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/confirmOTP`, {
+  method: "POST",
+  body: JSON.stringify(data),
+})
+
+const changePassword = (data: { new_password: string, user_id: string }): Promise<any> => secureFetch(
   `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/changePassword`, {
   method: "POST",
   body: JSON.stringify(data),
@@ -42,6 +54,8 @@ export default function useAuth() {
     authLogin,
     register,
     authLogout,
+    sendOTP,
+    confirmOTP,
     changePassword,
     refresh,
   };

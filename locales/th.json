@@ -35,7 +35,12 @@
         "filter_category": "ตัวกรองประเภท",
         "filter_platform": "ตัวกรองช่องทาง",
         "clear_filter": "ล้างตัวกรอง",
-        "select_date": "เลือกวันที่"
+        "select_date": "เลือกวันที่",
+        "forget_password": "ลืมรหัสผ่าน",
+        "send_otp": "ส่งรหัส OTP",
+        "resend_otp": "ส่งรหัส OTP อีกครั้ง",
+        "confirm_otp": "ยืนยันรหัส OTP",
+        "confirm_password": "ยืนยันรหัสผ่าน"
     },
     "filter": {
         "date": "เรียงตามวันที่",
@@ -50,7 +55,14 @@
         "title": "เข้าสู่ระบบ",
         "username": "ชื่อผู้ใช้",
         "password": "รหัสผ่าน",
-        "remember_me": "จดจำฉัน"
+        "remember_me": "จดจำฉัน",
+        "reset_password": "เปลี่ยนรหัสผ่าน",
+        "email": "อีเมล",
+        "enter_otp": "ยืนยันรหัส OTP",
+        "otp": "OTP",
+        "set_new_password": "ตั้งรหัสผ่านใหม่",
+        "new_password": "รหัสผ่านใหม่",
+        "confirm_password": "ยืนยันรหัสผ่าน"
     },
     "s_drawer": {
         "home": "หน้าแรก",
