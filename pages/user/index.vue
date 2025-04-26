@@ -139,8 +139,7 @@ const editUser = (user_id: string) => {
         </v-row>
 
         <template v-if="loading" class="d-flex justify-center align-center">
-            <v-progress-circular indeterminate color="primary" size="24" class="d-flex justify-center align-center" />
-            <span> Loading..</span>
+            <Loading />
         </template>
 
         <v-data-table v-else :items="filteredUsers" :headers="headers" item-key="user_id" class="elevation-1">

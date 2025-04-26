@@ -33,7 +33,6 @@ const sort_options = computed(() => [
     { name: "item_name", label: t('filter.name') },
 ]);
 
-
 const fetchData = async () => {
     loading.value = true;
     try {
@@ -180,8 +179,8 @@ const clearAllFilters = async () => {
                                 <v-list class="pt-2">
                                     <v-list-item v-for="(item, index) in category_items" :key="index" density="compact"
                                         class="px-1">
-                                        <v-checkbox v-model="selected_category"  :label="item.title"
-                                            :value="item.value" hide-details density="compact"></v-checkbox>
+                                        <v-checkbox v-model="selected_category" :label="item.title" :value="item.value"
+                                            hide-details density="compact"></v-checkbox>
                                     </v-list-item>
                                 </v-list>
                                 <v-card-actions class="justify-end pt-2">
@@ -205,7 +204,10 @@ const clearAllFilters = async () => {
             </v-card-text>
         </v-card>
 
-        <v-progress-linear v-if="loading" indeterminate color="primary"></v-progress-linear>
+        <template v-if="loading" class="d-flex justify-center align-center">
+            <Loading />
+        </template>
+
         <v-row v-else>
             <v-col cols="12">
                 <v-tabs v-model="tab" grow class="mb-10">

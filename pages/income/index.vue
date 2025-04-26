@@ -238,8 +238,8 @@ const totalProfit = computed(() => {
                         <v-list class="pt-2">
                             <v-list-item v-for="(item, index) in category_options" :key="index" density="compact"
                                 class="px-1">
-                                <v-checkbox v-model="selected_category"  :label="item.title"
-                                    :value="item.value" hide-details density="compact"></v-checkbox>
+                                <v-checkbox v-model="selected_category" :label="item.title" :value="item.value"
+                                    hide-details density="compact"></v-checkbox>
                             </v-list-item>
                         </v-list>
                         <v-card-actions class="justify-end pt-2">
@@ -265,8 +265,8 @@ const totalProfit = computed(() => {
                         <v-list class="pt-2">
                             <v-list-item v-for="(item, index) in platform_options" :key="index" density="compact"
                                 class="px-1">
-                                <v-checkbox v-model="selected_platform"  :label="item.title"
-                                    :value="item.value" hide-details density="compact"></v-checkbox>
+                                <v-checkbox v-model="selected_platform" :label="item.title" :value="item.value"
+                                    hide-details density="compact"></v-checkbox>
                             </v-list-item>
                         </v-list>
                         <v-card-actions class="justify-end pt-2">
@@ -294,8 +294,7 @@ const totalProfit = computed(() => {
         </v-row>
 
         <template v-if="loading" class="d-flex justify-center align-center">
-            <v-progress-circular indeterminate color="primary" size="24" class="d-flex justify-center align-center" />
-            <span> Loading..</span>
+            <Loading />
         </template>
 
         <template v-else>

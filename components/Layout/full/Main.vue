@@ -11,7 +11,7 @@ const appBarColor = computed(() => isDarkTheme.value ? 'grey-darken-3' : 'grey-l
 const iconTextColor = computed(() => isDarkTheme.value ? 'white' : 'black')
 
 const { t } = useI18n();
-const drawer = ref(true);
+const drawer = ref(false);
 const route = useRoute();
 
 const navbar_items = computed(() => [
@@ -26,13 +26,22 @@ const navbar_items = computed(() => [
 
 const isActive = (href: string) => route.path === href;
 
-const fullText = "GGAS Stock ";
+const fullText = "GGAS Stock";
+
+onMounted(() => {
+    drawer.value = JSON.parse(localStorage.getItem("drawer") || "true");
+});
+
+const setDrawer = () => {
+    drawer.value = !drawer.value;
+    localStorage.setItem("drawer", JSON.stringify(drawer.value));
+}; 
 </script>
 
 
 <template>
     <v-app-bar app fixed elevation="4" density="comfortable" :color="appBarColor">
-        <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+        <v-app-bar-nav-icon @click="setDrawer"></v-app-bar-nav-icon>
         <v-row align="center" style="width: 100%;" justify="space-between" class="px-8">
             <v-responsive class="d-flex align-center">
                 <span class="text-center text-h6 font-weight-bold">

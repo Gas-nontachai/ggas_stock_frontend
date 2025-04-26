@@ -74,8 +74,7 @@ const Done = async () => {
         </v-row>
 
         <template v-if="loading" class="d-flex justify-center align-center">
-            <v-progress-circular indeterminate color="primary" size="24" class="d-flex justify-center align-center" />
-            <span> Loading..</span>
+            <Loading />
         </template>
 
         <v-col v-else cols="12">

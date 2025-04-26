@@ -130,8 +130,7 @@ const editPlatform = (platform_id: string) => {
         </v-row>
 
         <template v-if="loading" class="d-flex justify-center align-center">
-            <v-progress-circular indeterminate color="primary" size="24" class="d-flex justify-center align-center" />
-            <span> Loading..</span>
+            <Loading />
         </template>
 
         <v-data-table v-else :items="filteredPlatforms" :headers="headers" item-key="platform_id" class="elevation-1">
@@ -171,11 +170,12 @@ const editPlatform = (platform_id: string) => {
         </v-data-table>
 
         <v-dialog v-model="add_paltform_dialog" max-width="600px">
-            <PlatformAdd @done="Done"    @close="() => { add_paltform_dialog = false }"/>
+            <PlatformAdd @done="Done" @close="() => { add_paltform_dialog = false }" />
         </v-dialog>
 
         <v-dialog v-model="edit_paltform_dialog" max-width="600px">
-            <PlatformEdit :platform_id="platform_id_current" @done="Done"   @close="() => { edit_paltform_dialog = false }"/>
+            <PlatformEdit :platform_id="platform_id_current" @done="Done"
+                @close="() => { edit_paltform_dialog = false }" />
         </v-dialog>
 
     </v-container>
