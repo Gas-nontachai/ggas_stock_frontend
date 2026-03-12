@@ -98,7 +98,7 @@ const getUserName = (user_id: string) => {
                                 style="object-fit: cover; height: 300px;" />
                         </v-carousel-item>
                     </v-carousel>
-                    <v-img v-else src="/default-cart.png" alt="{{ t('no_image_available') }}" height="300" cover
+                    <v-img v-else :src="'/default-cart.png'" alt="{{ t('no_image_available') }}" height="300" cover
                         class="bg-grey-lighten-2" />
                 </v-col>
                 <v-col cols="12" md="6">

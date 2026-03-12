@@ -211,7 +211,7 @@ const done = async () => {
                                     style="object-fit: cover; height: 300px;" />
                             </v-carousel-item>
                         </v-carousel>
-                        <v-img v-else src="/default-cart.png" height="200" cover class="bg-grey-lighten-2"
+                        <v-img v-else :src="'/default-cart.png'" height="200" cover class="bg-grey-lighten-2"
                             style="object-fit: cover; height: 300px;">
                             <template v-slot:placeholder>
                                 <div class="d-flex align-center justify-center fill-height">

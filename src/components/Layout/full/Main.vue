@@ -59,7 +59,7 @@ const setDrawer = () => {
     <v-navigation-drawer v-model="drawer" app :color="drawerColor" :dark="isDarkTheme">
         <v-list>
             <div class="d-flex justify-center my-4">
-                <img src="/logo.jpg" alt="logo" width="90" height="90" />
+                <img :src="'/logo.jpg'" alt="logo" width="90" height="90" />
             </div>
 
             <v-divider :thickness="3" class="border-opacity-50 mx-2 my-2"></v-divider>
