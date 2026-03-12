@@ -3,21 +3,16 @@ import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import Swal from 'sweetalert2';
-import type { User } from '~/misc/user';
 
 const { t } = useI18n();
 const router = useRouter();
 const { authLogout } = useAuth();
+const { authUser, clearSession } = useSession();
 
-const cookie = useCookie<User | null>('User');
-
-// fallback ถ้า cookie ไม่มีค่าจะใช้ object ว่างๆ
-const user = computed(() => cookie.value ?? { user_image: '', user_id: 0 });
-
-// สร้าง url รูปโปรไฟล์ถ้ามีรูป
+const user = computed(() => authUser.value ?? null);
 const userImageUrl = computed(() => {
-  if (user.value.user_image) {
-    return `${useRuntimeConfig().public.apiBaseUrl}${user.value.user_image}`;
+  if (Array.isArray(user.value?.user_image) && user.value.user_image.length > 0) {
+    return user.value.user_image[0];
   }
   return null;
 });
@@ -25,7 +20,7 @@ const userImageUrl = computed(() => {
 const items = computed(() => [
   {
     title: t('profile_dropdown.title'),
-    href: `/user/profile?user_id=${user.value.user_id}`,
+    href: user.value?.user_id ? `/user/profile?user_id=${user.value.user_id}` : "/user/profile",
     icon: 'mdi-account',
   },
   {
@@ -50,9 +45,13 @@ const logout = async () => {
   });
 
   if (result.isConfirmed) {
-    await authLogout();
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    try {
+      await authLogout();
+    } catch {
+      // Cleanup still runs when logout endpoint fails.
+    } finally {
+      clearSession();
+    }
 
     router.push('/auth/login');
 

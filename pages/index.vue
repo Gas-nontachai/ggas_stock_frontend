@@ -1,11 +1,4 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
-
-onMounted(() => {
-    if (!useCookie('Authorization').value) {
-        window.location.href = "/auth/login";
-    }
-}); 
 </script>
 
 <template>

@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n';
+import Swal from "sweetalert2";
 
 definePageMeta({
   layout: 'blank',
@@ -9,14 +10,25 @@ definePageMeta({
 
 const { t } = useI18n();
 const { authLogin } = useAuth()
+const { setSession } = useSession()
 
 const router = useRouter()
+const route = useRoute()
 const username = ref('')
 const password = ref('')
 const loading = ref(false)
-const rememberMe = ref(false)
 const error = ref('')
 const showPassword = ref(false)
+
+onMounted(async () => {
+  if (route.query.reason === "legacy_auth_moved") {
+    await Swal.fire({
+      title: "Authentication Updated",
+      text: "Register and password reset are now handled by Keycloak.",
+      icon: "info",
+    });
+  }
+});
 
 const login = async () => {
   try {
@@ -25,12 +37,11 @@ const login = async () => {
       username: username.value,
       password: password.value,
     })
-    useCookie('Authorization').value = response.token
-    useCookie('User').value = response.user
+    setSession(response)
 
     router.push('/')
   } catch (err: any) {
-    error.value = err.response?.data?.message || 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ'
+    error.value = err?.response?._data?.error?.message || err?.message || 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ'
   } finally {
     loading.value = false
   }
@@ -62,18 +73,9 @@ const login = async () => {
               @click:append-inner="showPassword = !showPassword" variant="outlined" density="comfortable" required
               class="mt-4" />
 
-            <v-checkbox v-model="rememberMe" :label="t('login.remember_me')" class="mt-2" density="comfortable"
-              color="primary" />
-
             <v-btn type="submit" color="primary" class="mt-4" block size="large" :loading="loading" :disabled="loading">
               <v-icon start v-if="!loading">mdi-login-variant</v-icon>
               {{ t('button.login') }}
-            </v-btn>
-
-            <v-btn @click="() => router.push('forget-password')" variant="text" color="primary" class="mt-4" block
-              size="small">
-              <v-icon start>mdi-file-question</v-icon>
-              {{ t('button.forget_password') }}
             </v-btn>
 
             <v-alert v-if="error" type="error" class="mt-4" dense border="start" variant="tonal">
