@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import Swal from 'sweetalert2';
 import { onMounted, ref, computed } from 'vue';
 import { formatDate } from '@/utils/date-func';
 import { decimalFix } from '@/utils/number-func';
@@ -7,8 +6,9 @@ import type { Expense, Category } from "@/misc/type";
 import { useI18n } from 'vue-i18n';
 import { useTheme } from 'vuetify'
 
-const { getExpenseBy, deleteExpenseBy } = useExpense();
-const { getCategoryBy } = useCategory();
+const { searchExpense, deleteExpense: removeExpense } = useExpense();
+const { searchCategory } = useCategory();
+const { confirmAndRun } = useConfirmAction();
 const { t, locale } = useI18n();
 
 const theme = useTheme()
@@ -30,15 +30,17 @@ const category_expenses = ref<{ title: string, value: string }[]>()
 const fetchData = async () => {
     loading.value = true;
     try {
-        const response = await getExpenseBy({
-            where: {
-                expense_name: { $like: search_query.value },
-                expense_category_id: { $in: selected_category.value },
-                createdAt: {
-                    $gt: date_selected.value && Array.isArray(date_selected.value) ? date_selected.value[0] : null,
-                    $lt: date_selected.value && Array.isArray(date_selected.value) ? date_selected.value[1] : null,
+        const response = await searchExpense({
+            ...buildSearchQuery({
+                where: {
+                    expense_name: { $like: search_query.value },
+                    expense_category_id: { $in: selected_category.value },
+                    createdAt: {
+                        $gt: date_selected.value && Array.isArray(date_selected.value) ? date_selected.value[0] : null,
+                        $lt: date_selected.value && Array.isArray(date_selected.value) ? date_selected.value[1] : null,
+                    },
                 },
-            },
+            }),
         });
 
         expenses.value = response;
@@ -51,7 +53,7 @@ const fetchData = async () => {
 
 const fetchCategory = async () => {
     try {
-        const response = await getCategoryBy({
+        const response = await searchCategory({
             where: {
                 use_for: 'expense'
             }
@@ -88,53 +90,13 @@ const headers = computed(() => [
     { title: t('expense.actions'), align: 'center' as const, key: 'actions' }
 ]);
 
-const deleteExpense = (expense_id: string) => {
-    Swal.fire({
-        title: 'Are you sure?',
-        text: 'This action cannot be undone.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'No, keep it',
-        customClass: {
-            confirmButton: 'swal2-confirm-white',
-            cancelButton: 'swal2-cancel-white',
-        },
-        preConfirm: async () => {
-            Swal.fire({
-                title: 'Submitting...',
-                text: 'Please wait while we submit the form.',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                },
-                showConfirmButton: false,
-            });
-
-            try {
-                await deleteExpenseBy({ expense_id });
-                Swal.close();
-                await fetchData();
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: 'Expense deleted successfully!',
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                });
-            } catch (error) {
-                Swal.close();
-                await fetchData();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'There was an issue deleting the expense. Please try again.',
-                    showConfirmButton: true,
-                });
-            }
-        }
+const deleteExpense = async (expense_id: string) => {
+    await confirmAndRun(async () => {
+        await removeExpense(expense_id);
+        await fetchData();
+    }, {
+        confirmButtonText: t('button.delete'),
+        successText: 'Expense deleted successfully!',
     });
 };
 
@@ -164,29 +126,32 @@ const totalAmount = computed(() => {
 </script>
 
 <template>
-    <v-container>
-        <div class="d-flex justify-space-between align-center mb-4">
-            <div>
-                <h1 class=" font-weight-bold">{{ t('expense.title') }}</h1>
-                <p>{{ t('expense.description') }}</p>
+    <section class="page-shell">
+        <div class="page-header">
+            <div class="page-heading">
+                <h1 class="page-title">{{ t('expense.title') }}</h1>
+                <p class="page-subtitle">{{ t('expense.description') }}</p>
             </div>
-            <v-btn @click="addExpense" color="primary">{{ t('expense.add_btn') }}</v-btn>
+            <div class="page-actions">
+                <v-btn @click="addExpense" color="primary" class="page-primary-action">{{ t('expense.add_btn') }}</v-btn>
+            </div>
         </div>
 
-        <v-row>
-            <v-col cols="2" md="1">
-                <v-btn @click="collapseOpen = !collapseOpen" variant="text">
+        <v-card class="filter-bar">
+            <v-row>
+            <v-col cols="12" md="1">
+                <v-btn @click="collapseOpen = !collapseOpen" variant="text" class="w-100">
                     <v-icon>
                         {{ collapseOpen ? 'mdi-arrow-collapse' : 'mdi-arrow-expand' }}
                     </v-icon>
                 </v-btn>
             </v-col>
-            <v-col cols="10" md="4">
+            <v-col cols="12" md="4">
                 <v-text-field v-model="search_query" :label="t('expense.search')" prepend-inner-icon="mdi-magnify"
                     clearable single-line hide-details density="compact" variant="outlined"
                     @click:prepend-inner="fetchData" @keyup.enter="fetchData" class="rounded-lg"></v-text-field>
             </v-col>
-            <v-col cols="6" md="3">
+            <v-col cols="12" md="3">
                 <v-menu v-model="menu_filter" :close-on-content-click="false" max-width="300px">
                     <template #activator="{ props }">
                         <v-btn v-bind="props" :color="selected_category.length ? 'primary' : ''" variant="outlined"
@@ -215,7 +180,7 @@ const totalAmount = computed(() => {
                 </v-menu>
             </v-col>
 
-            <v-col cols="6" md="3">
+            <v-col cols="12" md="4">
                 <DatePicker range :locale="locale" :dark="isDarkTheme" :teleport="true" :cancelText="t('button.cancel')"
                     :selectText="t('button.select')" preview-format="dd MMMM yyyy" :markers="[
                         { date: new Date(), type: 'dot', tooltip: [{ text: 'วันนี้', color: 'red' }] }
@@ -223,18 +188,19 @@ const totalAmount = computed(() => {
                     class=" w-full " />
             </v-col>
         </v-row>
+        </v-card>
 
         <template v-if="loading" class="d-flex justify-center align-center">
             <Loading />
         </template>
 
         <template v-else>
-            <v-card class="pa-4 elevation-3 rounded-lg my-3 gradient-border">
+            <v-card class="stats-strip gradient-border">
                 <v-expand-transition>
                     <v-row align="center" justify="space-evenly" no-gutters v-show="collapseOpen">
                         <v-col cols="12" md="4" class="mb-3 mb-md-0 px-2">
                             <div class="d-flex flex-column align-center text-center">
-                                <div class=" text-grey-darken-1 mb-1">{{ $t('expense.total_amount') }}</div>
+                                <div class="mb-1 app-muted-text">{{ $t('expense.total_amount') }}</div>
                                 <div class="text-h4 font-weight-bold text-error d-flex align-center">
                                     <v-icon color="error" size="large" class="mr-1">mdi-currency-thb</v-icon>
                                     {{ totalAmount }}
@@ -244,7 +210,7 @@ const totalAmount = computed(() => {
 
                         <v-col cols="12" md="4" class="mb-3 mb-md-0 px-2">
                             <div class="d-flex flex-column align-center text-center">
-                                <div class=" text-grey-darken-1 mb-1">{{ $t('expense.transaction_count') }}
+                                <div class="mb-1 app-muted-text">{{ $t('expense.transaction_count') }}
                                 </div>
                                 <div class="text-h5 font-weight-bold text-primary d-flex align-center">
                                     <v-icon color="primary" class="mr-1">mdi-format-list-bulleted</v-icon>
@@ -255,13 +221,12 @@ const totalAmount = computed(() => {
 
                         <v-col cols="12" md="4" class="text-center text-md-end px-2">
                             <template v-if="date_selected">
-                                <div class=" text-grey-darken-1 mb-1">{{ $t('expense.date_range') }}</div>
-                                <v-chip color="deep-purple-lighten-4" class="pa-3 text-body-2 font-weight-medium"
-                                    variant="elevated" prepend-icon="mdi-calendar-range">
-                                    <span class="text-deep-purple-darken-3">
+                                <div class="mb-1 app-muted-text">{{ $t('expense.date_range') }}</div>
+                                <v-chip color="secondary" class="pa-3 text-body-2 font-weight-medium"
+                                    variant="tonal" prepend-icon="mdi-calendar-range">
+                                    <span>
                                         {{ formatDate(date_selected[0]) }}
-                                        <span v-if="date_selected[1]"> - {{ formatDate(date_selected[1])
-                                            }}</span>
+                                        <span v-if="date_selected[1]"> - {{ formatDate(date_selected[1]) }}</span>
                                     </span>
                                 </v-chip>
                             </template>
@@ -270,7 +235,8 @@ const totalAmount = computed(() => {
                 </v-expand-transition>
             </v-card>
 
-            <v-data-table :items="expenses" :headers="headers" item-key="expense_id" class="elevation-1">
+            <div class="table-shell">
+                <v-data-table :items="expenses" :headers="headers" item-key="expense_id" class="elevation-1">
                 <template v-slot:item.expense_amount="{ item }">
                     <span>{{ decimalFix(item.expense_amount) }} ฿ </span>
                 </template>
@@ -284,61 +250,22 @@ const totalAmount = computed(() => {
                 </template>
 
                 <template v-slot:item.actions="{ item }">
-                    <v-menu bottom right>
-                        <template v-slot:activator="{ props }">
-                            <v-btn icon variant="text" size="small" v-bind="props">
-                                <v-chip color="red">
-                                    <v-icon>mdi-dots-vertical</v-icon>
-                                </v-chip>
-                            </v-btn>
-                        </template>
-                        <v-list>
-                            <v-list-item @click="editExpense(item.expense_id)">
-                                <div class="d-flex">
-                                    <v-icon>mdi-pencil</v-icon>
-                                    <v-list-item-title>{{ t('button.edit') }}</v-list-item-title>
-                                </div>
-                            </v-list-item>
-                            <v-list-item @click="deleteExpense(item.expense_id)">
-                                <div class="d-flex">
-                                    <v-icon>mdi-delete</v-icon>
-                                    <v-list-item-title>{{ t('button.delete') }}</v-list-item-title>
-                                </div>
-                            </v-list-item>
-                        </v-list>
-                    </v-menu>
+                    <TableActionMenu :edit-text="t('button.edit')" :delete-text="t('button.delete')"
+                        @edit="editExpense(item.expense_id)" @delete="deleteExpense(item.expense_id)" />
                 </template>
-            </v-data-table>
+                </v-data-table>
+            </div>
         </template>
 
-        <v-dialog v-model="add_expenses_dialog" max-width="600px">
+        <v-dialog v-model="add_expenses_dialog" max-width="720" scrollable>
             <ExpenseAdd :category_expenses="category_expenses" @done="Done"
                 @close="() => { add_expenses_dialog = false }" />
         </v-dialog>
 
-        <v-dialog v-model="edit_expenses_dialog" max-width="600px">
+        <v-dialog v-model="edit_expenses_dialog" max-width="720" scrollable>
             <ExpenseEdit :category_expenses="category_expenses" :expense_id="expense_id_current" @done="Done"
                 @close="() => { edit_expenses_dialog = false }" />
         </v-dialog>
 
-    </v-container>
+    </section>
 </template>
-
-<style>
-.gradient-border {
-    position: relative;
-    background: linear-gradient(to right, #ffffff, #f5f5f5);
-    border: none;
-    overflow: hidden;
-}
-
-.gradient-border::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(to right, #673ab7, #e91e63);
-}
-</style>

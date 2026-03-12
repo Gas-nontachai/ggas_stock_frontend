@@ -1,150 +1,130 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, type PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
-import Swal from 'sweetalert2';
-import type { Item } from "@/misc/type";
+import {
+  blockInvalidNumericKeys,
+  normalizePositiveDecimal,
+  positiveDecimalRules,
+  requiredRule,
+  sanitizePositiveDecimalInput,
+  selectRequiredRule,
+} from '@/utils/rules';
+import type { Item } from '@/misc/type';
 
-const { insertItemBy } = useItem();
+const { createItem } = useItem();
+const { uploadFilesAndGetPublicUrls } = useStorage();
+const { success, error, warning } = useAppSnackbar();
 
 const { t } = useI18n();
 const emit = defineEmits(['done', 'close']);
+const formRef = ref();
 
 const props = defineProps({
-    category_items: {
-        type: Array as PropType<{ title: string, value: string }[]>,
-    },
+  category_items: {
+    type: Array as PropType<{ title: string, value: string }[]>,
+  },
 });
 
-const item = ref<Item>({
-    item_id: '',
-    item_name: '',
-    item_buy_price: 0,
-    note: '',
-    item_image: '',
-    item_category_id: '',
-    item_status: 0,
+const item = ref({
+  item_name: '',
+  item_buy_price: '',
+  note: '',
+  item_category_id: '',
 });
 
 const buffer_image = ref<Array<{ files?: File[], src: string }>>([]);
+const itemNameRules = [requiredRule(t, t('item.item_name'))];
+const itemPriceRules = positiveDecimalRules(t, t('item.item_price'), 2);
+const itemCategoryRules = [selectRequiredRule(t, t('item.item_category'))];
+
+const sanitizePrice = () => {
+  item.value.item_buy_price = sanitizePositiveDecimalInput(item.value.item_buy_price, 2);
+};
 
 const submitForm = async () => {
-    Swal.fire({
-        title: 'Submitting...',
-        text: 'Please wait while we submit the form.',
-        allowOutsideClick: false,
-        didOpen: () => {
-            Swal.showLoading();
-        },
-        showConfirmButton: false,
-    });
-    try {
-        let condition: { file: File[] } = {
-            file: []
-        };
+  const validation = await formRef.value?.validate();
+  if (!validation?.valid) {
+    warning(t('validation.form_invalid'));
+    return;
+  }
 
-        if (buffer_image.value.length) {
-            condition.file = buffer_image.value
-                .flatMap(item => item.files ?? []);
-        }
+  const buyPrice = normalizePositiveDecimal(item.value.item_buy_price, 2);
+  if (!buyPrice) {
+    warning(t('validation.positive_number', { field: t('item.item_price') }));
+    return;
+  }
 
-        await insertItemBy({ item: item.value, ...condition });
+  try {
+    const files = buffer_image.value.flatMap((entry) => entry.files ?? []);
+    const image_urls = await uploadFilesAndGetPublicUrls(files);
 
-        Swal.close();
-        Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: 'Item added successfully!',
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-        });
-        emit('done', true);
-    } catch (error) {
-        Swal.close();
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Something went wrong, please try again.',
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-        });
-        emit('done', true);
-    }
+    await createItem({
+      item_name: item.value.item_name.trim(),
+      item_buy_price: buyPrice,
+      note: item.value.note,
+      item_category_id: item.value.item_category_id,
+      item_status: 1,
+      image_urls,
+    } as Partial<Item>);
+
+    success(t('message.submit_success'));
+    emit('done', true);
+  } catch {
+    error(t('message.submit_error'));
+  }
 };
 
 function uploadFile(e: Event) {
-    const target = e.target as HTMLInputElement;
-    if (target.files?.length) {
-        for (const file of target.files) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                const newItem = {
-                    files: [file],
-                    src: reader.result as string,
-                };
-                buffer_image.value = [...buffer_image.value, newItem];
-            };
-            reader.readAsDataURL(file);
-        }
+  const target = e.target as HTMLInputElement;
+  if (target.files?.length) {
+    for (const file of target.files) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        buffer_image.value = [...buffer_image.value, {
+          files: [file],
+          src: reader.result as string,
+        }];
+      };
+      reader.readAsDataURL(file);
     }
-} 
+  }
+}
 </script>
 
 <template>
-    <v-card>
-        <v-card-title>
-            <v-row justify="space-between" align="center" class="py-2 px-1">
-                <v-col cols="auto">
-                    <div class="d-flex align-center">
-                        <v-icon color="primary" class="mr-3" size="large">
-                            mdi-cart-plus
-                        </v-icon>
-                        <span class="text-h5 font-weight-medium gradient-text">{{ t('item.add_title') }}</span>
-                    </div>
-                </v-col>
-                <v-col cols="auto">
-                    <v-btn icon variant="tonal" color="error" @click="emit('close', true)"
-                        class="rounded-circle elevation-1" size="small">
-                        <v-icon>mdi-close</v-icon>
-                    </v-btn>
-                </v-col>
-            </v-row>
-        </v-card-title>
-        <v-card-text>
-            <v-form>
-                <v-row>
-                    <v-col cols="12">
-                        <v-text-field v-model="item.item_name" :label="t('item.item_name')" variant="outlined"
-                            required></v-text-field>
-                    </v-col>
-                    <v-col cols="12" md="6">
-                        <v-text-field v-model="item.item_buy_price" :label="t('item.item_price')" variant="outlined"
-                            type="number" required></v-text-field>
-                    </v-col>
-                    <v-col cols="12">
-                        <v-textarea v-model="item.note" :label="t('item.item_note')" variant="outlined"
-                            rows="3"></v-textarea>
-                    </v-col>
-
-                    <v-col cols="12" md="6">
-                        <v-select v-model="item.item_category_id" :items="props.category_items" item-value="value"
-                            item-text="title" :label="t('item.item_category')" variant="outlined" required />
-                    </v-col>
-
-                    <v-col cols="12">
-                        <v-file-input accept="image/*" @change="uploadFile" :label="t('item.item_image')"
-                            variant="outlined" multiple prepend-icon="mdi-camera" />
-                    </v-col>
-                </v-row>
-            </v-form>
-        </v-card-text>
-        <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="error" variant="text" @click="emit('close', true);">{{ t('button.cancel') }}</v-btn>
-            <v-btn color="primary" variant="elevated" @click="submitForm">{{ t('button.submit') }}</v-btn>
-        </v-card-actions>
-    </v-card>
+  <FormDialogFrame
+    icon="mdi-cart-plus"
+    :title="t('item.add_title')"
+    :submit-text="t('button.submit')"
+    :cancel-text="t('button.cancel')"
+    @close="emit('close', true)"
+    @cancel="emit('close', true)"
+    @submit="submitForm"
+  >
+    <v-form ref="formRef" validate-on="blur lazy" @submit.prevent="submitForm">
+      <v-row class="form-grid">
+        <v-col cols="12">
+          <v-text-field v-model="item.item_name" :label="t('item.item_name')" :rules="itemNameRules" variant="outlined"
+            density="comfortable" />
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-text-field v-model="item.item_buy_price" :label="t('item.item_price')" :rules="itemPriceRules"
+            variant="outlined" density="comfortable" inputmode="decimal" @keydown="blockInvalidNumericKeys"
+            @input="sanitizePrice" @blur="sanitizePrice" />
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-select v-model="item.item_category_id" :items="props.category_items" item-value="value" item-title="title"
+            :label="t('item.item_category')" :rules="itemCategoryRules" variant="outlined" density="comfortable" />
+        </v-col>
+        <v-col cols="12">
+          <v-textarea v-model="item.note" :label="t('item.item_note')" variant="outlined" density="comfortable"
+            rows="3" />
+        </v-col>
+        <v-col cols="12">
+          <v-file-input accept="image/*" @change="uploadFile" :label="t('item.item_image')" variant="outlined"
+            density="comfortable" multiple prepend-icon="mdi-camera" />
+        </v-col>
+      </v-row>
+    </v-form>
+  </FormDialogFrame>
 </template>

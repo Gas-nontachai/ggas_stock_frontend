@@ -1,46 +1,19 @@
 import type { Income } from "@/misc/type";
 
-const prefix = 'income'
+const resource = createCrudResource<Income>("income");
 
-const getIncomeBy = (data?: any): Promise<Income[]> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/getIncomeBy`, {
-    method: "POST",
-    body: data,
-})
-
-const getIncomeByID = (data: { income_id: string }): Promise<Income> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/getIncomeByID`, {
-    method: "POST",
-    body: data,
-})
-
-const insertIncomeBy = (data: Income): Promise<Income> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/insertIncomeBy`, {
-    method: "POST",
-    body: data,
-})
-
-const updateIncomeBy = (data: Income, update: '' | 'mark_re_sell' = ''): Promise<Income> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/updateIncomeBy`, {
-    method: "POST",
-    body: {
-        ...data,
-        update: update || undefined,
-    }
-})
-
-const deleteIncomeBy = (data: { income_id: string }): Promise<Income> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/deleteIncomeBy`, {
-    method: "POST",
-    body: data,
-})
+const searchIncome = (data?: unknown): Promise<Income[]> => resource.search(data);
+const getIncome = (income_id: string): Promise<Income> => resource.get(income_id);
+const createIncome = (data: Partial<Income>): Promise<Income> => resource.create(data);
+const updateIncome = (income_id: string, data: Partial<Income>): Promise<Income> => resource.update(income_id, data);
+const deleteIncome = (income_id: string): Promise<Income> => resource.remove(income_id);
 
 export default function useIncome() {
-    return {
-        getIncomeBy,
-        getIncomeByID,
-        insertIncomeBy,
-        updateIncomeBy,
-        deleteIncomeBy,
-    };
+  return {
+    searchIncome,
+    getIncome,
+    createIncome,
+    updateIncome,
+    deleteIncome,
+  };
 }

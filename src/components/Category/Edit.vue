@@ -1,133 +1,86 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import Swal from 'sweetalert2';
-import type { Category } from "@/misc/type";
+import { requiredRule, selectRequiredRule } from '@/utils/rules';
+import type { Category } from '@/misc/type';
 
-const { getCategoryByID, updateCategoryBy } = useCategory();
+const { getCategory, updateCategory } = useCategory();
+const { success, error, warning } = useAppSnackbar();
 
 const { t } = useI18n();
 const emit = defineEmits(['done', 'close']);
+const formRef = ref();
 
 const props = defineProps({
-    category_id: {
-        type: String,
-        required: true,
-    },
+  category_id: {
+    type: String,
+    required: true,
+  },
 });
 
-const use_for_item = ['item', 'expense']
+const use_for_item = [
+  { title: t('category.item'), value: 'item' },
+  { title: t('category.expense'), value: 'expense' },
+];
+const categoryNameRules = [requiredRule(t, t('category.category_name'))];
+const useForRules = [selectRequiredRule(t, t('category.use_for'))];
 
 const category = ref<Category>({
-    category_id: '',
-    category_name: '',
-    use_for: '',
+  category_id: '',
+  category_name: '',
+  use_for: '',
 });
 
 onMounted(async () => {
-    try {
-        const response = await getCategoryByID({ category_id: props.category_id });
-        category.value = response;
-    } catch (error) {
-        console.error('Error fetching category:', error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Failed to load category data. Please try again later.',
-        });
-    }
+  try {
+    const response = await getCategory(props.category_id);
+    category.value = response;
+  } catch {
+    error(t('message.load_error'));
+  }
 });
 
 const submitForm = async () => {
-    if (!category.value.category_name) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Missing Category Name',
-            text: 'Please provide a category name before submitting.',
-        });
-        return;
-    }
+  const validation = await formRef.value?.validate();
+  if (!validation?.valid) {
+    warning(t('validation.form_invalid'));
+    return;
+  }
 
-    Swal.fire({
-        title: 'Submitting...',
-        text: 'Please wait while we submit the form.',
-        allowOutsideClick: false,
-        didOpen: () => {
-            Swal.showLoading();
-        },
-        showConfirmButton: false,
+  try {
+    await updateCategory(props.category_id, {
+      category_name: category.value.category_name.trim(),
+      use_for: category.value.use_for,
     });
-
-    try {
-        await updateCategoryBy(category.value);
-
-        Swal.close();
-        Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: 'Category updated successfully!',
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-        });
-
-        emit('done', true);
-    } catch (error) {
-        Swal.close();
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Something went wrong, please try again.',
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-        });
-
-        emit('done', false);
-    }
+    success(t('message.submit_success'));
+    emit('done', true);
+  } catch {
+    error(t('message.submit_error'));
+  }
 };
 </script>
 
 <template>
-    <v-card>
-        <v-card-title>
-            <v-row justify="space-between" align="center" class="py-2 px-1">
-                <v-col cols="auto">
-                    <div class="d-flex align-center">
-                        <v-icon color="primary" class="mr-3" size="large">
-                            mdi-folder
-                        </v-icon>
-                        <span class="text-h5 font-weight-medium gradient-text">{{ t('expense.add_title') }}</span>
-                    </div>
-                </v-col>
-                <v-col cols="auto">
-                    <v-btn icon variant="tonal" color="error" @click="emit('close', true)"
-                        class="rounded-circle elevation-1" size="small">
-                        <v-icon>mdi-close</v-icon>
-                    </v-btn>
-                </v-col>
-            </v-row>
-        </v-card-title>
-        <v-card-text>
-            <v-form>
-                <v-row>
-                    <v-col cols="12" md="6">
-                        <v-text-field v-model="category.category_name" :label="t('category.category_name')"
-                            variant="outlined" required></v-text-field>
-                    </v-col>
-                    <v-col cols="12" md="6">
-                        <v-select v-model="category.use_for" :items="use_for_item" expense-value="value"
-                            expense-text="title" :label="t('category.use_for')" variant="outlined" required></v-select>
-                    </v-col>
-                </v-row>
-            </v-form>
-        </v-card-text>
-        <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="error" variant="text" @click="emit('close', true);">{{ t('button.cancel') }}</v-btn>
-            <v-btn color="primary" variant="elevated" @click="submitForm">{{ t('button.submit') }}</v-btn>
-        </v-card-actions>
-    </v-card>
+  <FormDialogFrame
+    icon="mdi-folder-edit"
+    :title="t('category.edit_title')"
+    :submit-text="t('button.submit')"
+    :cancel-text="t('button.cancel')"
+    @close="emit('close', true)"
+    @cancel="emit('close', true)"
+    @submit="submitForm"
+  >
+    <v-form ref="formRef" validate-on="blur lazy" @submit.prevent="submitForm">
+      <v-row class="form-grid">
+        <v-col cols="12" md="6">
+          <v-text-field v-model="category.category_name" :label="t('category.category_name')" :rules="categoryNameRules"
+            variant="outlined" density="comfortable" />
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-select v-model="category.use_for" :items="use_for_item" item-value="value" item-title="title"
+            :label="t('category.use_for')" :rules="useForRules" variant="outlined" density="comfortable" />
+        </v-col>
+      </v-row>
+    </v-form>
+  </FormDialogFrame>
 </template>

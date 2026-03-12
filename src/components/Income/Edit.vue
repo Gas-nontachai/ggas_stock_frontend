@@ -1,170 +1,170 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import Swal from 'sweetalert2';
 import { decimalFix } from '@/utils/number-func';
-import type { Income } from "@/misc/type";
+import {
+  blockInvalidNumericKeys,
+  normalizePositiveDecimal,
+  positiveDecimalRules,
+  sanitizePositiveDecimalInput,
+  selectRequiredRule,
+} from '@/utils/rules';
+import type { Income } from '@/misc/type';
 
-const { getIncomeBy, updateIncomeBy } = useIncome();
-const { getPlatformBy } = usePlatform();
+const { searchIncome, updateIncome } = useIncome();
+const { searchPlatform } = usePlatform();
+const { success, error, warning } = useAppSnackbar();
 
 const { t } = useI18n();
 const emit = defineEmits(['done', 'close']);
 
 const props = defineProps<{
-    income_id: string
+  income_id: string
 }>();
 
+const formRef = ref();
+const confirmLossDialog = ref(false);
 const income = ref<Income>({
-    income_id: '',
-    income_sell_price: 0,
-    platform_id: '',
-    note: '',
-    item_id: ''
+  income_id: '',
+  income_sell_price: 0,
+  platform_id: '',
+  note: '',
+  item_id: '',
 });
+const sellPriceInput = ref('');
 
 const platform_items = ref<{ title: string, value: string }[]>([]);
+const sellPriceRules = positiveDecimalRules(t, t('income.income_sell_price'), 2);
+const platformRules = [selectRequiredRule(t, t('income.platform_id'))];
 
-const profitAmount = computed(() => income.value.income_sell_price - (income.value.tb_item?.item_buy_price || 0));
+const normalizedSellPrice = computed(() => normalizePositiveDecimal(sellPriceInput.value, 2) || 0);
+const profitAmount = computed(() => normalizedSellPrice.value - (income.value.tb_item?.item_buy_price || 0));
 const isProfit = computed(() => profitAmount.value > 0);
-const profitStatus = computed(() => isProfit.value ? 'กำไร' : 'ขาดทุน');
+
+const sanitizeSellPrice = () => {
+  sellPriceInput.value = sanitizePositiveDecimalInput(sellPriceInput.value, 2);
+};
 
 const fetchData = async () => {
-    const res = await getIncomeBy({
-        where: {
-            income_id: props.income_id,
-        },
-        include: [
-            {
-                model: "Item",
-                attributes: ['item_buy_price', 'item_category_id', 'item_name', 'item_id', 'note'],
-            },
-        ]
-    });
-    income.value = res[0]
+  const res = await searchIncome({
+    where: {
+      income_id: props.income_id,
+    },
+    include: [
+      {
+        model: 'Item',
+        attributes: ['item_buy_price', 'item_category_id', 'item_name', 'item_id', 'note'],
+      },
+    ],
+  });
+  income.value = res[0];
+  sellPriceInput.value = String(income.value?.income_sell_price ?? '');
 };
 
 const fetchPlatform = async () => {
-    const res = await getPlatformBy();
-    platform_items.value = res.map(p => ({ title: p.platform_name, value: p.platform_id }));
+  const res = await searchPlatform();
+  platform_items.value = res.map((p) => ({ title: p.platform_name, value: p.platform_id }));
 };
 
 onMounted(async () => {
+  try {
     await fetchPlatform();
     await fetchData();
+  } catch {
+    error(t('message.load_error'));
+  }
 });
 
-const submitForm = async () => {
-    if (!isProfit.value) {
-        const result = await Swal.fire({
-            title: t('alert.confirm'),
-            text: t('alert.text_unprofit'),
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: t('button.confirm'),
-            cancelButtonText: t('button.cancel'),
-            customClass: {
-                confirmButton: 'swal2-confirm-white',
-                cancelButton: 'swal2-cancel-white',
-            },
-        });
-
-        if (!result.isConfirmed) {
-            return;
-        }
-    }
-
-    Swal.fire({
-        title: 'Submitting...',
-        text: 'Please wait while we submit the form.',
-        allowOutsideClick: false,
-        didOpen: () => {
-            Swal.showLoading();
-        },
-        showConfirmButton: false,
+const saveIncome = async () => {
+  try {
+    await updateIncome(props.income_id, {
+      income_sell_price: normalizedSellPrice.value,
+      platform_id: income.value.platform_id,
+      note: income.value.note,
+      item_id: income.value.item_id,
     });
+    success(t('message.submit_success'));
+    emit('done', true);
+  } catch {
+    error(t('message.submit_error'));
+  }
+};
 
-    try {
-        await updateIncomeBy(income.value);
+const submitForm = async () => {
+  const validation = await formRef.value?.validate();
+  if (!validation?.valid) {
+    warning(t('validation.form_invalid'));
+    return;
+  }
 
-        Swal.close();
-        Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: 'Income added successfully!',
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-        });
-        emit('done', true);
-    } catch (error) {
-        Swal.close();
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Something went wrong, please try again.',
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-        });
-        emit('done', true);
-    }
-}; 
+  if (normalizedSellPrice.value <= 0) {
+    warning(t('validation.positive_number', { field: t('income.income_sell_price') }));
+    return;
+  }
+
+  if (!isProfit.value) {
+    confirmLossDialog.value = true;
+    return;
+  }
+
+  await saveIncome();
+};
+
+const confirmLossAndSubmit = async () => {
+  confirmLossDialog.value = false;
+  await saveIncome();
+};
 </script>
 
 <template>
-    <v-card>
-        <v-card-title>
-            <v-row justify="space-between" align="center" class="py-2 px-1">
-                <v-col cols="auto">
-                    <div class="d-flex align-center">
-                        <v-icon color="primary" class="mr-3" size="large">
-                            mdi-cash
-                        </v-icon>
-                        <span class="text-h5 font-weight-medium gradient-text">{{ t('income.add_title') }}</span>
-                    </div>
-                </v-col>
-                <v-col cols="auto">
-                    <v-btn icon variant="tonal" color="error" @click="emit('close', true)"
-                        class="rounded-circle elevation-1" size="small">
-                        <v-icon>mdi-close</v-icon>
-                    </v-btn>
-                </v-col>
-            </v-row>
-        </v-card-title>
-        <v-card-text>
-            <v-form>
-                <v-row>
-                    <v-col cols="12" md="6">
-                        <v-text-field v-model="income.income_sell_price" :label="t('income.income_sell_price')"
-                            variant="outlined" type="number" required></v-text-field>
+  <FormDialogFrame
+    icon="mdi-cash-edit"
+    :title="t('income.add_title')"
+    :submit-text="t('button.submit')"
+    :cancel-text="t('button.cancel')"
+    @close="emit('close', true)"
+    @cancel="emit('close', true)"
+    @submit="submitForm"
+  >
+    <v-form ref="formRef" validate-on="blur lazy" @submit.prevent="submitForm">
+      <v-row class="form-grid">
+        <v-col cols="12" md="6">
+          <v-text-field v-model="sellPriceInput" :label="t('income.income_sell_price')" :rules="sellPriceRules"
+            variant="outlined" density="comfortable" inputmode="decimal" @keydown="blockInvalidNumericKeys"
+            @input="sanitizeSellPrice" @blur="sanitizeSellPrice" />
 
-                        <div class="d-flex flex-col mt-2">
-                            <span class="text-red">
-                                ราคาต้นทุน : {{ decimalFix(income.tb_item?.item_buy_price || 0) }} ฿
-                            </span>
-                            <span :class="isProfit ? 'text-green' : 'text-red'">
-                                {{ profitStatus }} {{ decimalFix(Math.abs(profitAmount)) }} ฿
-                            </span>
-                        </div>
-                    </v-col>
-                    <v-col cols="12" md="6">
-                        <v-select v-model="income.platform_id" :items="platform_items" item-value="value"
-                            item-text="title" :label="t('income.platform_id')" variant="outlined" required />
-                    </v-col>
-                    <v-col cols="12">
-                        <v-textarea v-model="income.note" :label="t('income.income_note')" variant="outlined"
-                            rows="3"></v-textarea>
-                    </v-col>
-                </v-row>
-            </v-form>
-        </v-card-text>
-        <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="error" variant="text" @click="emit('close', true);">{{ t('button.cancel') }}</v-btn>
-            <v-btn color="primary" variant="elevated" @click="submitForm">{{ t('button.submit') }}</v-btn>
-        </v-card-actions>
-    </v-card>
+          <div class="form-meta d-flex flex-column">
+            <span>ราคาต้นทุน : {{ decimalFix(income.tb_item?.item_buy_price || 0) }} ฿</span>
+            <span :class="isProfit ? 'text-success' : 'text-error'">
+              {{ isProfit ? 'กำไร' : 'ขาดทุน' }} {{ decimalFix(Math.abs(profitAmount)) }} ฿
+            </span>
+          </div>
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-select v-model="income.platform_id" :items="platform_items" item-value="value" item-title="title"
+            :label="t('income.platform_id')" :rules="platformRules" variant="outlined" density="comfortable" />
+        </v-col>
+        <v-col cols="12">
+          <v-textarea v-model="income.note" :label="t('income.income_note')" rows="3" variant="outlined"
+            density="comfortable" />
+        </v-col>
+      </v-row>
+    </v-form>
+
+    <v-dialog v-model="confirmLossDialog" max-width="420">
+      <FormDialogFrame
+        class="form-confirm-dialog"
+        icon="mdi-alert-outline"
+        :title="t('alert.confirm')"
+        :submit-text="t('button.confirm')"
+        :cancel-text="t('button.cancel')"
+        submit-color="warning"
+        @close="confirmLossDialog = false"
+        @cancel="confirmLossDialog = false"
+        @submit="confirmLossAndSubmit"
+      >
+        <p class="form-header__subtitle mt-0">{{ t('alert.text_unprofit') }}</p>
+      </FormDialogFrame>
+    </v-dialog>
+  </FormDialogFrame>
 </template>

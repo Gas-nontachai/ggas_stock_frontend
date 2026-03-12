@@ -14,10 +14,10 @@ useHead({
     <v-app>
       <LayoutFullMain />
       <v-main>
-        <v-container fluid class="pa-0">
-          <Breadcrumb />
+        <div class="app-content-wrap">
+          <Breadcrumb class="app-breadcrumb" />
           <NuxtPage />
-        </v-container>
+        </div>
       </v-main>
     </v-app>
   </v-locale-provider>

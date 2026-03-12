@@ -59,19 +59,18 @@ const login = async () => {
 </script>
 
 <template>
-  <v-container class="fill-height bg-grey-lighten-5" fluid>
+  <v-container class="fill-height" fluid>
     <v-row justify="center" align="center">
-      <v-col cols="12" sm="8" md="5">
-        <v-card elevation="12" class="pa-6 rounded-xl">
-          <v-card-title class="text-h5 text-center mb-6 font-weight-bold">
-            <div class="d-flex justify-space-between align-center">
-              <div>
-                <v-icon start size="32" class="mr-2 text-primary">mdi-login</v-icon>
-                {{ t('login.title') }}
+      <v-col cols="12" sm="10" md="6" lg="4">
+        <v-card class="app-form-card pa-4 pa-sm-6 rounded-xl">
+          <v-card-title class="text-h5 mb-6 font-weight-bold px-0">
+            <div class="d-flex justify-space-between align-center ga-2">
+              <div class="d-flex align-center">
+                <v-icon start size="28" class="mr-1 text-primary">mdi-login</v-icon>
+                <span>{{ t('login.title') }}</span>
               </div>
               <LayoutFullVerticalHeaderLanguageSwitcher />
             </div>
-
           </v-card-title>
 
           <v-form @submit.prevent="login" validate-on="submit lazy">

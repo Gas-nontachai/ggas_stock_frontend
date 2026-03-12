@@ -1,43 +1,23 @@
 import type { Platform } from "@/misc/type";
 
-const prefix = 'platform'
+type PlatformPayload = Omit<Partial<Platform>, "platform_image"> & {
+  image_urls?: string[];
+};
 
-const getPlatformBy = (data?: any): Promise<Platform[]> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/getPlatformBy`, {
-    method: "POST",
-    body: data,
-})
+const resource = createCrudResource<Platform, PlatformPayload, PlatformPayload>("platform");
 
-const getPlatformByID = (data: { platform_id: string }): Promise<Platform> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/getPlatformByID`, {
-    method: "POST",
-    body: data,
-})
-
-const insertPlatformBy = (data: Platform): Promise<Platform> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/insertPlatformBy`, {
-    method: "POST",
-    body: data,
-})
-
-const updatePlatformBy = (data: Platform): Promise<Platform> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/updatePlatformBy`, {
-    method: "POST",
-    body: data,
-})
-
-const deletePlatformBy = (data: { platform_id: string }): Promise<Platform> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/deletePlatformBy`, {
-    method: "POST",
-    body: data,
-})
+const searchPlatform = (data?: unknown): Promise<Platform[]> => resource.search(data);
+const getPlatform = (platform_id: string): Promise<Platform> => resource.get(platform_id);
+const createPlatform = (data: PlatformPayload): Promise<Platform> => resource.create(data);
+const updatePlatform = (platform_id: string, data: PlatformPayload): Promise<Platform> => resource.update(platform_id, data);
+const deletePlatform = (platform_id: string): Promise<Platform> => resource.remove(platform_id);
 
 export default function usePlatform() {
-    return {
-        getPlatformBy,
-        getPlatformByID,
-        insertPlatformBy,
-        updatePlatformBy,
-        deletePlatformBy,
-    };
+  return {
+    searchPlatform,
+    getPlatform,
+    createPlatform,
+    updatePlatform,
+    deletePlatform,
+  };
 }

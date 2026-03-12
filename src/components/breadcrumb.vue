@@ -40,19 +40,19 @@ const currentPage = computed(() => {
 </script>
 
 <template>
-    <v-breadcrumbs>
+    <v-breadcrumbs class="px-0 py-1">
         <v-breadcrumbs-item @click="goBack" v-if="currentPage !== t('s_drawer.home')">
-            <v-chip color="blue" text-color="white" class="d-flex align-center" style="cursor: pointer;">
-                <v-icon left>mdi-arrow-bottom-left</v-icon>
+            <v-chip color="primary" class="d-flex align-center px-2" style="cursor: pointer;" size="small">
+                <v-icon start size="small">mdi-arrow-left</v-icon>
                 <span>{{ t('button.back') }}</span>
             </v-chip>
         </v-breadcrumbs-item>
 
         <template v-if="currentPage !== t('s_drawer.home')">
-            <v-icon size="x-small">mdi-arrow-right</v-icon>
+            <v-icon size="x-small">mdi-chevron-right</v-icon>
             <v-breadcrumbs-item disabled>
-                <v-chip color="dark" text-color="white" class="d-flex align-center">
-                    <v-icon left>mdi-paperclip</v-icon>
+                <v-chip color="secondary" variant="tonal" class="d-flex align-center px-2" size="small">
+                    <v-icon start size="small">mdi-paperclip</v-icon>
                     <span>{{ currentPage }}</span>
                 </v-chip>
             </v-breadcrumbs-item>

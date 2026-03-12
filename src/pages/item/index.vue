@@ -3,8 +3,8 @@ import { onMounted, ref } from 'vue';
 import type { Item, Category } from "@/misc/type";
 import { useI18n } from 'vue-i18n';
 
-const { getItemBy } = useItem();
-const { getCategoryBy } = useCategory();
+const { searchItem } = useItem();
+const { searchCategory } = useCategory();
 const { t } = useI18n();
 
 const tab = ref("active");
@@ -36,7 +36,7 @@ const sort_options = computed(() => [
 const fetchData = async () => {
     loading.value = true;
     try {
-        const response = await getItemBy({
+        const response = await searchItem({
             where: {
                 item_name: { $like: search_query.value },
                 item_category_id: { $in: selected_category.value },
@@ -58,7 +58,7 @@ const fetchData = async () => {
 
 const fetchCategory = async () => {
     try {
-        const response = await getCategoryBy({
+        const response = await searchCategory({
             where: {
                 use_for: 'item'
             }
@@ -122,18 +122,21 @@ const clearAllFilters = async () => {
 </script>
 
 <template>
-    <v-container fluid max-width="95%">
-        <v-card class="mb-6">
-            <v-card-title class="d-flex align-center justify-space-between flex-wrap">
-                <h1 class="font-weight-bold">{{ t('item.title') }}</h1>
-                <v-btn color="primary" prepend-icon="mdi-plus" @click="add_item_dialog = true">
+    <section class="page-shell">
+        <div class="page-header">
+            <div class="page-heading">
+                <h1 class="page-title">{{ t('item.title') }}</h1>
+            </div>
+            <div class="page-actions">
+                <v-btn color="primary" prepend-icon="mdi-plus" @click="add_item_dialog = true" class="page-primary-action">
                     {{ t('item.add_btn') }}
                 </v-btn>
-            </v-card-title>
+            </div>
+        </div>
 
-            <v-card-text>
-                <v-row class="align-center">
-                    <v-col cols="12" md="5">
+        <v-card class="filter-bar">
+            <v-row class="align-center">
+                    <v-col cols="12" md="4">
                         <v-text-field v-model="search_query" :label="t('item.search')" prepend-inner-icon="mdi-magnify"
                             clearable single-line hide-details density="compact" variant="outlined"
                             @click:prepend-inner="fetchData" @keyup.enter="fetchData" @click:clear="clearSearch"
@@ -192,8 +195,7 @@ const clearAllFilters = async () => {
                             </v-card>
                         </v-menu>
                     </v-col>
-
-                    <v-col cols="12" md="2">
+                    <v-col cols="12" md="3">
                         <v-btn variant="tonal" color="error" class="w-100 rounded-lg" @click="clearAllFilters"
                             :disabled="!search_query && selected_category.length === 0">
                             <v-icon class="mr-2">mdi-filter-remove</v-icon>
@@ -201,7 +203,6 @@ const clearAllFilters = async () => {
                         </v-btn>
                     </v-col>
                 </v-row>
-            </v-card-text>
         </v-card>
 
         <template v-if="loading" class="d-flex justify-center align-center">
@@ -229,13 +230,13 @@ const clearAllFilters = async () => {
             </v-col>
         </v-row>
 
-        <v-dialog v-model="add_item_dialog" max-width="600px">
+        <v-dialog v-model="add_item_dialog" max-width="720" scrollable>
             <ItemAdd :category_items="category_items" @done="done" @close="() => { add_item_dialog = false }" />
         </v-dialog>
 
-        <v-dialog v-model="edit_item_dialog" max-width="600px">
+        <v-dialog v-model="edit_item_dialog" max-width="720" scrollable>
             <ItemEdit :category_items="category_items" :item_id="item_id_current" @done="done"
                 @close="() => { edit_item_dialog = false }" />
         </v-dialog>
-    </v-container>
+    </section>
 </template>

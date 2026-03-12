@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { useTheme } from 'vuetify'
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const theme = useTheme()
-const currentTheme = ref(typeof localStorage !== 'undefined' ? localStorage.getItem('theme') || 'light' : 'light')
+const initialTheme = typeof localStorage !== 'undefined' ? localStorage.getItem('theme') || 'light' : 'light'
+const currentTheme = ref(initialTheme === 'dark' ? 'dark' : 'light')
+const themeIcon = computed(() =>
+  theme.global.current.value.dark ? 'mdi-white-balance-sunny' : 'mdi-weather-night',
+)
 
 theme.global.name.value = currentTheme.value
 
@@ -21,7 +25,14 @@ watch(currentTheme, (newTheme) => {
 </script>
 
 <template>
-    <v-btn @click="toggleTheme" color="primary" dark>
-        <v-icon left>{{ theme.global.current.value.dark ? 'mdi-weather-night' : 'mdi-weather-sunny' }}</v-icon>
+    <v-btn @click="toggleTheme" variant="text" icon class="header-icon-btn">
+        <v-icon>{{ themeIcon }}</v-icon>
     </v-btn>
 </template>
+
+<style scoped>
+.header-icon-btn {
+    color: rgb(var(--v-theme-on-surface));
+    opacity: 1;
+}
+</style>

@@ -4,7 +4,6 @@ export type User = {
   username: string;
   email: string;
   user_image?: string[] | null;
-  password?: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
 };
