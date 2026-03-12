@@ -24,9 +24,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      apiBaseUrl: 'http://localhost:5120',
-      socketUrl: 'http://localhost:5120',
-      socketPath: '/socket.io',
+      apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:5120',
     }
   },
 })

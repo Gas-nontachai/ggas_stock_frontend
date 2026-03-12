@@ -20,6 +20,16 @@ yarn install
 bun install
 ```
 
+## Environment Setup
+
+Create a local environment file from the example:
+
+```bash
+cp .env.example .env
+```
+
+Adjust values in `.env` to match your backend endpoints.
+
 ## Development Server
 
 Start the development server on `http://localhost:3000`:
