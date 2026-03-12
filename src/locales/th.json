@@ -1,6 +1,12 @@
 {
     "validation": {
-        "required": "จำเป็น"
+        "required": "กรุณากรอก {field}",
+        "min_length": "อย่างน้อย {min} ตัวอักษร",
+        "email": "กรุณากรอกอีเมลให้ถูกต้อง",
+        "password_min": "รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร",
+        "positive_number": "{field} ต้องมากกว่า 0",
+        "max_decimals": "ทศนิยมได้สูงสุด {max} ตำแหน่ง",
+        "form_invalid": "กรุณาตรวจสอบข้อมูลที่กรอกอีกครั้ง"
     },
     "alert": {
         "logout": "คุณได้ออกจากระบบเรียบร้อยแล้ว",
@@ -18,7 +24,10 @@
         "delete_success_text": "รายการถูกลบเรียบร้อยแล้ว",
         "delete_unsuccess_title": "ลบไม่สำเร็จ",
         "delete_unsuccess_text": "ไม่สามารถลบรายการได้",
-        "no_item_found": "ไม่เจอสินค้า"
+        "no_item_found": "ไม่เจอสินค้า",
+        "submit_success": "บันทึกข้อมูลสำเร็จ",
+        "submit_error": "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
+        "load_error": "ไม่สามารถโหลดข้อมูลได้ กรุณาลองใหม่ภายหลัง"
     },
     "button": {
         "confirm": "ใช่",

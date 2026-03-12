@@ -1,60 +1,114 @@
-/* กำหนด font family */
-@import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --app-bg: #f8fafc;
+  --app-surface: #ffffff;
+  --app-surface-muted: #f1f5f9;
+  --app-text: #0f172a;
+  --app-text-muted: #475569;
+  --app-border: #e2e8f0;
+  --app-border-strong: #cbd5e1;
+  --app-focus: #94a3b8;
+  --app-radius-sm: 8px;
+  --app-radius-md: 12px;
+  --app-radius-lg: 16px;
+  --app-space-1: 4px;
+  --app-space-2: 8px;
+  --app-space-3: 12px;
+  --app-space-4: 16px;
+  --app-space-5: 20px;
+  --app-space-6: 24px;
+}
+
+.v-theme--dark {
+  --app-bg: #0b1220;
+  --app-surface: #111827;
+  --app-surface-muted: #0f172a;
+  --app-text: #e2e8f0;
+  --app-text-muted: #94a3b8;
+  --app-border: #243041;
+  --app-border-strong: #334155;
+  --app-focus: #64748b;
+}
+
+html,
+body,
+#__nuxt {
+  min-height: 100%;
+}
 
 body {
-    font-family: "Kanit", sans-serif;
+  margin: 0;
+  background: var(--app-bg);
+  color: var(--app-text);
+  font-family: 'Kanit', sans-serif;
 }
 
-.swal2-container {
-    z-index: 9999 !important;
+.gradient-text {
+  color: var(--app-text);
 }
 
-.swal2-popup {
-    z-index: 10000 !important;
-    font-family: "Kanit", sans-serif !important;
-    border-radius: 8px;
+.gradient-border {
+  border: 1px solid var(--app-border);
+  background: var(--app-surface);
 }
 
-.swal2-confirm-white {
-    color: white !important;
-    background-color: #007bff !important;
-    border-color: #007bff !important;
-    font-weight: bold;
+.v-main {
+  background: var(--app-bg);
 }
 
-.swal2-cancel-white {
-    color: white !important;
-    background-color: #6c757d !important;
-    border-color: #6c757d !important;
-    font-weight: bold;
+.v-card {
+  border: 1px solid var(--app-border);
+  box-shadow: none !important;
 }
 
-.swal2-popup.swal2-dark {
-    background-color: #2e2e2e !important;
-    color: #fff !important;
+.v-table,
+.v-data-table {
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius-md);
+  overflow: hidden;
+  background: var(--app-surface);
 }
 
-.swal2-popup.swal2-light {
-    background-color: #fff !important;
-    color: #000 !important;
+.v-data-table .v-data-table__tr:hover td {
+  background: var(--app-surface-muted);
 }
 
-.swal2-popup.swal2-dark .swal2-confirm {
-    background-color: #007bff !important;
-    color: white !important;
+.v-field--focused {
+  --v-field-border-opacity: 1;
 }
 
-.swal2-popup.swal2-dark .swal2-cancel {
-    background-color: #6c757d !important;
-    color: white !important;
+.v-field--focused .v-field__outline {
+  color: var(--app-focus) !important;
 }
 
-.swal2-popup.swal2-light .swal2-confirm {
-    background-color: #007bff !important;
-    color: white !important;
+.app-form-card {
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius-lg);
+  background: var(--app-surface);
 }
 
-.swal2-popup.swal2-light .swal2-cancel {
-    background-color: #6c757d !important;
-    color: white !important;
+.app-form-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--app-text);
+}
+
+.app-form-subtitle {
+  color: var(--app-text-muted);
+  font-size: 0.92rem;
+}
+
+.app-muted-text {
+  color: var(--app-text-muted);
+}
+
+.app-snackbar .v-snackbar__wrapper {
+  padding: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+.app-snackbar__alert {
+  border: 1px solid var(--app-border-strong);
 }

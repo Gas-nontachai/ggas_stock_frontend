@@ -41,7 +41,10 @@ onMounted(() => {
 .locale-btn {
     font-size: 14px;
     border-radius: 50px; 
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    color: rgb(var(--v-theme-on-surface));
+    background: rgb(var(--v-theme-surface) / 0.8);
+    border: 1px solid rgb(var(--v-theme-on-surface) / 0.12);
+    box-shadow: none;
     cursor: pointer;
     display: flex;
     align-items: center;

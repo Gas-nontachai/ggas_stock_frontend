@@ -215,7 +215,7 @@ const totalAmount = computed(() => {
                 </v-menu>
             </v-col>
 
-            <v-col cols="6" md="3">
+            <v-col cols="12" sm="6" md="3">
                 <DatePicker range :locale="locale" :dark="isDarkTheme" :teleport="true" :cancelText="t('button.cancel')"
                     :selectText="t('button.select')" preview-format="dd MMMM yyyy" :markers="[
                         { date: new Date(), type: 'dot', tooltip: [{ text: 'วันนี้', color: 'red' }] }
@@ -229,12 +229,12 @@ const totalAmount = computed(() => {
         </template>
 
         <template v-else>
-            <v-card class="pa-4 elevation-3 rounded-lg my-3 gradient-border">
+            <v-card class="pa-4 rounded-lg my-3 gradient-border">
                 <v-expand-transition>
                     <v-row align="center" justify="space-evenly" no-gutters v-show="collapseOpen">
                         <v-col cols="12" md="4" class="mb-3 mb-md-0 px-2">
                             <div class="d-flex flex-column align-center text-center">
-                                <div class=" text-grey-darken-1 mb-1">{{ $t('expense.total_amount') }}</div>
+                                <div class="mb-1 app-muted-text">{{ $t('expense.total_amount') }}</div>
                                 <div class="text-h4 font-weight-bold text-error d-flex align-center">
                                     <v-icon color="error" size="large" class="mr-1">mdi-currency-thb</v-icon>
                                     {{ totalAmount }}
@@ -244,7 +244,7 @@ const totalAmount = computed(() => {
 
                         <v-col cols="12" md="4" class="mb-3 mb-md-0 px-2">
                             <div class="d-flex flex-column align-center text-center">
-                                <div class=" text-grey-darken-1 mb-1">{{ $t('expense.transaction_count') }}
+                                <div class="mb-1 app-muted-text">{{ $t('expense.transaction_count') }}
                                 </div>
                                 <div class="text-h5 font-weight-bold text-primary d-flex align-center">
                                     <v-icon color="primary" class="mr-1">mdi-format-list-bulleted</v-icon>
@@ -255,13 +255,12 @@ const totalAmount = computed(() => {
 
                         <v-col cols="12" md="4" class="text-center text-md-end px-2">
                             <template v-if="date_selected">
-                                <div class=" text-grey-darken-1 mb-1">{{ $t('expense.date_range') }}</div>
-                                <v-chip color="deep-purple-lighten-4" class="pa-3 text-body-2 font-weight-medium"
-                                    variant="elevated" prepend-icon="mdi-calendar-range">
-                                    <span class="text-deep-purple-darken-3">
+                                <div class="mb-1 app-muted-text">{{ $t('expense.date_range') }}</div>
+                                <v-chip color="secondary" class="pa-3 text-body-2 font-weight-medium"
+                                    variant="tonal" prepend-icon="mdi-calendar-range">
+                                    <span>
                                         {{ formatDate(date_selected[0]) }}
-                                        <span v-if="date_selected[1]"> - {{ formatDate(date_selected[1])
-                                            }}</span>
+                                        <span v-if="date_selected[1]"> - {{ formatDate(date_selected[1]) }}</span>
                                     </span>
                                 </v-chip>
                             </template>
@@ -323,22 +322,3 @@ const totalAmount = computed(() => {
 
     </v-container>
 </template>
-
-<style>
-.gradient-border {
-    position: relative;
-    background: linear-gradient(to right, #ffffff, #f5f5f5);
-    border: none;
-    overflow: hidden;
-}
-
-.gradient-border::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(to right, #673ab7, #e91e63);
-}
-</style>

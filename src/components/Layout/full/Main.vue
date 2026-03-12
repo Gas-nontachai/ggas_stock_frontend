@@ -6,8 +6,8 @@ import { useTheme } from 'vuetify'
 
 const theme = useTheme()
 const isDarkTheme = computed(() => theme.global.current.value.dark)
-const drawerColor = computed(() => isDarkTheme.value ? 'grey-darken-4' : 'grey-lighten-4')
-const appBarColor = computed(() => isDarkTheme.value ? 'grey-darken-3' : 'grey-lighten-3')
+const drawerColor = computed(() => 'surface')
+const appBarColor = computed(() => 'surface')
 const iconTextColor = computed(() => isDarkTheme.value ? 'white' : 'black')
 
 const { t } = useI18n();

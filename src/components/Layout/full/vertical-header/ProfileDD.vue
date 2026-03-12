@@ -74,7 +74,7 @@ const logout = async () => {
   <div class="profileDD">
     <v-menu>
       <template v-slot:activator="{ props }">
-        <v-btn color="primary" v-bind="props">
+        <v-btn variant="text" icon v-bind="props" class="header-icon-btn">
           <v-avatar v-if="userImageUrl" :image="userImageUrl" size="32"></v-avatar>
           <v-icon v-else size="x-large">mdi-account-circle</v-icon>
         </v-btn>
@@ -92,3 +92,10 @@ const logout = async () => {
     </v-menu>
   </div>
 </template>
+
+<style scoped>
+.header-icon-btn {
+  color: rgb(var(--v-theme-on-surface));
+  opacity: 1;
+}
+</style>

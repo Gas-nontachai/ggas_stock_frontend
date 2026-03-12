@@ -278,14 +278,14 @@ const totalProfit = computed(() => {
                     </v-card>
                 </v-menu>
             </v-col>
-            <v-col cols="8" md="2">
+            <v-col cols="12" sm="6" md="3" lg="2">
                 <DatePicker range :locale="locale" :dark="isDarkTheme" :teleport="true" :cancelText="t('button.cancel')"
                     :selectText="t('button.select')" preview-format="dd MMMM yyyy" :markers="[
                         { date: new Date(), type: 'dot', tooltip: [{ text: 'วันนี้', color: 'red' }] }
                     ]" v-model="date_selected" :enable-time-picker="false" :placeholder="t('button.select_date')"
                     class=" w-full " />
             </v-col>
-            <v-col cols="4" md="2">
+            <v-col cols="12" sm="6" md="3" lg="2">
                 <v-btn variant="tonal" color="error" class="w-100 rounded-lg" @click="clearAllFilters">
                     <v-icon class="mr-2">mdi-filter-remove</v-icon>
                     {{ t('button.clear_filter') }}
@@ -298,12 +298,12 @@ const totalProfit = computed(() => {
         </template>
 
         <template v-else>
-            <v-card class="pa-3 elevation-2 rounded-lg  gradient-border">
+            <v-card class="pa-3 rounded-lg gradient-border">
                 <v-expand-transition>
                     <v-row align="center" justify="space-evenly" no-gutters v-show="collapseOpen">
                         <v-col cols="6" md="2" class="mb-2 mb-md-0 px-1">
                             <div class="d-flex flex-column align-center text-center">
-                                <div class="text-grey-darken-1 mb-1">{{ $t('income.total_cost') }}</div>
+                                <div class="mb-1 app-muted-text">{{ $t('income.total_cost') }}</div>
                                 <div class="text-h5 font-weight-bold text-error d-flex align-center">
                                     <v-icon color="error" size="medium" class="mr-1">mdi-currency-thb</v-icon>
                                     {{ totalCost }}
@@ -313,7 +313,7 @@ const totalProfit = computed(() => {
 
                         <v-col cols="6" md="2" class="mb-2 mb-md-0 px-1">
                             <div class="d-flex flex-column align-center text-center">
-                                <div class="text-grey-darken-1 mb-1">{{ $t('income.total_amount') }}</div>
+                                <div class="mb-1 app-muted-text">{{ $t('income.total_amount') }}</div>
                                 <div class="text-h5 font-weight-bold text-warning d-flex align-center">
                                     <v-icon color="warning" size="medium" class="mr-1">mdi-currency-thb</v-icon>
                                     {{ totalAmount }}
@@ -323,7 +323,7 @@ const totalProfit = computed(() => {
 
                         <v-col cols="6" md="2" class="mb-2 mb-md-0 px-1">
                             <div class="d-flex flex-column align-center text-center">
-                                <div class="text-grey-darken-1 mb-1">{{ $t('income.total_profit') }}</div>
+                                <div class="mb-1 app-muted-text">{{ $t('income.total_profit') }}</div>
                                 <div class="text-h5 font-weight-bold text-success d-flex align-center">
                                     <v-icon color="success" size="medium" class="mr-1">mdi-currency-thb</v-icon>
                                     {{ totalProfit }}
@@ -333,7 +333,7 @@ const totalProfit = computed(() => {
 
                         <v-col cols="6" md="2" class="mb-2 mb-md-0 px-1">
                             <div class="d-flex flex-column align-center text-center">
-                                <div class="text-grey-darken-1 mb-1">{{ $t('income.transaction_count') }}</div>
+                                <div class="mb-1 app-muted-text">{{ $t('income.transaction_count') }}</div>
                                 <div class="text-body-1 font-weight-bold text-primary d-flex align-center">
                                     <v-icon color="primary" class="mr-1">mdi-format-list-bulleted</v-icon>
                                     {{ incomes.length }} {{ $t('income.items') }}
@@ -343,10 +343,10 @@ const totalProfit = computed(() => {
 
                         <template v-if="date_selected">
                             <v-col cols="12" md="2" class="text-center text-md-end px-1">
-                                <div class="text-grey-darken-1 mb-1">{{ $t('income.date_range') }}</div>
-                                <v-chip color="deep-purple-lighten-4" class="pa-2 text-body-2 font-weight-medium"
-                                    variant="elevated" prepend-icon="mdi-calendar-range">
-                                    <span class="text-deep-purple-darken-3">
+                                <div class="mb-1 app-muted-text">{{ $t('income.date_range') }}</div>
+                                <v-chip color="secondary" class="pa-2 text-body-2 font-weight-medium"
+                                    variant="tonal" prepend-icon="mdi-calendar-range">
+                                    <span>
                                         {{ formatDate(date_selected[0]) }}
                                         <span v-if="date_selected[1]"> - {{ formatDate(date_selected[1]) }}</span>
                                     </span>
