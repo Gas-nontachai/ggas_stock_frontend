@@ -1,69 +1,45 @@
 import type { User } from "@/misc/type";
 
-const prefix = 'user'
+const prefix = "user";
 
-const getUserBy = (data?: any): Promise<User[]> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/getUserBy`, {
-    method: "POST",
-    body: data,
-})
-
-const getUserByID = (data: { user_id: string }): Promise<User> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/getUserByID`, {
-    method: "POST",
-    body: data,
-})
-
-const insertUserBy = (data: { user: User, file?: File[] }): Promise<User> => {
-    const formData = new FormData();
-
-    formData.append("user", JSON.stringify(data.user));
-    if (data.file?.length) {
-        data.file.forEach((file, index) => {
-            formData.append(`files`, file);
-        });
-    }
-
-    return secureFetch(
-        `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/insertUserBy`,
-        {
-            method: "POST",
-            body: formData,
-        }
-    );
+type UserPayload = Omit<Partial<User>, "user_image"> & {
+  image_urls?: string[];
 };
 
-const updateUserBy = (data: { user: User, file?: File[] }): Promise<User> => {
-    const formData = new FormData();
-
-    formData.append("user", JSON.stringify(data.user));
-    if (data.file?.length) {
-        data.file.forEach((file, index) => {
-            formData.append(`files`, file);
-        });
-    }
-
-    return secureFetch(
-        `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/updateUserBy`,
-        {
-            method: "POST",
-            body: formData,
-        }
-    );
-};
-
-const deleteUserBy = (data: { user_id: string }): Promise<User> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/deleteUserBy`, {
+const searchUser = (data?: any): Promise<User[]> =>
+  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/search`, {
     method: "POST",
     body: data,
-})
+  });
+
+const getUser = (user_id: string): Promise<User> =>
+  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/${user_id}`, {
+    method: "GET",
+  });
+
+const createUser = (data: UserPayload): Promise<User> =>
+  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}`, {
+    method: "POST",
+    body: data,
+  });
+
+const updateUser = (user_id: string, data: UserPayload): Promise<User> =>
+  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/${user_id}`, {
+    method: "PATCH",
+    body: data,
+  });
+
+const deleteUser = (user_id: string): Promise<User> =>
+  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/${user_id}`, {
+    method: "DELETE",
+  });
 
 export default function useUser() {
-    return {
-        getUserBy,
-        getUserByID,
-        insertUserBy,
-        updateUserBy,
-        deleteUserBy,
-    };
+  return {
+    searchUser,
+    getUser,
+    createUser,
+    updateUser,
+    deleteUser,
+  };
 }

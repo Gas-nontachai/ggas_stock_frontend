@@ -1,154 +1,142 @@
 <script setup lang="ts">
-import { PasswordRules, EmailRules } from '@/utils/rules';
+import { EmailRules } from '@/utils/rules';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Swal from 'sweetalert2';
 import type { User } from "@/misc/type";
 
-const { insertUserBy } = useUser();
+const { createUser } = useUser();
+const { uploadFilesAndGetPublicUrls } = useStorage();
 const { t } = useI18n();
 const emit = defineEmits(['done', 'close']);
 
 const user = ref<User>({
-    user_id: '',
-    username: '',
-    email: '',
-    password: '',
+  user_id: '',
+  username: '',
+  email: '',
 });
 
-const showPassword = ref(false);
 const buffer_image = ref<Array<{ files?: File[], src: string }>>([]);
 
 const submitForm = async () => {
-    if (!user.value.username) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Missing User Name',
-            text: 'Please provide a user name before submitting.',
-        });
-        return;
-    }
-
+  if (!user.value.username) {
     Swal.fire({
-        title: 'Submitting...',
-        text: 'Please wait while we submit the form.',
-        allowOutsideClick: false,
-        didOpen: () => {
-            Swal.showLoading();
-        },
-        showConfirmButton: false,
+      icon: 'warning',
+      title: 'Missing User Name',
+      text: 'Please provide a user name before submitting.',
+    });
+    return;
+  }
+
+  Swal.fire({
+    title: 'Submitting...',
+    text: 'Please wait while we submit the form.',
+    allowOutsideClick: false,
+    didOpen: () => {
+      Swal.showLoading();
+    },
+    showConfirmButton: false,
+  });
+
+  try {
+    const files = buffer_image.value.flatMap((entry) => entry.files ?? []);
+    const image_urls = await uploadFilesAndGetPublicUrls(files);
+
+    await createUser({
+      username: user.value.username,
+      email: user.value.email,
+      image_urls,
     });
 
-    try {
-        let condition: { file: File[] } = {
-            file: []
-        };
+    Swal.close();
+    Swal.fire({
+      icon: 'success',
+      title: 'Success',
+      text: 'User updated successfully!',
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000,
+    });
 
-        if (buffer_image.value.length) {
-            condition.file = buffer_image.value
-                .flatMap(item => item.files ?? []);
-        }
+    emit('done', true);
+  } catch (error) {
+    Swal.close();
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'Something went wrong, please try again.',
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000,
+    });
 
-        await insertUserBy({ user: user.value, ...condition });
-
-        Swal.close();
-        Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: 'User updated successfully!',
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-        });
-
-        emit('done', true);
-    } catch (error) {
-        Swal.close();
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Something went wrong, please try again.',
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-        });
-
-        emit('done', false);
-    }
+    emit('done', false);
+  }
 };
 
 function uploadFile(e: Event) {
-    const target = e.target as HTMLInputElement;
-    if (target.files?.length) {
-        for (const file of target.files) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                const newItem = {
-                    files: [file],
-                    src: reader.result as string,
-                };
-                buffer_image.value = [...buffer_image.value, newItem];
-            };
-            reader.readAsDataURL(file);
-        }
+  const target = e.target as HTMLInputElement;
+  if (target.files?.length) {
+    for (const file of target.files) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        buffer_image.value = [...buffer_image.value, {
+          files: [file],
+          src: reader.result as string,
+        }];
+      };
+      reader.readAsDataURL(file);
     }
+  }
 }
-
 </script>
 
 <template>
-    <v-card>
-        <v-card-title>
-            <v-row justify="space-between" align="center" class="py-2 px-1">
-                <v-col cols="auto">
-                    <div class="d-flex align-center">
-                        <v-icon color="primary" class="mr-3" size="large">
-                            mdi-account
-                        </v-icon>
-                        <span class="ml-4 font-weight-medium gradient-text">{{ t('user.edit_title') }}</span>
-                    </div>
-                </v-col>
-            </v-row>
-        </v-card-title>
+  <v-card>
+    <v-card-title>
+      <v-row justify="space-between" align="center" class="py-2 px-1">
+        <v-col cols="auto">
+          <div class="d-flex align-center">
+            <v-icon color="primary" class="mr-3" size="large">
+              mdi-account
+            </v-icon>
+            <span class="ml-4 font-weight-medium gradient-text">{{ t('user.edit_title') }}</span>
+          </div>
+        </v-col>
+      </v-row>
+    </v-card-title>
 
-        <v-card-text>
-            <v-form>
-                <v-row>
-                    <v-col cols="6">
-                        <v-text-field v-model="user.username" :label="t('user.username')" variant="outlined"
-                            :rules="[(v) => !!v || t('validation.required', { field: t('user.username') })]"
-                            required></v-text-field>
-                    </v-col>
-                    <v-col cols="6">
-                        <v-text-field v-model="user.email" :label="t('user.email')" variant="outlined"
-                            :rules="EmailRules" required />
-                    </v-col>
+    <v-card-text>
+      <v-form>
+        <v-row>
+          <v-col cols="6">
+            <v-text-field v-model="user.username" :label="t('user.username')" variant="outlined"
+              :rules="[(v) => !!v || t('validation.required', { field: t('user.username') })]"
+              required></v-text-field>
+          </v-col>
+          <v-col cols="6">
+            <v-text-field v-model="user.email" :label="t('user.email')" variant="outlined"
+              :rules="EmailRules" required />
+          </v-col>
 
-                    <v-col cols="12">
-                        <v-text-field v-model="user.password" :label="t('user.password')"
-                            :type="showPassword ? 'text' : 'password'" variant="outlined"
-                            :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
-                            @click:append-inner="showPassword = !showPassword" :rules="PasswordRules" required />
-                    </v-col>
+          <v-col cols="12">
+            <v-file-input accept="image/*" @change="uploadFile" :label="t('user.user_image')"
+              variant="outlined" prepend-icon="mdi-camera" />
+          </v-col>
+        </v-row>
+      </v-form>
+    </v-card-text>
 
-                    <v-col cols="12">
-                        <v-file-input accept="image/*" @change="uploadFile" :label="t('user.user_image')"
-                            variant="outlined" prepend-icon="mdi-camera" />
-                    </v-col>
-                </v-row>
-            </v-form>
-        </v-card-text>
-
-        <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="error" variant="text" @click="emit('close', true)">
-                {{ t('button.cancel') }}
-            </v-btn>
-            <v-btn color="primary" variant="elevated" @click="submitForm">
-                {{ t('button.submit') }}
-            </v-btn>
-        </v-card-actions>
-    </v-card>
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn color="error" variant="text" @click="emit('close', true)">
+        {{ t('button.cancel') }}
+      </v-btn>
+      <v-btn color="primary" variant="elevated" @click="submitForm">
+        {{ t('button.submit') }}
+      </v-btn>
+    </v-card-actions>
+  </v-card>
 </template>

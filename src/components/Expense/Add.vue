@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n';
 import Swal from 'sweetalert2';
 import type { Expense } from "@/misc/type";
 
-const { insertExpenseBy } = useExpense();
+const { createExpense } = useExpense();
 
 const { t } = useI18n();
 const emit = defineEmits(['done', 'close']);
@@ -33,7 +33,7 @@ const submitForm = async () => {
         showConfirmButton: false,
     });
     try {
-        await insertExpenseBy(expense.value);
+        await createExpense(expense.value);
 
         Swal.close();
         Swal.fire({

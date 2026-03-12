@@ -4,7 +4,7 @@ import { onMounted, ref, computed } from 'vue';
 import type { Category } from "@/misc/type";
 import { useI18n } from 'vue-i18n';
 
-const { getCategoryBy, deleteCategoryBy } = useCategory();
+const { searchCategory } = useCategory();
 const { t } = useI18n();
 
 const categorys = ref<Category[]>([]);
@@ -24,7 +24,7 @@ onMounted(async () => {
 const fetchData = async () => {
     loading.value = true;
     try {
-        const response = await getCategoryBy({
+        const response = await searchCategory({
             where: {
                 category_name: { $like: search_query.value }
             }

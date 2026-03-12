@@ -1,43 +1,45 @@
 import type { Platform } from "@/misc/type";
 
-const prefix = 'platform'
+const prefix = "platform";
 
-const getPlatformBy = (data?: any): Promise<Platform[]> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/getPlatformBy`, {
+type PlatformPayload = Omit<Partial<Platform>, "platform_image"> & {
+  image_urls?: string[];
+};
+
+const searchPlatform = (data?: any): Promise<Platform[]> =>
+  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/search`, {
     method: "POST",
     body: data,
-})
+  });
 
-const getPlatformByID = (data: { platform_id: string }): Promise<Platform> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/getPlatformByID`, {
+const getPlatform = (platform_id: string): Promise<Platform> =>
+  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/${platform_id}`, {
+    method: "GET",
+  });
+
+const createPlatform = (data: PlatformPayload): Promise<Platform> =>
+  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}`, {
     method: "POST",
     body: data,
-})
+  });
 
-const insertPlatformBy = (data: Platform): Promise<Platform> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/insertPlatformBy`, {
-    method: "POST",
+const updatePlatform = (platform_id: string, data: PlatformPayload): Promise<Platform> =>
+  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/${platform_id}`, {
+    method: "PATCH",
     body: data,
-})
+  });
 
-const updatePlatformBy = (data: Platform): Promise<Platform> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/updatePlatformBy`, {
-    method: "POST",
-    body: data,
-})
-
-const deletePlatformBy = (data: { platform_id: string }): Promise<Platform> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/deletePlatformBy`, {
-    method: "POST",
-    body: data,
-})
+const deletePlatform = (platform_id: string): Promise<Platform> =>
+  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/${platform_id}`, {
+    method: "DELETE",
+  });
 
 export default function usePlatform() {
-    return {
-        getPlatformBy,
-        getPlatformByID,
-        insertPlatformBy,
-        updatePlatformBy,
-        deletePlatformBy,
-    };
+  return {
+    searchPlatform,
+    getPlatform,
+    createPlatform,
+    updatePlatform,
+    deletePlatform,
+  };
 }

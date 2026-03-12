@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n';
 import Swal from 'sweetalert2';
 import type { Category } from "@/misc/type";
 
-const { getCategoryByID, updateCategoryBy } = useCategory();
+const { getCategory, updateCategory } = useCategory();
 
 const { t } = useI18n();
 const emit = defineEmits(['done', 'close']);
@@ -26,7 +26,7 @@ const category = ref<Category>({
 
 onMounted(async () => {
     try {
-        const response = await getCategoryByID({ category_id: props.category_id });
+        const response = await getCategory(props.category_id);
         category.value = response;
     } catch (error) {
         console.error('Error fetching category:', error);
@@ -59,7 +59,7 @@ const submitForm = async () => {
     });
 
     try {
-        await updateCategoryBy(category.value);
+        await updateCategory(props.category_id, category.value);
 
         Swal.close();
         Swal.fire({

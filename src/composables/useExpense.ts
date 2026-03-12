@@ -1,43 +1,41 @@
 import type { Expense } from "@/misc/type";
 
-const prefix = 'expense'
+const prefix = "expense";
 
-const getExpenseBy = (data?: any): Promise<Expense[]> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/getExpenseBy`, {
+const searchExpense = (data?: any): Promise<Expense[]> =>
+  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/search`, {
     method: "POST",
     body: data,
-})
+  });
 
-const getExpenseByID = (data: { expense_id: string }): Promise<Expense> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/getExpenseByID`, {
+const getExpense = (expense_id: string): Promise<Expense> =>
+  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/${expense_id}`, {
+    method: "GET",
+  });
+
+const createExpense = (data: Partial<Expense>): Promise<Expense> =>
+  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}`, {
     method: "POST",
     body: data,
-})
+  });
 
-const insertExpenseBy = (data: Expense): Promise<Expense> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/insertExpenseBy`, {
-    method: "POST",
+const updateExpense = (expense_id: string, data: Partial<Expense>): Promise<Expense> =>
+  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/${expense_id}`, {
+    method: "PATCH",
     body: data,
-})
+  });
 
-const updateExpenseBy = (data: Expense): Promise<Expense> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/updateExpenseBy`, {
-    method: "POST",
-    body: data,
-})
-
-const deleteExpenseBy = (data: { expense_id: string }): Promise<Expense> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/deleteExpenseBy`, {
-    method: "POST",
-    body: data,
-})
+const deleteExpense = (expense_id: string): Promise<Expense> =>
+  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/${expense_id}`, {
+    method: "DELETE",
+  });
 
 export default function useExpense() {
-    return {
-        getExpenseBy,
-        getExpenseByID,
-        insertExpenseBy,
-        updateExpenseBy,
-        deleteExpenseBy,
-    };
+  return {
+    searchExpense,
+    getExpense,
+    createExpense,
+    updateExpense,
+    deleteExpense,
+  };
 }

@@ -3,8 +3,8 @@ import { onMounted, ref } from 'vue';
 import type { Item, Category } from "@/misc/type";
 import { useI18n } from 'vue-i18n';
 
-const { getItemBy } = useItem();
-const { getCategoryBy } = useCategory();
+const { searchItem } = useItem();
+const { searchCategory } = useCategory();
 const { t } = useI18n();
 
 const tab = ref("active");
@@ -36,7 +36,7 @@ const sort_options = computed(() => [
 const fetchData = async () => {
     loading.value = true;
     try {
-        const response = await getItemBy({
+        const response = await searchItem({
             where: {
                 item_name: { $like: search_query.value },
                 item_category_id: { $in: selected_category.value },
@@ -58,7 +58,7 @@ const fetchData = async () => {
 
 const fetchCategory = async () => {
     try {
-        const response = await getCategoryBy({
+        const response = await searchCategory({
             where: {
                 use_for: 'item'
             }

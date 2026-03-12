@@ -5,8 +5,8 @@ import Swal from 'sweetalert2';
 import { decimalFix } from '@/utils/number-func';
 import type { Income } from "@/misc/type";
 
-const { getIncomeBy, updateIncomeBy } = useIncome();
-const { getPlatformBy } = usePlatform();
+const { searchIncome, updateIncome } = useIncome();
+const { searchPlatform } = usePlatform();
 
 const { t } = useI18n();
 const emit = defineEmits(['done', 'close']);
@@ -30,7 +30,7 @@ const isProfit = computed(() => profitAmount.value > 0);
 const profitStatus = computed(() => isProfit.value ? 'กำไร' : 'ขาดทุน');
 
 const fetchData = async () => {
-    const res = await getIncomeBy({
+    const res = await searchIncome({
         where: {
             income_id: props.income_id,
         },
@@ -45,7 +45,7 @@ const fetchData = async () => {
 };
 
 const fetchPlatform = async () => {
-    const res = await getPlatformBy();
+    const res = await searchPlatform();
     platform_items.value = res.map(p => ({ title: p.platform_name, value: p.platform_id }));
 };
 
@@ -85,7 +85,7 @@ const submitForm = async () => {
     });
 
     try {
-        await updateIncomeBy(income.value);
+        await updateIncome(props.income_id, income.value);
 
         Swal.close();
         Swal.fire({

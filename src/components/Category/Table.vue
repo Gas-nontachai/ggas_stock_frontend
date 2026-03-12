@@ -5,7 +5,7 @@ import type { Category } from "@/misc/type";
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
-const { deleteCategoryBy } = useCategory();
+const { deleteCategory: removeCategory } = useCategory();
 
 const props = defineProps<{
     category: Category[];
@@ -48,7 +48,7 @@ const deleteCategory = (category_id: string) => {
             });
 
             try {
-                await deleteCategoryBy({ category_id });
+                await removeCategory(category_id);
                 Swal.close();
                 await emit('fetchData', true);
                 Swal.fire({

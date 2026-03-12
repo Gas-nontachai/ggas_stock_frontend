@@ -6,7 +6,7 @@ import type { User } from "@/misc/type";
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
-const { getUserBy, deleteUserBy } = useUser();
+const { searchUser, deleteUser: removeUser } = useUser();
 const { t } = useI18n();
 const router = useRouter();
 
@@ -24,7 +24,7 @@ onMounted(async () => {
 const fetchData = async () => {
     loading.value = true;
     try {
-        const response = await getUserBy();
+        const response = await searchUser();
         users.value = response;
     } catch (error) {
         console.error('Error fetching users:', error);
@@ -74,7 +74,7 @@ const deleteUser = (user_id: string) => {
             });
 
             try {
-                await deleteUserBy({ user_id });
+                await removeUser(user_id);
                 Swal.close();
                 await fetchData();
                 Swal.fire({
@@ -145,9 +145,7 @@ const editUser = (user_id: string) => {
         <v-data-table v-else :items="filteredUsers" :headers="headers" item-key="user_id" class="elevation-1">
 
             <template v-slot:item.user_image="{ item }">
-                <v-avatar :image="item.user_image
-                    ? `${useRuntimeConfig().public.apiBaseUrl}${item.user_image}`
-                    : '/default-user.png'" size="40">
+                <v-avatar :image="Array.isArray(item.user_image) && item.user_image.length ? item.user_image[0] : '/default-user.png'" size="40">
                 </v-avatar>
             </template>
 

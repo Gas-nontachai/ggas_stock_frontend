@@ -1,46 +1,41 @@
 import type { Income } from "@/misc/type";
 
-const prefix = 'income'
+const prefix = "income";
 
-const getIncomeBy = (data?: any): Promise<Income[]> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/getIncomeBy`, {
+const searchIncome = (data?: any): Promise<Income[]> =>
+  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/search`, {
     method: "POST",
     body: data,
-})
+  });
 
-const getIncomeByID = (data: { income_id: string }): Promise<Income> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/getIncomeByID`, {
+const getIncome = (income_id: string): Promise<Income> =>
+  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/${income_id}`, {
+    method: "GET",
+  });
+
+const createIncome = (data: Partial<Income>): Promise<Income> =>
+  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}`, {
     method: "POST",
     body: data,
-})
+  });
 
-const insertIncomeBy = (data: Income): Promise<Income> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/insertIncomeBy`, {
-    method: "POST",
+const updateIncome = (income_id: string, data: Partial<Income>): Promise<Income> =>
+  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/${income_id}`, {
+    method: "PATCH",
     body: data,
-})
+  });
 
-const updateIncomeBy = (data: Income, update: '' | 'mark_re_sell' = ''): Promise<Income> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/updateIncomeBy`, {
-    method: "POST",
-    body: {
-        ...data,
-        update: update || undefined,
-    }
-})
-
-const deleteIncomeBy = (data: { income_id: string }): Promise<Income> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/deleteIncomeBy`, {
-    method: "POST",
-    body: data,
-})
+const deleteIncome = (income_id: string): Promise<Income> =>
+  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/${income_id}`, {
+    method: "DELETE",
+  });
 
 export default function useIncome() {
-    return {
-        getIncomeBy,
-        getIncomeByID,
-        insertIncomeBy,
-        updateIncomeBy,
-        deleteIncomeBy,
-    };
+  return {
+    searchIncome,
+    getIncome,
+    createIncome,
+    updateIncome,
+    deleteIncome,
+  };
 }

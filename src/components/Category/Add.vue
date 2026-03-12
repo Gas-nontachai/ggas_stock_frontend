@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n';
 import Swal from 'sweetalert2';
 import type { Category } from "@/misc/type";
 
-const { insertCategoryBy } = useCategory();
+const { createCategory } = useCategory();
 
 const { t } = useI18n();
 const emit = defineEmits(['done', 'close']);
@@ -28,7 +28,7 @@ const submitForm = async () => {
         showConfirmButton: false,
     });
     try {
-        await insertCategoryBy(category.value);
+        await createCategory(category.value);
 
         Swal.close();
         Swal.fire({

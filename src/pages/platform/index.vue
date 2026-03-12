@@ -5,7 +5,7 @@ import { formatDate } from '@/utils/date-func';
 import type { Platform } from "@/misc/type";
 import { useI18n } from 'vue-i18n';
 
-const { getPlatformBy, deletePlatformBy } = usePlatform();
+const { searchPlatform, deletePlatform: removePlatform } = usePlatform();
 const { t } = useI18n();
 
 const platforms = ref<Platform[]>([]);
@@ -22,7 +22,7 @@ onMounted(async () => {
 const fetchData = async () => {
     loading.value = true;
     try {
-        const response = await getPlatformBy();
+        const response = await searchPlatform();
         platforms.value = response;
     } catch (error) {
         console.error('Error fetching platforms:', error);
@@ -69,7 +69,7 @@ const deletePlatform = (platform_id: string) => {
             });
 
             try {
-                await deletePlatformBy({ platform_id });
+                await removePlatform(platform_id);
                 Swal.close();
                 await fetchData();
                 Swal.fire({

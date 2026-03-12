@@ -1,43 +1,41 @@
 import type { Category } from "@/misc/type";
 
-const prefix = 'category'
+const prefix = "category";
 
-const getCategoryBy = (data?: any): Promise<Category[]> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/getCategoryBy`, {
+const searchCategory = (data?: any): Promise<Category[]> =>
+  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/search`, {
     method: "POST",
     body: data,
-})
+  });
 
-const getCategoryByID = (data: { category_id: string }): Promise<Category> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/getCategoryByID`, {
+const getCategory = (category_id: string): Promise<Category> =>
+  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/${category_id}`, {
+    method: "GET",
+  });
+
+const createCategory = (data: Partial<Category>): Promise<Category> =>
+  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}`, {
     method: "POST",
     body: data,
-})
+  });
 
-const insertCategoryBy = (data: Category): Promise<Category> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/insertCategoryBy`, {
-    method: "POST",
+const updateCategory = (category_id: string, data: Partial<Category>): Promise<Category> =>
+  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/${category_id}`, {
+    method: "PATCH",
     body: data,
-})
+  });
 
-const updateCategoryBy = (data: Category): Promise<Category> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/updateCategoryBy`, {
-    method: "POST",
-    body: data,
-})
-
-const deleteCategoryBy = (data: { category_id: string }): Promise<Category> => secureFetch(
-    `${useRuntimeConfig().public.apiBaseUrl}/${prefix}/deleteCategoryBy`, {
-    method: "POST",
-    body: data,
-})
+const deleteCategory = (category_id: string): Promise<Category> =>
+  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/${category_id}`, {
+    method: "DELETE",
+  });
 
 export default function useCategory() {
-    return {
-        getCategoryBy,
-        getCategoryByID,
-        insertCategoryBy,
-        updateCategoryBy,
-        deleteCategoryBy,
-    };
+  return {
+    searchCategory,
+    getCategory,
+    createCategory,
+    updateCategory,
+    deleteCategory,
+  };
 }

@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n';
 import Swal from 'sweetalert2';
 import type { Expense } from "@/misc/type";
 
-const { updateExpenseBy, getExpenseByID } = useExpense();
+const { updateExpense, getExpense } = useExpense();
 
 const { t } = useI18n();
 const emit = defineEmits(['done', 'close']);
@@ -32,7 +32,7 @@ onMounted(async () => {
 
 const fetchData = async () => {
     try {
-        const response = await getExpenseByID({ expense_id: props.expense_id });
+        const response = await getExpense(props.expense_id);
         expense.value = response;
     } catch (error) {
         console.error('Error fetching expense:', error);
@@ -50,7 +50,7 @@ const submitForm = async () => {
         showConfirmButton: false,
     });
     try {
-        await updateExpenseBy(expense.value);
+        await updateExpense(props.expense_id, expense.value);
 
         Swal.close();
         Swal.fire({

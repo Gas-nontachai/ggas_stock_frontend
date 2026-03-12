@@ -7,8 +7,8 @@ import type { Expense, Category } from "@/misc/type";
 import { useI18n } from 'vue-i18n';
 import { useTheme } from 'vuetify'
 
-const { getExpenseBy, deleteExpenseBy } = useExpense();
-const { getCategoryBy } = useCategory();
+const { searchExpense, deleteExpense: removeExpense } = useExpense();
+const { searchCategory } = useCategory();
 const { t, locale } = useI18n();
 
 const theme = useTheme()
@@ -30,7 +30,7 @@ const category_expenses = ref<{ title: string, value: string }[]>()
 const fetchData = async () => {
     loading.value = true;
     try {
-        const response = await getExpenseBy({
+        const response = await searchExpense({
             where: {
                 expense_name: { $like: search_query.value },
                 expense_category_id: { $in: selected_category.value },
@@ -51,7 +51,7 @@ const fetchData = async () => {
 
 const fetchCategory = async () => {
     try {
-        const response = await getCategoryBy({
+        const response = await searchCategory({
             where: {
                 use_for: 'expense'
             }
@@ -112,7 +112,7 @@ const deleteExpense = (expense_id: string) => {
             });
 
             try {
-                await deleteExpenseBy({ expense_id });
+                await removeExpense(expense_id);
                 Swal.close();
                 await fetchData();
                 Swal.fire({

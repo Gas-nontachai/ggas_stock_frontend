@@ -7,9 +7,9 @@ import type { Income, Category, Platform } from "@/misc/type";
 import { useI18n } from 'vue-i18n';
 import { useTheme } from 'vuetify'
 
-const { getIncomeBy, deleteIncomeBy } = useIncome();
-const { getPlatformBy } = usePlatform();
-const { getCategoryBy } = useCategory();
+const { searchIncome, deleteIncome: removeIncome } = useIncome();
+const { searchPlatform } = usePlatform();
+const { searchCategory } = useCategory();
 const { t, locale } = useI18n();
 
 const theme = useTheme()
@@ -35,7 +35,7 @@ const platform_options = ref<{ title: string, value: string }[]>()
 const fetchData = async () => {
     loading.value = true;
     try {
-        const response = await getIncomeBy({
+        const response = await searchIncome({
             where: {
                 platform_id: { $in: selected_platform.value },
                 createdAt: {
@@ -64,7 +64,7 @@ const fetchData = async () => {
 
 const fetchCategory = async () => {
     try {
-        const response = await getCategoryBy();
+        const response = await searchCategory();
         categories.value = response;
         category_options.value = response.map((item) => ({
             title: item.category_name,
@@ -77,7 +77,7 @@ const fetchCategory = async () => {
 
 const fetchPlatform = async () => {
     try {
-        const response = await getPlatformBy();
+        const response = await searchPlatform();
         platforms.value = response;
         platform_options.value = response.map((item) => ({
             title: item.platform_name,
@@ -137,7 +137,7 @@ const deleteIncome = (income_id: string) => {
             });
 
             try {
-                await deleteIncomeBy({ income_id });
+                await removeIncome(income_id);
                 Swal.close();
                 await fetchData();
                 Swal.fire({
