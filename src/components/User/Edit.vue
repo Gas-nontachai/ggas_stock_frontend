@@ -117,57 +117,35 @@ function uploadFile(e: Event) {
 </script>
 
 <template>
-  <v-card>
-    <v-card-title>
-      <v-row justify="space-between" align="center" class="py-2 px-1">
-        <v-col cols="auto">
-          <div class="d-flex align-center">
-            <v-avatar v-if="Array.isArray(user.user_image) && user.user_image.length" :image="user.user_image[0]"
-              size="40"></v-avatar>
-            <v-icon v-else color="primary" class="mr-3" size="large">
-              mdi-account
-            </v-icon>
-            <span class="ml-4 font-weight-medium gradient-text">{{ t('user.edit_title') }}</span>
-          </div>
+  <FormDialogFrame
+    icon="mdi-account-edit"
+    :title="t('user.edit_title')"
+    :submit-text="t('button.submit')"
+    :cancel-text="t('button.cancel')"
+    @close="emit('close', true)"
+    @cancel="emit('close', true)"
+    @submit="submitForm"
+  >
+    <template #header-extra>
+      <v-avatar v-if="Array.isArray(user.user_image) && user.user_image.length" :image="user.user_image[0]" size="32" />
+    </template>
+
+    <v-form>
+      <v-row class="form-grid">
+        <v-col cols="12" md="6">
+          <v-text-field v-model="user.username" :label="t('user.username')" variant="outlined" density="comfortable"
+            :rules="[(v) => !!v || t('validation.required', { field: t('user.username') })]" required />
         </v-col>
-        <v-col cols="auto">
-          <v-btn icon variant="tonal" color="error" @click="emit('close', true)"
-            class="rounded-circle elevation-1" size="small">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
+        <v-col cols="12" md="6">
+          <v-text-field v-model="user.email" :label="t('user.email')" variant="outlined" density="comfortable"
+            :rules="EmailRules" required />
+        </v-col>
+
+        <v-col cols="12">
+          <v-file-input accept="image/*" @change="uploadFile" :label="t('user.user_image')" variant="outlined"
+            density="comfortable" prepend-icon="mdi-camera" />
         </v-col>
       </v-row>
-    </v-card-title>
-
-    <v-card-text>
-      <v-form>
-        <v-row>
-          <v-col cols="6">
-            <v-text-field v-model="user.username" :label="t('user.username')" variant="outlined"
-              :rules="[(v) => !!v || t('validation.required', { field: t('user.username') })]"
-              required></v-text-field>
-          </v-col>
-          <v-col cols="6">
-            <v-text-field v-model="user.email" :label="t('user.email')" variant="outlined"
-              :rules="EmailRules" required />
-          </v-col>
-
-          <v-col cols="12">
-            <v-file-input accept="image/*" @change="uploadFile" :label="t('user.user_image')"
-              variant="outlined" prepend-icon="mdi-camera" />
-          </v-col>
-        </v-row>
-      </v-form>
-    </v-card-text>
-
-    <v-card-actions>
-      <v-spacer></v-spacer>
-      <v-btn color="error" variant="text" @click="emit('close', true)">
-        {{ t('button.cancel') }}
-      </v-btn>
-      <v-btn color="primary" variant="elevated" @click="submitForm">
-        {{ t('button.submit') }}
-      </v-btn>
-    </v-card-actions>
-  </v-card>
+    </v-form>
+  </FormDialogFrame>
 </template>

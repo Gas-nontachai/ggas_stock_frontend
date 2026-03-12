@@ -2,7 +2,11 @@
 </script>
 
 <template>
-    <div class="home">
-        <h1>Home</h1>
-    </div>
+    <section class="page-shell">
+        <div class="page-header">
+            <div class="page-heading">
+                <h1 class="page-title">Home</h1>
+            </div>
+        </div>
+    </section>
 </template>

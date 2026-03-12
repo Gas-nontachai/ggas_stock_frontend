@@ -18,6 +18,9 @@
   --app-space-4: 16px;
   --app-space-5: 20px;
   --app-space-6: 24px;
+  --app-content-max: 1320px;
+  --app-page-x-mobile: 12px;
+  --app-page-x-desktop: 24px;
 }
 
 .v-theme--dark {
@@ -55,6 +58,187 @@ body {
 
 .v-main {
   background: var(--app-bg);
+}
+
+.app-content-wrap {
+  width: 100%;
+  max-width: var(--app-content-max);
+  margin: 0 auto;
+  padding: var(--app-space-4) var(--app-page-x-mobile) var(--app-space-6);
+}
+
+.app-breadcrumb {
+  margin-bottom: var(--app-space-3);
+}
+
+.page-shell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-4);
+}
+
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-3);
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.page-heading {
+  min-width: 0;
+}
+
+.page-title {
+  margin: 0;
+  font-size: clamp(1.35rem, 2.8vw, 1.85rem);
+  line-height: 1.2;
+  color: var(--app-text);
+}
+
+.page-subtitle {
+  margin: var(--app-space-1) 0 0;
+  color: var(--app-text-muted);
+  font-size: 0.95rem;
+}
+
+.page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--app-space-2);
+  width: 100%;
+}
+
+.page-actions > * {
+  flex: 1 1 100%;
+}
+
+.filter-bar {
+  padding: var(--app-space-4);
+  border-radius: var(--app-radius-md);
+  border: 1px solid var(--app-border);
+  background: var(--app-surface);
+}
+
+.stats-strip {
+  padding: var(--app-space-4);
+  border-radius: var(--app-radius-md);
+  border: 1px solid var(--app-border);
+  background: var(--app-surface);
+}
+
+.table-shell {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: var(--app-radius-md);
+}
+
+.table-shell .v-data-table,
+.table-shell .v-table {
+  min-width: 760px;
+}
+
+.dialog-form-layout .v-card-actions {
+  flex-wrap: wrap;
+  gap: var(--app-space-2);
+}
+
+.dialog-form-layout .v-card-actions > .v-btn {
+  flex: 1 1 calc(50% - var(--app-space-2));
+  min-width: 120px;
+}
+
+.form-dialog {
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 680px);
+  max-height: min(88vh, 860px);
+  border-radius: var(--app-radius-lg);
+  overflow: hidden;
+}
+
+.form-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--app-space-3);
+  padding: var(--app-space-4) var(--app-space-5);
+  border-bottom: 1px solid var(--app-border);
+  background: color-mix(in srgb, var(--app-surface) 88%, var(--app-surface-muted));
+}
+
+.form-header__identity {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--app-space-3);
+  min-width: 0;
+}
+
+.form-header__title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--app-text);
+  line-height: 1.3;
+}
+
+.form-header__subtitle {
+  margin: 2px 0 0;
+  color: var(--app-text-muted);
+  font-size: 0.86rem;
+}
+
+.form-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: var(--app-space-4) var(--app-space-5);
+}
+
+.form-grid {
+  margin: 0;
+}
+
+.form-section {
+  padding: var(--app-space-3);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius-md);
+  background: color-mix(in srgb, var(--app-surface) 94%, var(--app-surface-muted));
+}
+
+.form-meta {
+  margin-top: var(--app-space-2);
+  color: var(--app-text-muted);
+  font-size: 0.9rem;
+}
+
+.form-footer-sticky {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  gap: var(--app-space-2);
+  padding: var(--app-space-3) var(--app-space-5);
+  border-top: 1px solid var(--app-border);
+  background: color-mix(in srgb, var(--app-surface) 88%, var(--app-bg));
+}
+
+.form-footer-sticky .v-btn {
+  flex: 1 1 100%;
+}
+
+.form-confirm-dialog {
+  width: min(100%, 460px);
+}
+
+.form-confirm-dialog .form-body {
+  overflow: visible;
+}
+
+.form-dialog .v-field {
+  border-radius: var(--app-radius-md);
+}
+
+.form-dialog .v-messages {
+  padding-top: 4px;
 }
 
 .v-card {
@@ -111,4 +295,24 @@ body {
 
 .app-snackbar__alert {
   border: 1px solid var(--app-border-strong);
+}
+
+@media (min-width: 600px) {
+  .page-actions {
+    width: auto;
+  }
+
+  .page-actions > * {
+    flex: 0 0 auto;
+  }
+
+  .form-footer-sticky .v-btn {
+    flex: 1 1 calc(50% - var(--app-space-2));
+  }
+}
+
+@media (min-width: 960px) {
+  .app-content-wrap {
+    padding-inline: var(--app-page-x-desktop);
+  }
 }

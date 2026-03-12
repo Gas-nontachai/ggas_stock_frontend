@@ -1,38 +1,16 @@
 import type { User } from "@/misc/type";
 
-const prefix = "user";
-
 type UserPayload = Omit<Partial<User>, "user_image"> & {
   image_urls?: string[];
 };
 
-const searchUser = (data?: any): Promise<User[]> =>
-  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/search`, {
-    method: "POST",
-    body: data,
-  });
+const resource = createCrudResource<User, UserPayload, UserPayload>("user");
 
-const getUser = (user_id: string): Promise<User> =>
-  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/${user_id}`, {
-    method: "GET",
-  });
-
-const createUser = (data: UserPayload): Promise<User> =>
-  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}`, {
-    method: "POST",
-    body: data,
-  });
-
-const updateUser = (user_id: string, data: UserPayload): Promise<User> =>
-  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/${user_id}`, {
-    method: "PATCH",
-    body: data,
-  });
-
-const deleteUser = (user_id: string): Promise<User> =>
-  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/${user_id}`, {
-    method: "DELETE",
-  });
+const searchUser = (data?: unknown): Promise<User[]> => resource.search(data);
+const getUser = (user_id: string): Promise<User> => resource.get(user_id);
+const createUser = (data: UserPayload): Promise<User> => resource.create(data);
+const updateUser = (user_id: string, data: UserPayload): Promise<User> => resource.update(user_id, data);
+const deleteUser = (user_id: string): Promise<User> => resource.remove(user_id);
 
 export default function useUser() {
   return {

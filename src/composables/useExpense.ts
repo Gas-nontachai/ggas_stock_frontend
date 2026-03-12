@@ -1,34 +1,12 @@
 import type { Expense } from "@/misc/type";
 
-const prefix = "expense";
+const resource = createCrudResource<Expense>("expense");
 
-const searchExpense = (data?: any): Promise<Expense[]> =>
-  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/search`, {
-    method: "POST",
-    body: data,
-  });
-
-const getExpense = (expense_id: string): Promise<Expense> =>
-  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/${expense_id}`, {
-    method: "GET",
-  });
-
-const createExpense = (data: Partial<Expense>): Promise<Expense> =>
-  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}`, {
-    method: "POST",
-    body: data,
-  });
-
-const updateExpense = (expense_id: string, data: Partial<Expense>): Promise<Expense> =>
-  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/${expense_id}`, {
-    method: "PATCH",
-    body: data,
-  });
-
-const deleteExpense = (expense_id: string): Promise<Expense> =>
-  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/${expense_id}`, {
-    method: "DELETE",
-  });
+const searchExpense = (data?: unknown): Promise<Expense[]> => resource.search(data);
+const getExpense = (expense_id: string): Promise<Expense> => resource.get(expense_id);
+const createExpense = (data: Partial<Expense>): Promise<Expense> => resource.create(data);
+const updateExpense = (expense_id: string, data: Partial<Expense>): Promise<Expense> => resource.update(expense_id, data);
+const deleteExpense = (expense_id: string): Promise<Expense> => resource.remove(expense_id);
 
 export default function useExpense() {
   return {

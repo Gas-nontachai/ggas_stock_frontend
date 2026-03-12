@@ -79,7 +79,7 @@ const getUserName = (user_id: string) => {
 </script>
 
 <template>
-  <v-container>
+  <section class="page-shell">
     <template v-if="isLoading">
       <v-row justify="center">
         <v-col cols="12" class="text-center">
@@ -89,7 +89,7 @@ const getUserName = (user_id: string) => {
     </template>
     <template v-else>
       <v-row justify="center">
-        <v-col cols="12" md="6">
+        <v-col cols="12" lg="7">
           <v-carousel v-if="Array.isArray(item.item_image) && item.item_image.length" height="300"
             :show-arrows="item.item_image.length > 1">
             <v-carousel-item v-for="(img, index) in item.item_image" :key="index">
@@ -99,8 +99,8 @@ const getUserName = (user_id: string) => {
           </v-carousel>
           <v-img v-else :src="'/default-cart.png'" alt="No image available" height="300" cover class="bg-grey-lighten-2" />
         </v-col>
-        <v-col cols="12" md="6">
-          <v-card elevation="2" class="pa-4">
+        <v-col cols="12" lg="5">
+          <v-card class="pa-4">
             <v-card-title class="text-h4 font-weight-bold mb-2">{{ item.item_name }}</v-card-title>
 
             <v-divider class="my-3"></v-divider>
@@ -248,5 +248,5 @@ const getUserName = (user_id: string) => {
         </v-col>
       </v-row>
     </template>
-  </v-container>
+  </section>
 </template>

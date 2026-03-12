@@ -1,34 +1,12 @@
 import type { Category } from "@/misc/type";
 
-const prefix = "category";
+const resource = createCrudResource<Category>("category");
 
-const searchCategory = (data?: any): Promise<Category[]> =>
-  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/search`, {
-    method: "POST",
-    body: data,
-  });
-
-const getCategory = (category_id: string): Promise<Category> =>
-  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/${category_id}`, {
-    method: "GET",
-  });
-
-const createCategory = (data: Partial<Category>): Promise<Category> =>
-  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}`, {
-    method: "POST",
-    body: data,
-  });
-
-const updateCategory = (category_id: string, data: Partial<Category>): Promise<Category> =>
-  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/${category_id}`, {
-    method: "PATCH",
-    body: data,
-  });
-
-const deleteCategory = (category_id: string): Promise<Category> =>
-  secureFetch(`${useRuntimeConfig().public.apiBaseUrl}/${prefix}/${category_id}`, {
-    method: "DELETE",
-  });
+const searchCategory = (data?: unknown): Promise<Category[]> => resource.search(data);
+const getCategory = (category_id: string): Promise<Category> => resource.get(category_id);
+const createCategory = (data: Partial<Category>): Promise<Category> => resource.create(data);
+const updateCategory = (category_id: string, data: Partial<Category>): Promise<Category> => resource.update(category_id, data);
+const deleteCategory = (category_id: string): Promise<Category> => resource.remove(category_id);
 
 export default function useCategory() {
   return {

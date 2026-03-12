@@ -4,9 +4,11 @@ import type { Item, Category } from "@/misc/type";
 import { useRouter } from 'vue-router';
 import { formatDate } from '@/utils/date-func';
 import { decimalFix } from '@/utils/number-func';
+import { findLabelById } from '@/utils/map-func';
 import { useI18n } from 'vue-i18n';
 
 const { deleteItem: removeItem } = useItem();
+const { confirmAndRun } = useConfirmAction();
 const router = useRouter();
 const { t } = useI18n();
 
@@ -59,49 +61,20 @@ const viewItemDetails = (item_id: string) => {
 };
 
 const getCategoryName = (category_id: string) => {
-  const category = props.categories.find((cat) => cat.category_id === category_id);
-  return category ? category.category_name : 'category';
+  return findLabelById(props.categories, 'category_id', 'category_name', category_id, 'category');
 };
 
 const deleteItem = async (item_id: string) => {
-  const result = await Swal.fire({
-    title: t('alert.confirm'),
-    text: t('alert.text_delete'),
-    icon: 'warning',
-    showCancelButton: true,
+  await confirmAndRun(async () => {
+    await removeItem(item_id);
+    await emit('fetchData', true);
+  }, {
+    confirmTitle: t('alert.confirm'),
+    confirmText: t('alert.text_delete'),
     confirmButtonText: t('button.confirm'),
-    customClass: {
-      confirmButton: 'swal2-confirm-white',
-      cancelButton: 'swal2-cancel-white',
-    },
+    successTitle: t('message.delete_success_title'),
+    successText: t('message.delete_success_text'),
   });
-
-  if (result.isConfirmed) {
-    try {
-      await removeItem(item_id);
-      await emit('fetchData', true);
-      await Swal.fire({
-        title: t('message.delete_success_title'),
-        text: t('message.delete_success_text'),
-        icon: 'success',
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 3000,
-      });
-    } catch (error) {
-      console.error('Error deleting item:', error);
-      await Swal.fire({
-        title: t('message.delete_unsuccess_title'),
-        text: t('message.delete_unsuccess_text'),
-        icon: 'error',
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 3000,
-      });
-    }
-  }
 };
 
 const markSold = async (item_id: string) => {
@@ -209,35 +182,15 @@ const done = async () => {
                     {{ formatDate(item.createdAt) }}
                   </div>
                 </div>
-                <v-menu bottom right>
-                  <template v-slot:activator="{ props }">
-                    <v-btn icon variant="text" size="small" v-bind="props">
-                      <v-chip color="primary">
-                        <v-icon>mdi-dots-vertical</v-icon>
-                      </v-chip>
-                    </v-btn>
-                  </template>
-                  <v-list>
-                    <v-list-item @click="viewItemDetails(item.item_id)">
-                      <div class="d-flex">
-                        <v-icon left>mdi-eye</v-icon>
-                        <v-list-item-title>{{ t('button.detail') }}</v-list-item-title>
-                      </div>
-                    </v-list-item>
-                    <v-list-item @click="editItem(item.item_id)">
-                      <div class="d-flex">
-                        <v-icon>mdi-pencil</v-icon>
-                        <v-list-item-title>{{ t('button.edit') }}</v-list-item-title>
-                      </div>
-                    </v-list-item>
-                    <v-list-item @click="deleteItem(item.item_id)">
-                      <div class="d-flex">
-                        <v-icon>mdi-delete</v-icon>
-                        <v-list-item-title>{{ t('button.delete') }}</v-list-item-title>
-                      </div>
-                    </v-list-item>
-                  </v-list>
-                </v-menu>
+                <TableActionMenu
+                  show-detail
+                  :detail-text="t('button.detail')"
+                  :edit-text="t('button.edit')"
+                  :delete-text="t('button.delete')"
+                  @detail="viewItemDetails(item.item_id)"
+                  @edit="editItem(item.item_id)"
+                  @delete="deleteItem(item.item_id)"
+                />
               </div>
             </v-card-text>
             <template v-if="props.status === 1">
@@ -260,7 +213,7 @@ const done = async () => {
     </v-row>
   </template>
 
-  <v-dialog v-model="income_item_dialog" v-if="item_current" max-width="600px">
+  <v-dialog v-model="income_item_dialog" v-if="item_current" max-width="720" scrollable>
     <IncomeAdd :item="item_current" @done="done" @close="() => { income_item_dialog = false }" />
   </v-dialog>
 </template>

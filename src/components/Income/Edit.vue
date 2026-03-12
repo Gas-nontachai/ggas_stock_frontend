@@ -117,69 +117,54 @@ const confirmLossAndSubmit = async () => {
 </script>
 
 <template>
-  <v-card class="app-form-card">
-    <v-card-title class="d-flex align-center justify-space-between">
-      <div class="d-flex align-center ga-2">
-        <v-icon color="primary" size="small">mdi-cash</v-icon>
-        <span class="app-form-title">{{ t('income.add_title') }}</span>
-      </div>
-      <v-btn icon variant="text" color="secondary" @click="emit('close', true)" size="small">
-        <v-icon>mdi-close</v-icon>
-      </v-btn>
-    </v-card-title>
-    <v-card-text>
-      <v-form ref="formRef" validate-on="blur lazy" @submit.prevent="submitForm">
-        <v-row>
-          <v-col cols="12" md="6">
-            <v-text-field
-              v-model="sellPriceInput"
-              :label="t('income.income_sell_price')"
-              :rules="sellPriceRules"
-              inputmode="decimal"
-              @keydown="blockInvalidNumericKeys"
-              @input="sanitizeSellPrice"
-              @blur="sanitizeSellPrice"
-            />
+  <FormDialogFrame
+    icon="mdi-cash-edit"
+    :title="t('income.add_title')"
+    :submit-text="t('button.submit')"
+    :cancel-text="t('button.cancel')"
+    @close="emit('close', true)"
+    @cancel="emit('close', true)"
+    @submit="submitForm"
+  >
+    <v-form ref="formRef" validate-on="blur lazy" @submit.prevent="submitForm">
+      <v-row class="form-grid">
+        <v-col cols="12" md="6">
+          <v-text-field v-model="sellPriceInput" :label="t('income.income_sell_price')" :rules="sellPriceRules"
+            variant="outlined" density="comfortable" inputmode="decimal" @keydown="blockInvalidNumericKeys"
+            @input="sanitizeSellPrice" @blur="sanitizeSellPrice" />
 
-            <div class="d-flex flex-column mt-2 app-form-subtitle">
-              <span>ราคาต้นทุน : {{ decimalFix(income.tb_item?.item_buy_price || 0) }} ฿</span>
-              <span :class="isProfit ? 'text-success' : 'text-error'">
-                {{ isProfit ? 'กำไร' : 'ขาดทุน' }} {{ decimalFix(Math.abs(profitAmount)) }} ฿
-              </span>
-            </div>
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-select
-              v-model="income.platform_id"
-              :items="platform_items"
-              item-value="value"
-              item-title="title"
-              :label="t('income.platform_id')"
-              :rules="platformRules"
-            />
-          </v-col>
-          <v-col cols="12">
-            <v-textarea v-model="income.note" :label="t('income.income_note')" rows="3" />
-          </v-col>
-        </v-row>
-      </v-form>
-    </v-card-text>
-    <v-card-actions>
-      <v-spacer />
-      <v-btn color="secondary" variant="text" @click="emit('close', true)">{{ t('button.cancel') }}</v-btn>
-      <v-btn color="primary" variant="flat" @click="submitForm">{{ t('button.submit') }}</v-btn>
-    </v-card-actions>
+          <div class="form-meta d-flex flex-column">
+            <span>ราคาต้นทุน : {{ decimalFix(income.tb_item?.item_buy_price || 0) }} ฿</span>
+            <span :class="isProfit ? 'text-success' : 'text-error'">
+              {{ isProfit ? 'กำไร' : 'ขาดทุน' }} {{ decimalFix(Math.abs(profitAmount)) }} ฿
+            </span>
+          </div>
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-select v-model="income.platform_id" :items="platform_items" item-value="value" item-title="title"
+            :label="t('income.platform_id')" :rules="platformRules" variant="outlined" density="comfortable" />
+        </v-col>
+        <v-col cols="12">
+          <v-textarea v-model="income.note" :label="t('income.income_note')" rows="3" variant="outlined"
+            density="comfortable" />
+        </v-col>
+      </v-row>
+    </v-form>
 
     <v-dialog v-model="confirmLossDialog" max-width="420">
-      <v-card>
-        <v-card-title>{{ t('alert.confirm') }}</v-card-title>
-        <v-card-text>{{ t('alert.text_unprofit') }}</v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn variant="text" color="secondary" @click="confirmLossDialog = false">{{ t('button.cancel') }}</v-btn>
-          <v-btn variant="flat" color="primary" @click="confirmLossAndSubmit">{{ t('button.confirm') }}</v-btn>
-        </v-card-actions>
-      </v-card>
+      <FormDialogFrame
+        class="form-confirm-dialog"
+        icon="mdi-alert-outline"
+        :title="t('alert.confirm')"
+        :submit-text="t('button.confirm')"
+        :cancel-text="t('button.cancel')"
+        submit-color="warning"
+        @close="confirmLossDialog = false"
+        @cancel="confirmLossDialog = false"
+        @submit="confirmLossAndSubmit"
+      >
+        <p class="form-header__subtitle mt-0">{{ t('alert.text_unprofit') }}</p>
+      </FormDialogFrame>
     </v-dialog>
-  </v-card>
+  </FormDialogFrame>
 </template>

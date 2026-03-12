@@ -32,10 +32,10 @@ const avatarUrl = computed(() => {
 </script>
 
 <template>
-  <v-container>
+  <section class="page-shell">
     <v-row justify="center">
-      <v-col cols="12" md="6">
-        <v-card class="pa-6" elevation="4">
+      <v-col cols="12" md="8" lg="6">
+        <v-card class="pa-4 pa-sm-6">
           <v-row align="center" justify="center">
             <v-avatar :image="avatarUrl" size="100"></v-avatar>
           </v-row>
@@ -50,5 +50,5 @@ const avatarUrl = computed(() => {
         </v-card>
       </v-col>
     </v-row>
-  </v-container>
+  </section>
 </template>

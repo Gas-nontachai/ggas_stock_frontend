@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import Swal from 'sweetalert2';
 import { onMounted, ref, computed } from 'vue';
 import { formatDate } from '@/utils/date-func';
 import { decimalFix } from '@/utils/number-func';
@@ -10,6 +9,7 @@ import { useTheme } from 'vuetify'
 const { searchIncome, deleteIncome: removeIncome } = useIncome();
 const { searchPlatform } = usePlatform();
 const { searchCategory } = useCategory();
+const { confirmAndRun } = useConfirmAction();
 const { t, locale } = useI18n();
 
 const theme = useTheme()
@@ -36,23 +36,25 @@ const fetchData = async () => {
     loading.value = true;
     try {
         const response = await searchIncome({
-            where: {
-                platform_id: { $in: selected_platform.value },
-                createdAt: {
-                    $gt: date_selected.value && Array.isArray(date_selected.value) ? date_selected.value[0] : null,
-                    $lt: date_selected.value && Array.isArray(date_selected.value) ? date_selected.value[1] : null,
+            ...buildSearchQuery({
+                where: {
+                    platform_id: { $in: selected_platform.value },
+                    createdAt: {
+                        $gt: date_selected.value && Array.isArray(date_selected.value) ? date_selected.value[0] : null,
+                        $lt: date_selected.value && Array.isArray(date_selected.value) ? date_selected.value[1] : null,
+                    },
                 },
-            },
-            include: [
-                {
-                    model: "Item",
-                    attributes: ['item_buy_price', 'item_category_id', 'item_name', 'item_id', 'note'],
-                    where: {
-                        item_name: { $like: search_query.value },
-                        item_category_id: { $in: selected_category.value }
-                    }
-                },
-            ]
+                include: [
+                    {
+                        model: "Item",
+                        attributes: ['item_buy_price', 'item_category_id', 'item_name', 'item_id', 'note'],
+                        where: {
+                            item_name: { $like: search_query.value },
+                            item_category_id: { $in: selected_category.value }
+                        }
+                    },
+                ],
+            }),
         });
         incomes.value = response
     } catch (error) {
@@ -113,53 +115,13 @@ const headers = computed(() => [
     { title: t('income.actions'), align: 'center' as const, key: 'actions' }
 ]);
 
-const deleteIncome = (income_id: string) => {
-    Swal.fire({
-        title: 'Are you sure?',
-        text: 'This action cannot be undone.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'No, keep it',
-        customClass: {
-            confirmButton: 'swal2-confirm-white',
-            cancelButton: 'swal2-cancel-white',
-        },
-        preConfirm: async () => {
-            Swal.fire({
-                title: 'Submitting...',
-                text: 'Please wait while we submit the form.',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                },
-                showConfirmButton: false,
-            });
-
-            try {
-                await removeIncome(income_id);
-                Swal.close();
-                await fetchData();
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: 'Income deleted successfully!',
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                });
-            } catch (error) {
-                Swal.close();
-                await fetchData();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'There was an issue deleting the income. Please try again.',
-                    showConfirmButton: true,
-                });
-            }
-        }
+const deleteIncome = async (income_id: string) => {
+    await confirmAndRun(async () => {
+        await removeIncome(income_id);
+        await fetchData();
+    }, {
+        confirmButtonText: t('button.delete'),
+        successText: 'Income deleted successfully!',
     });
 };
 
@@ -203,28 +165,29 @@ const totalProfit = computed(() => {
 </script>
 
 <template>
-    <v-container>
-        <div class="d-flex justify-space-between align-center mb-4">
-            <div>
-                <h1 class=" font-weight-bold">{{ t('income.title') }}</h1>
-                <p>{{ t('income.description') }}</p>
+    <section class="page-shell">
+        <div class="page-header">
+            <div class="page-heading">
+                <h1 class="page-title">{{ t('income.title') }}</h1>
+                <p class="page-subtitle">{{ t('income.description') }}</p>
             </div>
         </div>
 
-        <v-row>
-            <v-col cols="2" md="1">
-                <v-btn @click="collapseOpen = !collapseOpen" variant="text">
+        <v-card class="filter-bar">
+            <v-row>
+            <v-col cols="12" md="1">
+                <v-btn @click="collapseOpen = !collapseOpen" variant="text" class="w-100">
                     <v-icon>
                         {{ collapseOpen ? 'mdi-arrow-collapse' : 'mdi-arrow-expand' }}
                     </v-icon>
                 </v-btn>
             </v-col>
-            <v-col cols="10" md="3">
+            <v-col cols="12" md="3">
                 <v-text-field v-model="search_query" :label="t('income.search')" prepend-inner-icon="mdi-magnify"
                     clearable single-line hide-details density="compact" variant="outlined"
                     @click:prepend-inner="fetchData" @keyup.enter="fetchData" class="rounded-lg"></v-text-field>
             </v-col>
-            <v-col cols="6" md="2">
+            <v-col cols="12" md="2">
                 <v-menu v-model="menu_filter_cat" :close-on-content-click="false" max-width="300px">
                     <template #activator="{ props }">
                         <v-btn v-bind="props" :color="selected_category.length ? 'primary' : ''" variant="outlined"
@@ -251,7 +214,7 @@ const totalProfit = computed(() => {
                     </v-card>
                 </v-menu>
             </v-col>
-            <v-col cols="6" md="2">
+            <v-col cols="12" md="2">
                 <v-menu v-model="menu_filter_plat" :close-on-content-click="false" max-width="300px">
                     <template #activator="{ props }">
                         <v-btn v-bind="props" :color="selected_platform.length ? 'primary' : ''" variant="outlined"
@@ -278,27 +241,28 @@ const totalProfit = computed(() => {
                     </v-card>
                 </v-menu>
             </v-col>
-            <v-col cols="12" sm="6" md="3" lg="2">
+            <v-col cols="12" md="2">
                 <DatePicker range :locale="locale" :dark="isDarkTheme" :teleport="true" :cancelText="t('button.cancel')"
                     :selectText="t('button.select')" preview-format="dd MMMM yyyy" :markers="[
                         { date: new Date(), type: 'dot', tooltip: [{ text: 'วันนี้', color: 'red' }] }
                     ]" v-model="date_selected" :enable-time-picker="false" :placeholder="t('button.select_date')"
                     class=" w-full " />
             </v-col>
-            <v-col cols="12" sm="6" md="3" lg="2">
+            <v-col cols="12" md="2">
                 <v-btn variant="tonal" color="error" class="w-100 rounded-lg" @click="clearAllFilters">
                     <v-icon class="mr-2">mdi-filter-remove</v-icon>
                     {{ t('button.clear_filter') }}
                 </v-btn>
             </v-col>
         </v-row>
+        </v-card>
 
         <template v-if="loading" class="d-flex justify-center align-center">
             <Loading />
         </template>
 
         <template v-else>
-            <v-card class="pa-3 rounded-lg gradient-border">
+            <v-card class="stats-strip gradient-border">
                 <v-expand-transition>
                     <v-row align="center" justify="space-evenly" no-gutters v-show="collapseOpen">
                         <v-col cols="6" md="2" class="mb-2 mb-md-0 px-1">
@@ -357,7 +321,8 @@ const totalProfit = computed(() => {
                 </v-expand-transition>
             </v-card>
 
-            <v-data-table :items="incomes" :headers="headers" item-key="income_id" class="elevation-1">
+            <div class="table-shell">
+                <v-data-table :items="incomes" :headers="headers" item-key="income_id" class="elevation-1">
 
                 <template v-slot:item.item_id="{ item }">
                     <span>{{ item.tb_item?.item_name }} ฿ </span>
@@ -384,55 +349,16 @@ const totalProfit = computed(() => {
                 </template>
 
                 <template v-slot:item.actions="{ item }">
-                    <v-menu bottom right>
-                        <template v-slot:activator="{ props }">
-                            <v-btn icon variant="text" size="small" v-bind="props">
-                                <v-chip color="red">
-                                    <v-icon>mdi-dots-vertical</v-icon>
-                                </v-chip>
-                            </v-btn>
-                        </template>
-                        <v-list>
-                            <v-list-item @click="editIncome(item.income_id)">
-                                <div class="d-flex">
-                                    <v-icon>mdi-pencil</v-icon>
-                                    <v-list-item-title>{{ t('button.edit') }}</v-list-item-title>
-                                </div>
-                            </v-list-item>
-                            <v-list-item @click="deleteIncome(item.income_id)">
-                                <div class="d-flex">
-                                    <v-icon>mdi-delete</v-icon>
-                                    <v-list-item-title>{{ t('button.delete') }}</v-list-item-title>
-                                </div>
-                            </v-list-item>
-                        </v-list>
-                    </v-menu>
+                    <TableActionMenu :edit-text="t('button.edit')" :delete-text="t('button.delete')"
+                        @edit="editIncome(item.income_id)" @delete="deleteIncome(item.income_id)" />
                 </template>
-            </v-data-table>
+                </v-data-table>
+            </div>
         </template>
 
-        <v-dialog v-model="edit_incomes_dialog" max-width="600px">
+        <v-dialog v-model="edit_incomes_dialog" max-width="720" scrollable>
             <IncomeEdit :income_id="income_id_current" @done="Done" @close="() => { edit_incomes_dialog = false }" />
         </v-dialog>
 
-    </v-container>
+    </section>
 </template>
-
-<style>
-.gradient-border {
-    position: relative;
-    background: linear-gradient(to right, #ffffff, #f5f5f5);
-    border: none;
-    overflow: hidden;
-}
-
-.gradient-border::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(to right, #673ab7, #e91e63);
-}
-</style>

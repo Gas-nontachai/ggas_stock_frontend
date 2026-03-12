@@ -92,64 +92,39 @@ function uploadFile(e: Event) {
 </script>
 
 <template>
-  <v-card class="app-form-card">
-    <v-card-title class="d-flex align-center justify-space-between">
-      <div class="d-flex align-center ga-2">
-        <v-icon color="primary" size="small">mdi-cart-plus</v-icon>
-        <span class="app-form-title">{{ t('item.add_title') }}</span>
-      </div>
-      <v-btn icon variant="text" color="secondary" @click="emit('close', true)" size="small">
-        <v-icon>mdi-close</v-icon>
-      </v-btn>
-    </v-card-title>
-    <v-card-text>
-      <v-form ref="formRef" validate-on="blur lazy" @submit.prevent="submitForm">
-        <v-row>
-          <v-col cols="12">
-            <v-text-field
-              v-model="item.item_name"
-              :label="t('item.item_name')"
-              :rules="itemNameRules"
-            />
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-text-field
-              v-model="item.item_buy_price"
-              :label="t('item.item_price')"
-              :rules="itemPriceRules"
-              inputmode="decimal"
-              @keydown="blockInvalidNumericKeys"
-              @input="sanitizePrice"
-              @blur="sanitizePrice"
-            />
-          </v-col>
-          <v-col cols="12">
-            <v-textarea v-model="item.note" :label="t('item.item_note')" variant="outlined"
-              rows="3"></v-textarea>
-          </v-col>
-
-          <v-col cols="12" md="6">
-            <v-select
-              v-model="item.item_category_id"
-              :items="props.category_items"
-              item-value="value"
-              item-title="title"
-              :label="t('item.item_category')"
-              :rules="itemCategoryRules"
-            />
-          </v-col>
-
-          <v-col cols="12">
-            <v-file-input accept="image/*" @change="uploadFile" :label="t('item.item_image')"
-              variant="outlined" multiple prepend-icon="mdi-camera" />
-          </v-col>
-        </v-row>
-      </v-form>
-    </v-card-text>
-    <v-card-actions>
-      <v-spacer></v-spacer>
-      <v-btn color="secondary" variant="text" @click="emit('close', true)">{{ t('button.cancel') }}</v-btn>
-      <v-btn color="primary" variant="flat" @click="submitForm">{{ t('button.submit') }}</v-btn>
-    </v-card-actions>
-  </v-card>
+  <FormDialogFrame
+    icon="mdi-cart-plus"
+    :title="t('item.add_title')"
+    :submit-text="t('button.submit')"
+    :cancel-text="t('button.cancel')"
+    @close="emit('close', true)"
+    @cancel="emit('close', true)"
+    @submit="submitForm"
+  >
+    <v-form ref="formRef" validate-on="blur lazy" @submit.prevent="submitForm">
+      <v-row class="form-grid">
+        <v-col cols="12">
+          <v-text-field v-model="item.item_name" :label="t('item.item_name')" :rules="itemNameRules" variant="outlined"
+            density="comfortable" />
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-text-field v-model="item.item_buy_price" :label="t('item.item_price')" :rules="itemPriceRules"
+            variant="outlined" density="comfortable" inputmode="decimal" @keydown="blockInvalidNumericKeys"
+            @input="sanitizePrice" @blur="sanitizePrice" />
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-select v-model="item.item_category_id" :items="props.category_items" item-value="value" item-title="title"
+            :label="t('item.item_category')" :rules="itemCategoryRules" variant="outlined" density="comfortable" />
+        </v-col>
+        <v-col cols="12">
+          <v-textarea v-model="item.note" :label="t('item.item_note')" variant="outlined" density="comfortable"
+            rows="3" />
+        </v-col>
+        <v-col cols="12">
+          <v-file-input accept="image/*" @change="uploadFile" :label="t('item.item_image')" variant="outlined"
+            density="comfortable" multiple prepend-icon="mdi-camera" />
+        </v-col>
+      </v-row>
+    </v-form>
+  </FormDialogFrame>
 </template>

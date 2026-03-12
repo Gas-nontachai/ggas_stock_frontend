@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import Swal from 'sweetalert2';
 import { onMounted, ref, computed } from 'vue';
 import type { Category } from "@/misc/type";
 import { useI18n } from 'vue-i18n';
@@ -10,19 +9,32 @@ const { t } = useI18n();
 const categorys = ref<Category[]>([]);
 const item_categorys = ref<Category[]>([]);
 const expense_categorys = ref<Category[]>([]);
-const loading = ref(true);
-const add_paltform_dialog = ref(false);
-const edit_paltform_dialog = ref(false);
+const listPage = useListPage({});
+const loading = listPage.loading;
+const search_query = listPage.searchQuery;
 const category_id_current = ref('');
-const search_query = ref('');
 const tab = ref('item');
+
+const add_paltform_dialog = computed({
+    get: () => listPage.dialogs.add_category ?? false,
+    set: (value: boolean) => {
+        listPage.dialogs.add_category = value;
+    },
+});
+
+const edit_paltform_dialog = computed({
+    get: () => listPage.dialogs.edit_category ?? false,
+    set: (value: boolean) => {
+        listPage.dialogs.edit_category = value;
+    },
+});
 
 onMounted(async () => {
     await fetchData();
 });
 
 const fetchData = async () => {
-    loading.value = true;
+    listPage.setLoading(true);
     try {
         const response = await searchCategory({
             where: {
@@ -35,43 +47,40 @@ const fetchData = async () => {
     } catch (error) {
         console.error('Error fetching categorys:', error);
     } finally {
-        loading.value = false;
+        listPage.setLoading(false);
     }
 };
 
 const editCategory = (category_id: string) => {
     category_id_current.value = category_id
-    edit_paltform_dialog.value = true;
+    listPage.openDialog('edit_category');
 };
 
 const addCategory = () => {
-    add_paltform_dialog.value = true;
+    listPage.openDialog('add_category');
 };
 
 const Done = async () => {
-    add_paltform_dialog.value = false;
-    edit_paltform_dialog.value = false;
+    listPage.closeDialog('add_category');
+    listPage.closeDialog('edit_category');
     await fetchData();
 };
 </script>
 
 <template>
-    <v-container>
-        <div class="d-flex justify-space-between align-center mb-4">
-            <div>
-                <h1 class=" font-weight-bold">{{ t('category.title') }}</h1>
-                <p>{{ t('category.description') }}</p>
+    <section class="page-shell">
+        <div class="page-header">
+            <div class="page-heading">
+                <h1 class="page-title">{{ t('category.title') }}</h1>
+                <p class="page-subtitle">{{ t('category.description') }}</p>
             </div>
-            <v-btn @click="addCategory" color="primary">{{ t('category.add_btn') }}</v-btn>
+            <div class="page-actions">
+                <v-btn @click="addCategory" color="primary" class="page-primary-action">{{ t('category.add_btn') }}</v-btn>
+            </div>
         </div>
 
-        <v-row>
-            <v-col cols="6" class="mb-4">
-                <v-text-field v-model="search_query" :label="t('expense.search')" prepend-inner-icon="mdi-magnify"
-                    clearable single-line hide-details density="compact" variant="outlined"
-                    @click:prepend-inner="fetchData" @keyup.enter="fetchData" class="rounded-lg"></v-text-field>
-            </v-col>
-        </v-row>
+        <ListToolbar v-model="search_query" :search-label="t('expense.search')" :loading="loading" @search="fetchData"
+            @clear="() => { listPage.clearSearch(); fetchData(); }" />
 
         <template v-if="loading" class="d-flex justify-center align-center">
             <Loading />
@@ -96,14 +105,14 @@ const Done = async () => {
             </v-tabs-window>
         </v-col>
 
-        <v-dialog v-model="add_paltform_dialog" max-width="600px">
+        <v-dialog v-model="add_paltform_dialog" max-width="720" scrollable>
             <CategoryAdd @done="Done" @close="() => { add_paltform_dialog = false }" />
         </v-dialog>
 
-        <v-dialog v-model="edit_paltform_dialog" max-width="600px">
+        <v-dialog v-model="edit_paltform_dialog" max-width="720" scrollable>
             <CategoryEdit :category_id="category_id_current" @done="Done"
                 @close="() => { edit_paltform_dialog = false }" />
         </v-dialog>
 
-    </v-container>
+    </section>
 </template>
