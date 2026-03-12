@@ -64,6 +64,10 @@
         "new_password": "New Password",
         "confirm_password": "Confirm Password"
     },
+    "session": {
+        "replacedTitle": "Session replaced",
+        "replacedText": "Your account was logged in from another device"
+    },
     "s_drawer": {
         "home": "Home",
         "item": "Item",

@@ -38,6 +38,12 @@ export default defineNuxtRouteMiddleware(async (to) => {
     const canUseSession = await hydrateUser();
     if (!canUseSession) {
       // Keep user on login when token is invalid/expired to avoid SSR redirect loops.
+      if (to.query.reason !== "session_expired") {
+        return navigateTo({
+          path: "/auth/login",
+          query: { reason: "session_expired" },
+        });
+      }
       return;
     }
 
@@ -46,6 +52,9 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   const canUseSession = await hydrateUser();
   if (!canUseSession) {
-    return navigateTo("/auth/login");
+    return navigateTo({
+      path: "/auth/login",
+      query: { reason: "session_expired" },
+    });
   }
 });

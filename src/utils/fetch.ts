@@ -1,6 +1,7 @@
 import Swal from 'sweetalert2'
 import type { FetchOptions } from "@/misc/type"
 import useSession from "~/composables/useSession";
+import useSessionEvents from "~/composables/useSessionEvents";
 
 export const preSecureFetch = (url: string, options: FetchOptions): Promise<any> =>
   $fetch(url, options)
@@ -19,6 +20,12 @@ export const secureFetch = async (url: string, options: FetchOptions): Promise<a
   return await $fetch(url, requestOptions)
     .then(responseInterceptor)
     .catch(async (error) => {
+      if (isSessionReplacedError(error)) {
+        const { handleSessionReplaced } = useSessionEvents()
+        await handleSessionReplaced(getErrorMessage(error))
+        return Promise.reject(new Error("Session replaced"))
+      }
+
       if (shouldTryRefresh(error)) {
         const refreshed = await refreshSessionToken()
         if (refreshed) {
@@ -30,7 +37,22 @@ export const secureFetch = async (url: string, options: FetchOptions): Promise<a
             },
           }
 
-          return $fetch(url, retryOptions).then(responseInterceptor).catch(errorInterceptor)
+          return $fetch(url, retryOptions)
+            .then(responseInterceptor)
+            .catch(async (retryError) => {
+              if (isSessionReplacedError(retryError)) {
+                const { handleSessionReplaced } = useSessionEvents()
+                await handleSessionReplaced(getErrorMessage(retryError))
+                return Promise.reject(new Error("Session replaced"))
+              }
+
+              if (isInvalidOrMissingTokenError(retryError)) {
+                await handleSessionExpired()
+                return Promise.reject(new Error("Session expired"))
+              }
+
+              return errorInterceptor(retryError)
+            })
         }
 
         await handleSessionExpired()
@@ -91,13 +113,36 @@ export const errorInterceptor = async (error: any): Promise<any> => {
 }
 
 const shouldTryRefresh = (error: any) => {
-  const status = error?.response?.status
-  if (status !== 401) {
+  if (isSessionReplacedError(error)) {
     return false
   }
 
-  const errorCode = error?.response?._data?.error?.code
-  return errorCode === "AUTH_TOKEN_INVALID" || errorCode === "AUTH_TOKEN_MISSING" || !errorCode
+  if (isInvalidOrMissingTokenError(error)) {
+    return true
+  }
+
+  const status = error?.response?.status
+  if (status !== 401 && status !== 403) {
+    return false
+  }
+
+  const errorCode = getErrorCode(error)
+  return !errorCode
+}
+
+const isSessionReplacedError = (error: any) => {
+  const errorCode = getErrorCode(error)
+  return errorCode === "AUTH_SESSION_REPLACED"
+}
+
+const getErrorMessage = (error: any) =>
+  error?.response?._data?.error?.message || error?.response?._data?.message
+
+const getErrorCode = (error: any) => error?.response?._data?.error?.code
+
+const isInvalidOrMissingTokenError = (error: any) => {
+  const errorCode = getErrorCode(error)
+  return errorCode === "AUTH_TOKEN_INVALID" || errorCode === "AUTH_TOKEN_MISSING"
 }
 
 let refreshPromise: Promise<boolean> | null = null
@@ -141,6 +186,8 @@ const refreshSessionToken = async (): Promise<boolean> => {
 
 const handleSessionExpired = async () => {
   const { clearSession } = useSession()
+  const { stop } = useSessionEvents()
+  stop()
   clearSession()
 
   if (process.client) {

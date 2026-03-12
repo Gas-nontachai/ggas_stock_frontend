@@ -8,6 +8,7 @@ const { t } = useI18n();
 const router = useRouter();
 const { authLogout } = useAuth();
 const { authUser, clearSession } = useSession();
+const { stop } = useSessionEvents();
 
 const user = computed(() => authUser.value ?? null);
 const userImageUrl = computed(() => {
@@ -50,6 +51,7 @@ const logout = async () => {
     } catch {
       // Cleanup still runs when logout endpoint fails.
     } finally {
+      stop();
       clearSession();
     }
 

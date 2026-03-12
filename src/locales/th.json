@@ -64,6 +64,10 @@
         "new_password": "รหัสผ่านใหม่",
         "confirm_password": "ยืนยันรหัสผ่าน"
     },
+    "session": {
+        "replacedTitle": "เซสชันถูกแทนที่",
+        "replacedText": "บัญชีของคุณถูกเข้าสู่ระบบจากอุปกรณ์อื่น"
+    },
     "s_drawer": {
         "home": "หน้าแรก",
         "item": "สินค้า",

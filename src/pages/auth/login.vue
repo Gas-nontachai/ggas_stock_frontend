@@ -27,6 +27,16 @@ onMounted(async () => {
       text: "Register and password reset are now handled by Keycloak.",
       icon: "info",
     });
+    return;
+  }
+
+  if (route.query.reason === "session_expired") {
+    await Swal.fire({
+      title: "Session expired",
+      text: "Please login again.",
+      icon: "warning",
+      confirmButtonText: "OK",
+    });
   }
 });
 
